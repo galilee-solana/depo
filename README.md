@@ -15,8 +15,8 @@
 #### Clone the repo
 
 ```shell
-git clone <repo-url>
-cd <repo-name>
+git clone git@github.com:galilee-solana/deposit.git
+cd deposit
 ```
 
 #### Install Dependencies
