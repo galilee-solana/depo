@@ -21,6 +21,9 @@ cd <repo-name>
 
 #### Install Dependencies
 
+Install pnpm first if you don't have it already:  
+https://pnpm.io/installation
+
 ```shell
 pnpm install
 ```
