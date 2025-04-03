@@ -2,8 +2,8 @@ import * as anchor from '@coral-xyz/anchor'
 import { Program } from '@coral-xyz/anchor'
 import { Keypair } from '@solana/web3.js'
 import { Deposit } from '../target/types/deposit'
-
-describe('deposit', () => {
+// TODO: this is kept just for example, but to remove when first tests are implemented
+describe.skip('deposit', () => {
   // Configure the client to use the local cluster.
   const provider = anchor.AnchorProvider.env()
   anchor.setProvider(provider)
