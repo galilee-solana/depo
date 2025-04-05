@@ -1,4 +1,4 @@
-# legacy-deposit
+# DEPO
 
 ## Getting Started
 
@@ -15,8 +15,8 @@
 #### Clone the repo
 
 ```shell
-git clone git@github.com:galilee-solana/deposit.git
-cd deposit
+git clone git@github.com:galilee-solana/depo.git
+cd depo
 ```
 
 #### Install Dependencies
