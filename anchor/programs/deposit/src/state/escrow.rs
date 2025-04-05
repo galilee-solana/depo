@@ -1,5 +1,7 @@
 use anchor_lang::prelude::*;
 
+// TODO: Calculate the size of the account
+
 #[account]
 pub struct Escrow {
   pub id: String,                // uuid (36 bytes + 4 bytes for length = 40 bytes)
