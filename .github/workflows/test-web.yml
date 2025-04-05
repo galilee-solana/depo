@@ -6,7 +6,7 @@ on:
     branches: ['main']
 
 jobs:
-  test-and-build:
+  test-and-build-web:
     runs-on: ubuntu-latest
 
     steps:
