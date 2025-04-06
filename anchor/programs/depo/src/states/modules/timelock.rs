@@ -3,6 +3,7 @@ use anchor_lang::prelude::*;
 #[account]
 #[derive(InitSpace)]
 pub struct Timelock {
+  // Unix timestamp
   pub release_after: u64,
 }
 

@@ -3,6 +3,7 @@ use anchor_lang::prelude::*;
 #[account]
 #[derive(InitSpace)]
 pub struct ExpiryFallback {
+  // Unix timestamp 
   pub refund_after: u64
 }
 
