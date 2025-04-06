@@ -1,9 +1,17 @@
-pub mod escrow;
-pub mod depositor;
-pub mod recipient;
-pub mod modules;
+mod escrow;
+mod depositor;
+mod recipient;
+mod modules;
 
-pub use escrow::*;
-pub use depositor::*;
-pub use recipient::*;
-pub use modules::*;
+pub use escrow::Escrow;
+pub use depositor::Depositor;
+pub use recipient::Recipient;
+pub use modules::{
+    ModuleType,
+    ExpiryFallback,
+    MinimumAmount,
+    MultisigApproval,
+    SingleApproval,
+    TargetAmount,
+    TimeLock
+};
