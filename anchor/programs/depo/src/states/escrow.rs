@@ -1,4 +1,5 @@
 use anchor_lang::prelude::*;
+use crate::constants::MAX_MODULES;
 
 #[account]
 #[derive(InitSpace)]
@@ -11,7 +12,7 @@ pub struct Escrow {
   pub is_public_deposit: bool,
   pub depositors_count: u32,
   pub recipients_count: u32,
-  #[max_len(10)]
+  #[max_len(MAX_MODULES)]
   pub modules: Vec<ModuleType>,
   pub status: Status,
   pub created_at: i64
