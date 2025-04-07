@@ -64,14 +64,14 @@ describe('DEPO', () => {
     console.log('Created escrow with UUID:', uuid)
 
     const escrowAccount = await program.account.escrow.fetch(escrowKey)
-    assert.ok(Buffer.from(escrowAccount.id).toString('hex') === uuid)
-    assert.ok(escrowAccount.initialiser.equals(initialiser.publicKey))
+    expect(Buffer.from(escrowAccount.id).toString('hex')).toBe(uuid)
+    expect(escrowAccount.initialiser.toBase58()).toBe(initialiser.publicKey.toBase58())
 
     // Convert the bytes to strings and remove trailing null characters
-    const storedName = Buffer.from(escrowAccount.name).toString().replace(/\0+$/, '')
-    const storedDescription = Buffer.from(escrowAccount.description).toString().replace(/\0+$/, '')
+    const storedName = Buffer.from(escrowAccount.name).toString().replace(/\0/g, '')
+    const storedDescription = Buffer.from(escrowAccount.description).toString().replace(/\0/g, '')
 
-    assert.strictEqual(storedName, testName)
-    assert.strictEqual(storedDescription, testDescription)
+    expect(storedName).toBe(testName)
+    expect(storedDescription).toBe(testDescription)
   })
 })
