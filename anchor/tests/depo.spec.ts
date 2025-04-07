@@ -4,6 +4,7 @@ import { Keypair, LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { Depo } from '../target/types/depo'
 import { before } from 'node:test'
 import { v4 as uuidv4 } from 'uuid'
+import { strict as assert } from 'assert'
 
 describe('DEPO', () => {
   const provider = anchor.AnchorProvider.env()
@@ -36,12 +37,14 @@ describe('DEPO', () => {
     }
 
     // Escrow Name (100 bytes)
+    const testName = 'TEST_ESCROW name'
     const name = Buffer.alloc(100)
-    name.write('TEST_ESCROW name')
+    name.write(testName)
 
-    // Escrow Description (200 bytes) 
+    // Escrow Description (200 bytes)
+    const testDescription = 'TEST_ESCROW description'
     const description = Buffer.alloc(200)
-    description.write('TEST_ESCROW description')
+    description.write(testDescription)
 
     const [escrowKey, _bump] = anchor.web3.PublicKey.findProgramAddressSync(
       [Buffer.from('escrow'), escrowId],
@@ -62,5 +65,16 @@ describe('DEPO', () => {
     .rpc()
 
     console.log('Created escrow with UUID:', uuid)
+
+    const escrowAccount = await program.account.escrow.fetch(escrowKey)
+    assert.ok(Buffer.from(escrowAccount.id).toString('hex') === uuid)
+    assert.ok(escrowAccount.initialiser.equals(initialiser.publicKey))
+
+    // Convert the bytes to strings and remove trailing null characters
+    const storedName = Buffer.from(escrowAccount.name).toString().replace(/\0+$/, '')
+    const storedDescription = Buffer.from(escrowAccount.description).toString().replace(/\0+$/, '')
+
+    assert.strictEqual(storedName, testName)
+    assert.strictEqual(storedDescription, testDescription)
   })
 })
