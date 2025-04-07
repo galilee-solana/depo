@@ -1,4 +1,7 @@
 use anchor_lang::prelude::*;
+use super::modules::ModuleType;
+use super::status::Status;
+
 
 // TODO: Calculate the size of the account
 
@@ -14,5 +17,5 @@ pub struct Escrow {
   pub recipients_count: u32,    // 4 bytes
   pub modules: Vec<ModuleType>, // 4 bytes + (n * size of ModuleType)
   pub status: Status,           // 1 byte (enum)
-  pub created_at: u64           // 8 bytes
+  pub created_at: i64           // 8 bytes
 }

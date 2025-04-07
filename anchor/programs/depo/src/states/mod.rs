@@ -2,6 +2,7 @@ mod escrow;
 mod depositor;
 mod recipient;
 mod modules;
+mod status;
 
 pub use escrow::Escrow;
 pub use depositor::Depositor;
@@ -13,5 +14,6 @@ pub use modules::{
     MultisigApproval,
     SingleApproval,
     TargetAmount,
-    TimeLock
+    Timelock
 };
+pub use status::Status;

@@ -6,5 +6,225 @@
     "spec": "0.1.0",
     "description": "Created with Anchor"
   },
-  "instructions": []
+  "instructions": [
+    {
+      "name": "create_escrow",
+      "discriminator": [
+        253,
+        215,
+        165,
+        116,
+        36,
+        108,
+        68,
+        80
+      ],
+      "accounts": [
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "escrow_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "escrow_id",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        },
+        {
+          "name": "name",
+          "type": {
+            "array": [
+              "u8",
+              100
+            ]
+          }
+        },
+        {
+          "name": "description",
+          "type": {
+            "array": [
+              "u8",
+              200
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Escrow",
+      "discriminator": [
+        31,
+        213,
+        123,
+        187,
+        186,
+        22,
+        218,
+        155
+      ]
+    }
+  ],
+  "types": [
+    {
+      "name": "Escrow",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "id",
+            "type": {
+              "array": [
+                "u8",
+                16
+              ]
+            }
+          },
+          {
+            "name": "initialiser",
+            "type": "pubkey"
+          },
+          {
+            "name": "name",
+            "type": {
+              "array": [
+                "u8",
+                100
+              ]
+            }
+          },
+          {
+            "name": "description",
+            "type": {
+              "array": [
+                "u8",
+                200
+              ]
+            }
+          },
+          {
+            "name": "total_amount",
+            "type": "u64"
+          },
+          {
+            "name": "is_public_deposit",
+            "type": "bool"
+          },
+          {
+            "name": "depositors_count",
+            "type": "u32"
+          },
+          {
+            "name": "recipients_count",
+            "type": "u32"
+          },
+          {
+            "name": "modules",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "ModuleType"
+                }
+              }
+            }
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "Status"
+              }
+            }
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ModuleType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "TimeLock"
+          },
+          {
+            "name": "ExpiryFallback"
+          },
+          {
+            "name": "SingleApproval"
+          },
+          {
+            "name": "MultisigApproval"
+          },
+          {
+            "name": "TargetAmount"
+          },
+          {
+            "name": "MinimumAmount"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Status",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Draft"
+          },
+          {
+            "name": "Started"
+          },
+          {
+            "name": "Released"
+          },
+          {
+            "name": "Cancelled"
+          },
+          {
+            "name": "Expired"
+          }
+        ]
+      }
+    }
+  ]
 }

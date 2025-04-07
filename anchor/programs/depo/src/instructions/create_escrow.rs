@@ -13,7 +13,7 @@ use crate::states::{Escrow, Status};
 /// # Returns
 /// * `Result<()>` - Result indicating success or failure
 pub fn create_escrow(
-    ctx: Context<CreateEscrow>,
+    ctx: Context<CreateEscrowCtx>,
     escrow_id: [u8; 16],
     name: [u8; 100],
     description: [u8; 200]
@@ -35,12 +35,12 @@ pub fn create_escrow(
 
 #[derive(Accounts)]
 #[instruction(escrow_id: [u8; 16])]
-pub struct CreateEscrow<'info> {
+pub struct CreateEscrowCtx<'info> {
     #[account(
       init,
       payer = signer,
-      space = 8 + // TODO: Implement InitSpace
-      seeds = [b"escrow", &escrow_id.to_le_bytes()],
+      space = 8, // TODO: Implement InitSpace
+      seeds = [b"escrow", escrow_id.as_ref()],
       bump
     )]
     pub escrow: Account<'info, Escrow>,
