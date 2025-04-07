@@ -1,6 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_lang::solana_program::clock::Clock;
 use crate::states::{Escrow, Status};
+use crate::constants::ANCHOR_DISCRIMINATOR;
 
 /// Creates a new escrow account with the given parameters
 ///
@@ -39,7 +40,7 @@ pub struct CreateEscrowCtx<'info> {
     #[account(
       init,
       payer = signer,
-      space = 8, // TODO: Implement InitSpace
+      space = ANCHOR_DISCRIMINATOR + Escrow::INIT_SPACE,
       seeds = [b"escrow", escrow_id.as_ref()],
       bump
     )]
