@@ -2,12 +2,13 @@
 
 use anchor_lang::prelude::*;
 
+declare_id!("coUnmi3oBUtwtd9fjeAvSsJssXh5A5xyPbhpewyzRVF");
+
+pub mod constants;
 pub mod instructions;
 pub mod states;
 
 use instructions::*;
-
-declare_id!("coUnmi3oBUtwtd9fjeAvSsJssXh5A5xyPbhpewyzRVF");
 
 #[program]
 pub mod depo {
