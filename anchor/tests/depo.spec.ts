@@ -15,12 +15,12 @@ describe('DEPO', () => {
   const initialiser = Keypair.generate()
 
   beforeAll(async () => {
-    const sig = await provider.connection.requestAirdrop(
+    const signature = await provider.connection.requestAirdrop(
       initialiser.publicKey,
       10 * LAMPORTS_PER_SOL
     )
 
-    await provider.connection.confirmTransaction(sig, 'confirmed')
+    await provider.connection.confirmTransaction(signature, 'confirmed')
   
     const balance = await provider.connection.getBalance(initialiser.publicKey)
     console.log('Balance:', balance / LAMPORTS_PER_SOL, 'SOL')
@@ -31,10 +31,7 @@ describe('DEPO', () => {
     // UUID Generation
     const uuid = uuidv4().replace(/-/g, '')
     // Convert UUID to Uint8Array (16 bytes)
-    const escrowId = new Uint8Array(16)
-    for (let i = 0; i < 16; i++) {
-      escrowId[i] = parseInt(uuid.slice(i * 2, i * 2 + 2), 16)
-    }
+    const escrowId = Uint8Array.from(Buffer.from(uuid, 'hex'))
 
     // Escrow Name (100 bytes)
     const testName = 'TEST_ESCROW name'
