@@ -71,5 +71,31 @@ describe('DEPO - Intruction: create_escrow', () => {
 
     expect(storedName).toBe(testName)
     expect(storedDescription).toBe(testDescription)
+    expect(escrowAccount.totalAmount.toNumber()).toBe(0)
+    expect(escrowAccount.isPublicDeposit).toBe(true)
+    expect(escrowAccount.depositorsCount).toBe(0)
+    expect(escrowAccount.recipientsCount).toBe(0)
+    expect(escrowAccount.status).toEqual({ draft: {} })
+    expect(escrowAccount.modules).toEqual([])
+  })
+
+  it.skip('Create Escrow with same UUID should fail', async () => {
+    // TODO: Implement this test
+    // 1. Create a new escrow
+    // 2. Try to create another escrow with the same UUID
+    // 3. Assert that the second creation fails
+  })
+
+  it.skip("MAX LEN (100 bytes) for name", async () => {
+    // TODO: Implement this test
+    // 1. Try to create a new escrow with a name of 101 bytes
+    // 2. Assert that the creation fails
+  })
+
+
+  it.skip("MAX LEN (200 bytes) for description", async () => {
+    // TODO: Implement this test
+    // 1. Try to create a new escrow with a description of 201 bytes
+    // 2. Assert that the creation fails
   })
 })
