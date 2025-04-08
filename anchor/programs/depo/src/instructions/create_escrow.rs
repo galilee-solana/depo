@@ -26,9 +26,13 @@ pub fn create_escrow(
     escrow.description = description;
 
     escrow.total_amount = 0;
+
+    escrow.is_public_deposit = true;
     escrow.depositors_count = 0;
     escrow.recipients_count = 0;
+
     escrow.status = Status::Draft;
+    escrow.modules = Vec::new();
 
     escrow.created_at = Clock::get()?.unix_timestamp;
     Ok(())
