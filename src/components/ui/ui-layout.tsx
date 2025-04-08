@@ -35,10 +35,9 @@ export function UiLayout({ children, links }: { children: ReactNode; links: { la
       <ClusterChecker>
         <AccountChecker />
       </ClusterChecker>
-      <div className="flex-grow mx-4 lg:mx-auto">
-        <div className="min-h-screen bg-white text-black">
-          <h1 className="text-xl font-bold px-8 py-6">Mes escrows</h1>
-            <DepoCard PubkeyDepoList={PubkeyDepoList} />
+      <div className="flex-grow w-full">
+        <div className="min-h-screen bg-white text-black px-4 md:px-12">
+          <DepoCard PubkeyDepoList={PubkeyDepoList} />
         </div>
         <Toaster position="bottom-right" />
       </div>
