@@ -92,13 +92,8 @@
   "errors": [
     {
       "code": 6000,
-      "name": "NameTooLong",
-      "msg": "Escrow name is too long. Max length: 100 bytes."
-    },
-    {
-      "code": 6001,
-      "name": "DescriptionTooLong",
-      "msg": "Escrow description is too long. Max length: 200 bytes."
+      "name": "InvalidVectorLength",
+      "msg": "Vector length exceeds allowed size."
     }
   ],
   "types": [

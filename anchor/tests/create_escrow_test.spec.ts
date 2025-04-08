@@ -113,22 +113,25 @@ describe('DEPO - Intruction: create_escrow', () => {
     .signers([initialiser])
     .rpc()
 
+    try {
     // Second Escrow Creation
-    await program.methods.createEscrow(
-      Array.from(escrowId),
-      name,
-      description
-    )
-    .accounts({
-      escrow: escrowKey,
-      signer: initialiser.publicKey,
-      systemProgram: anchor.web3.SystemProgram.programId,
-    })
-    .signers([initialiser])
-    .rpc()
-    .catch((error) => {
-      expect(error).toBeDefined()
-    })  
+      await program.methods.createEscrow(
+        Array.from(escrowId),
+        name,
+        description
+      )
+      .accounts({
+        escrow: escrowKey,
+        signer: initialiser.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      })
+      .signers([initialiser])
+      .rpc()
+
+      throw new Error('Expected method to throw due to same UUID, but it did not.')
+    } catch (error: any) {
+      expect(error.toString()).toContain(`account Address { address: ${escrowKey.toBase58()}, base: None } already in use`)
+    }
   })
 
   it("MAX LEN (100 bytes): name", async () => {
