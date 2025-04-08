@@ -6,7 +6,7 @@ import { before } from 'node:test'
 import { v4 as uuidv4 } from 'uuid'
 import { strict as assert } from 'assert'
 
-describe('DEPO', () => {
+describe('DEPO - Intruction: create_escrow', () => {
   const provider = anchor.AnchorProvider.env()
   anchor.setProvider(provider)
   
@@ -23,8 +23,8 @@ describe('DEPO', () => {
     await provider.connection.confirmTransaction(signature, 'confirmed')
   
     const balance = await provider.connection.getBalance(initialiser.publicKey)
-    console.log('Balance:', balance / LAMPORTS_PER_SOL, 'SOL')
-    if (balance === 0) throw new Error('Airdrop failed')
+
+    assert(balance > 0, 'Airdrop failed')
   })
 
   it('Create Escrow', async () => {
@@ -60,8 +60,6 @@ describe('DEPO', () => {
     })
     .signers([initialiser])
     .rpc()
-
-    console.log('Created escrow with UUID:', uuid)
 
     const escrowAccount = await program.account.escrow.fetch(escrowKey)
     expect(Buffer.from(escrowAccount.id).toString('hex')).toBe(uuid)
