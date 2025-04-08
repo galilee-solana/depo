@@ -99,12 +99,12 @@ export type Depo = {
     {
       "code": 6000,
       "name": "nameTooLong",
-      "msg": "Escrow name is too long."
+      "msg": "Escrow name is too long. Max length: 100 bytes."
     },
     {
       "code": 6001,
       "name": "descriptionTooLong",
-      "msg": "Escrow description is too long."
+      "msg": "Escrow description is too long. Max length: 200 bytes."
     }
   ],
   "types": [
