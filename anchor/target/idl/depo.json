@@ -65,21 +65,11 @@
         },
         {
           "name": "name",
-          "type": {
-            "array": [
-              "u8",
-              100
-            ]
-          }
+          "type": "bytes"
         },
         {
           "name": "description",
-          "type": {
-            "array": [
-              "u8",
-              200
-            ]
-          }
+          "type": "bytes"
         }
       ]
     }
@@ -97,6 +87,18 @@
         218,
         155
       ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "NameTooLong",
+      "msg": "Escrow name is too long."
+    },
+    {
+      "code": 6001,
+      "name": "DescriptionTooLong",
+      "msg": "Escrow description is too long."
     }
   ],
   "types": [

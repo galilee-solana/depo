@@ -71,21 +71,11 @@ export type Depo = {
         },
         {
           "name": "name",
-          "type": {
-            "array": [
-              "u8",
-              100
-            ]
-          }
+          "type": "bytes"
         },
         {
           "name": "description",
-          "type": {
-            "array": [
-              "u8",
-              200
-            ]
-          }
+          "type": "bytes"
         }
       ]
     }
@@ -103,6 +93,18 @@ export type Depo = {
         218,
         155
       ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "nameTooLong",
+      "msg": "Escrow name is too long."
+    },
+    {
+      "code": 6001,
+      "name": "descriptionTooLong",
+      "msg": "Escrow description is too long."
     }
   ],
   "types": [

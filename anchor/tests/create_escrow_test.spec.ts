@@ -50,8 +50,8 @@ describe('DEPO - Intruction: create_escrow', () => {
 
     await program.methods.createEscrow(
       Array.from(escrowId),
-      Array.from(name),
-      Array.from(description)
+      name,
+      description
     )
     .accounts({
       escrow: escrowKey,
@@ -79,23 +79,135 @@ describe('DEPO - Intruction: create_escrow', () => {
     expect(escrowAccount.modules).toEqual([])
   })
 
-  it.skip('Create Escrow with same UUID should fail', async () => {
-    // TODO: Implement this test
-    // 1. Create a new escrow
-    // 2. Try to create another escrow with the same UUID
-    // 3. Assert that the second creation fails
+  it('Same UUID should fail', async () => {
+    // This test is to check if the same UUID can be used to create two different escrows
+    // Should FAIL
+
+    const uuid = uuidv4().replace(/-/g, '')
+    const escrowId = Uint8Array.from(Buffer.from(uuid, 'hex'))
+
+    const [escrowKey, _bump] = anchor.web3.PublicKey.findProgramAddressSync(
+      [Buffer.from('escrow'), escrowId],
+      program.programId
+    )
+
+    // Escrow Name (100 bytes)
+    const testName = 'TEST_ESCROW name'
+    const name = Buffer.from(testName, 'utf8')
+
+    // Escrow Description (200 bytes)
+    const testDescription = 'TEST_ESCROW description'
+    const description = Buffer.from(testDescription, 'utf8')
+
+    // First Escrow Creation
+    await program.methods.createEscrow(
+      Array.from(escrowId),
+      name,
+      description
+    )
+    .accounts({
+      escrow: escrowKey,
+      signer: initialiser.publicKey,
+      systemProgram: anchor.web3.SystemProgram.programId,
+    })
+    .signers([initialiser])
+    .rpc()
+
+    // Second Escrow Creation
+    await program.methods.createEscrow(
+      Array.from(escrowId),
+      name,
+      description
+    )
+    .accounts({
+      escrow: escrowKey,
+      signer: initialiser.publicKey,
+      systemProgram: anchor.web3.SystemProgram.programId,
+    })
+    .signers([initialiser])
+    .rpc()
+    .catch((error) => {
+      expect(error).toBeDefined()
+    })  
   })
 
-  it.skip("MAX LEN (100 bytes) for name", async () => {
-    // TODO: Implement this test
-    // 1. Try to create a new escrow with a name of 101 bytes
-    // 2. Assert that the creation fails
+  it("MAX LEN (100 bytes): name", async () => {
+    // This test is to check if the name can be more than 100 bytes
+    // Should FAIL
+
+    const uuid = uuidv4().replace(/-/g, '')
+    const escrowId = Uint8Array.from(Buffer.from(uuid, 'hex'))
+
+    const [escrowKey, _bump] = anchor.web3.PublicKey.findProgramAddressSync(
+      [Buffer.from('escrow'), escrowId],
+      program.programId
+    )
+
+    // Escrow Name (101 bytes)
+    const testName = "a".repeat(101)
+    const name = Buffer.from(testName, 'utf8')
+
+    // Escrow Description (200 bytes)
+    const testDescription = 'TEST_ESCROW description'
+    const description = Buffer.from(testDescription, 'utf8')
+    
+    try {
+      await program.methods.createEscrow(
+        Array.from(escrowId),
+        name,
+        description
+      )
+      .accounts({ 
+        escrow: escrowKey,
+        signer: initialiser.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      })
+      .signers([initialiser])
+      .rpc()
+  
+      throw new Error('Expected method to throw due to name > 100 bytes, but it did not.')
+    } catch (error) {
+      const anchorError = error as anchor.AnchorError
+      expect(anchorError.error.errorCode.code).toBe('NameTooLong')
+    }
   })
 
 
-  it.skip("MAX LEN (200 bytes) for description", async () => {
-    // TODO: Implement this test
-    // 1. Try to create a new escrow with a description of 201 bytes
-    // 2. Assert that the creation fails
+  it("MAX LEN (200 bytes) for description", async () => {
+    const uuid = uuidv4().replace(/-/g, '')
+    const escrowId = Uint8Array.from(Buffer.from(uuid, 'hex'))
+
+    const [escrowKey, _bump] = anchor.web3.PublicKey.findProgramAddressSync(
+      [Buffer.from('escrow'), escrowId],
+      program.programId
+    )
+
+    // Escrow Name (101 bytes)
+    const testName = "TEST_ESCROW name"
+    const name = Buffer.from(testName, 'utf8')
+
+    // Escrow Description (200 bytes)
+    const testDescription = "a".repeat(201)
+    const description = Buffer.from(testDescription, 'utf8')
+    
+    try {
+      await program.methods.createEscrow(
+        Array.from(escrowId),
+        name,
+        description
+      )
+      .accounts({ 
+        escrow: escrowKey,
+        signer: initialiser.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      })
+      .signers([initialiser])
+      .rpc()
+  
+      throw new Error('Expected method to throw due to name > 100 bytes, but it did not.')
+    } catch (error) {
+      const anchorError = error as anchor.AnchorError
+      expect(anchorError.error.errorCode.code).toBe('DescriptionTooLong')
+    }
   })
 })

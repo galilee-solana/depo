@@ -2,6 +2,8 @@ use anchor_lang::prelude::*;
 use anchor_lang::solana_program::clock::Clock;
 use crate::states::{Escrow, Status};
 use crate::constants::ANCHOR_DISCRIMINATOR;
+use crate::errors::EscrowErrors;
+use crate::utils::vec_to_fixed_size;
 
 /// Creates a new escrow account with the given parameters
 ///
@@ -16,14 +18,19 @@ use crate::constants::ANCHOR_DISCRIMINATOR;
 pub fn create_escrow(
     ctx: Context<CreateEscrowCtx>,
     escrow_id: [u8; 16],
-    name: [u8; 100],
-    description: [u8; 200]
+    name: Vec<u8>,
+    description: Vec<u8>
 ) -> Result<()> {
+    require!(name.len() <= 100, EscrowErrors::NameTooLong);
+    require!(description.len() <= 200, EscrowErrors::DescriptionTooLong);
+
+
     let escrow = &mut ctx.accounts.escrow;
     escrow.id = escrow_id;
     escrow.initialiser = ctx.accounts.signer.key();
-    escrow.name = name;
-    escrow.description = description;
+
+    escrow.name = vec_to_fixed_size::<100>(name)?;
+    escrow.description = vec_to_fixed_size::<200>(description)?;
 
     escrow.total_amount = 0;
 
