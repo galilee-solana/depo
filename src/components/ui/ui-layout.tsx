@@ -8,7 +8,6 @@ import toast, { Toaster } from 'react-hot-toast'
 import { AccountChecker } from '../account/account-ui'
 import { ClusterChecker, ClusterUiSelect, ExplorerLink } from '../cluster/cluster-ui'
 import { WalletButton } from '../solana/solana-provider'
-import EscrowCard from '../escrowcard/EscrowCard'
 
 export function UiLayout({ children }: { children: ReactNode }) {
 
