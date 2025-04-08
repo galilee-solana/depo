@@ -25,7 +25,7 @@ export function UiLayout({ children, links }: { children: ReactNode; links: { la
     <div className="h-full flex flex-col">
       <div className="navbar bg-white text-black flex-col md:flex-row items-center justify-between px-4 py-2">
         <div className="h-full">
-          <Image src="/D-logo-white.svg" alt="Logo" width={0} height={0} className="h-10 w-auto object-contain" />
+          <Image src="/D-logo-white.svg" alt="Logo" width={0} height={0} className="h-10 w-auto object-contain" priority />
         </div>
         <div className="flex-none space-x-2">
           <WalletButton />
