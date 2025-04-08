@@ -15,7 +15,7 @@ export default function DepoCard({ PubkeyDepoList }: { PubkeyDepoList: PubkeyDep
   const sortedList = [...PubkeyDepoList].sort((a, b) => a.id - b.id)
 
   return (
-    <div className="w-full px-[30px]">
+    <div className="w-full max-w-3xl mx-auto px-4">
       <div className="space-y-4">
         {sortedList.map((item) => (
           <div
@@ -25,7 +25,7 @@ export default function DepoCard({ PubkeyDepoList }: { PubkeyDepoList: PubkeyDep
           >
             <div className="flex items-center space-x-4">
               <Image
-                src="/D-logo-white.svg"
+                src="/D-logo-black.svg"
                 alt="Logo DEPO"
                 width={0}
                 height={0}
@@ -34,23 +34,6 @@ export default function DepoCard({ PubkeyDepoList }: { PubkeyDepoList: PubkeyDep
               <span className="truncate max-w-[200px]">
                 {item.name.length > 19 ? item.name.slice(0, 19) + '…' : item.name}
               </span>
-            </div>
-
-            <div
-              onClick={(e) => {
-                e.stopPropagation() // Avoid click on main map
-                router.push(`/remove-depo/${item.id}`) // Redirect to remove page still to be done
-              }}
-              className="p-2 hover:bg-gray-800 rounded-lg"
-              title="Delete"
-            >
-              <Image
-                src="/bin.svg" // Update link with bin logo in white on black background
-                alt="Remove"
-                width={20}
-                height={20}
-                className="object-contain"
-              />
             </div>
           </div>
         ))}
