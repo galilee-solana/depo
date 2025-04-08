@@ -13,6 +13,13 @@ import { WalletButton } from '../solana/solana-provider'
 export function UiLayout({ children, links }: { children: ReactNode; links: { label: string; path: string }[] }) {
   const pathname = usePathname()
 
+  // Add test const to check DepoCard display
+  const PubkeyDepoList = [
+    { id: 2, name: 'Escrow Alpha' },
+    { id: 1, name: 'Paiement sécurisé très long' },
+    { id: 3, name: 'Mini escrow' },
+  ]
+
   return (
     <div className="h-full flex flex-col">
       <div className="navbar bg-white text-black flex-col md:flex-row items-center justify-between px-4 py-2">
@@ -28,15 +35,10 @@ export function UiLayout({ children, links }: { children: ReactNode; links: { la
         <AccountChecker />
       </ClusterChecker>
       <div className="flex-grow mx-4 lg:mx-auto">
-        <Suspense
-          fallback={
-            <div className="text-center my-32">
-              <span className="loading loading-spinner loading-lg"></span>
-            </div>
-          }
-        >
-          {children}
-        </Suspense>
+        <div className="min-h-screen bg-white text-black">
+          <h1 className="text-xl font-bold px-8 py-6">Mes escrows</h1>
+            <DepoCard PubkeyDepoList={PubkeyDepoList} />
+        </div>
         <Toaster position="bottom-right" />
       </div>
       <footer className="footer footer-center p-4 bg-base-300 text-base-content">
