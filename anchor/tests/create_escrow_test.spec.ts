@@ -2,7 +2,6 @@ import * as anchor from '@coral-xyz/anchor'
 import { Program } from '@coral-xyz/anchor'
 import { Keypair, LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { Depo } from '../target/types/depo'
-import { before } from 'node:test'
 import { v4 as uuidv4 } from 'uuid'
 import { strict as assert } from 'assert'
 
@@ -12,11 +11,11 @@ describe('DEPO - Intruction: create_escrow', () => {
   
   const program = anchor.workspace.Depo as Program<Depo>
 
-  const initialiser = Keypair.generate()
+  const initializer = Keypair.generate()
 
   beforeAll(async () => {
     const signature = await provider.connection.requestAirdrop(
-      initialiser.publicKey,
+      initializer.publicKey,
       10 * LAMPORTS_PER_SOL
     )
 
@@ -55,15 +54,15 @@ describe('DEPO - Intruction: create_escrow', () => {
     )
     .accounts({
       escrow: escrowKey,
-      signer: initialiser.publicKey,
+      signer: initializer.publicKey,
       systemProgram: anchor.web3.SystemProgram.programId,
     })
-    .signers([initialiser])
+    .signers([initializer])
     .rpc()
 
     const escrowAccount = await program.account.escrow.fetch(escrowKey)
     expect(Buffer.from(escrowAccount.id).toString('hex')).toBe(uuid)
-    expect(escrowAccount.initialiser.toBase58()).toBe(initialiser.publicKey.toBase58())
+    expect(escrowAccount.initializer.toBase58()).toBe(initializer.publicKey.toBase58())
 
     // Convert the bytes to strings and remove trailing null characters
     const storedName = Buffer.from(escrowAccount.name).toString().replace(/\0/g, '')
@@ -107,10 +106,10 @@ describe('DEPO - Intruction: create_escrow', () => {
     )
     .accounts({
       escrow: escrowKey,
-      signer: initialiser.publicKey,
+      signer: initializer.publicKey,
       systemProgram: anchor.web3.SystemProgram.programId,
     })
-    .signers([initialiser])
+    .signers([initializer])
     .rpc()
 
     try {
@@ -122,10 +121,10 @@ describe('DEPO - Intruction: create_escrow', () => {
       )
       .accounts({
         escrow: escrowKey,
-        signer: initialiser.publicKey,
+        signer: initializer.publicKey,
         systemProgram: anchor.web3.SystemProgram.programId,
       })
-      .signers([initialiser])
+      .signers([initializer])
       .rpc()
 
       throw new Error('Expected method to throw due to same UUID, but it did not.')
@@ -162,10 +161,10 @@ describe('DEPO - Intruction: create_escrow', () => {
       )
       .accounts({ 
         escrow: escrowKey,
-        signer: initialiser.publicKey,
+        signer: initializer.publicKey,
         systemProgram: anchor.web3.SystemProgram.programId,
       })
-      .signers([initialiser])
+      .signers([initializer])
       .rpc()
   
       throw new Error('Expected method to throw due to name > 100 bytes, but it did not.')
@@ -201,10 +200,10 @@ describe('DEPO - Intruction: create_escrow', () => {
       )
       .accounts({ 
         escrow: escrowKey,
-        signer: initialiser.publicKey,
+        signer: initializer.publicKey,
         systemProgram: anchor.web3.SystemProgram.programId,
       })
-      .signers([initialiser])
+      .signers([initializer])
       .rpc()
   
       throw new Error('Expected method to throw due to name > 100 bytes, but it did not.')
