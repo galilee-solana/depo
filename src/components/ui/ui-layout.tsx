@@ -11,17 +11,6 @@ import { WalletButton } from '../solana/solana-provider'
 
 export function UiLayout({ children }: { children: ReactNode }) {
 
-  // Add test const to check DepoCard display
-  //const EscrowList = [
-  //  { id: 2, name: 'Escrow Alpha' },
-  //  { id: 1, name: 'Paiement sécurisé très long' },
-  //  { id: 3, name: 'Mini escrow' },
-  //  { id: 5, name: 'Caution pour paiement 5' },
-  //  { id: 6, name: 'Ne devrait pas apparaître' },
-  //  { id: 4, name: '4 : Celui-ci est vraiment vraiment vraiment très très long' },
-  //  { id: 7, name: 'Achat groupé pour 7' },
-  //]
-
   return (
     <div className="h-screen flex flex-col overflow-hidden">
       {/* Navbar */}
@@ -40,7 +29,7 @@ export function UiLayout({ children }: { children: ReactNode }) {
       <ClusterChecker>
         <AccountChecker />
       </ClusterChecker>
-      {/* Main Menu */}
+      {/* Main Menu*/}
       <div className="flex-grow w-full bg-white text-black overflow-y-auto">
         <div className="h-full px-4 md:px-12">
           {children}

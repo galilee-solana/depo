@@ -38,6 +38,20 @@ export default function DepoCard({ PubkeyDepoList }: { PubkeyDepoList: PubkeyDep
           </div>
         ))}
       </div>
+      <div className="flex flex-col items-center space-y-4 mt-8 mb-4">
+      <button
+        onClick={() => router.push('/CreateDepo')}
+        className="px-6 py-3 border-2 border-black text-black bg-white rounded-lg hover:bg-gray-100 transition"
+      >
+        Create Depo
+      </button>
+      <button
+        onClick={() => router.push('/FindDepo')}
+        className="px-6 py-3 border-2 border-black text-black bg-white rounded-lg hover:bg-gray-100 transition"
+      >
+        Find Depo
+      </button>
+    </div>
     </div>
   )
 }
