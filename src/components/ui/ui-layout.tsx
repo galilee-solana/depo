@@ -22,15 +22,17 @@ export function UiLayout({ children, links }: { children: ReactNode; links: { la
     { id: 5, name: 'Caution pour paiement 5' },
     { id: 6, name: 'Ne devrait pas apparaître' },
     { id: 4, name: '4 : Celui-ci est vraiment vraiment vraiment très très long' },
-    //{ id: 7, name: 'Achat groupé pour 7' },
+    { id: 7, name: 'Achat groupé pour 7' },
   ]
 
   return (
-    <div className="min-h-screen flex flex-col overflow-hidden">
-      <div className="navbar bg-white text-black flex-col md:flex-row items-center justify-between px-4 py-4 min-h-[64px] flex-shrink-0">
+    <div className="h-screen flex flex-col overflow-hidden">
+      {/* Navbar */}
+      <div className="navbar border bg-white text-black flex-col md:flex-row items-center justify-between px-4 py-4 min-h-[64px] flex-shrink-0">
         <div className="h-full">
           <Image src="/D-logo-white.svg" alt="Logo" width={0} height={0} className="h-10 w-auto object-contain" priority />
         </div>
+        {/* Wallet & Cluster buttons */}
         <div className="flex-none space-x-2">
           <WalletButton />
           <ClusterUiSelect />
@@ -39,6 +41,7 @@ export function UiLayout({ children, links }: { children: ReactNode; links: { la
       <ClusterChecker>
         <AccountChecker />
       </ClusterChecker>
+      {/* DepoCard Menu */}
       <div className="flex-grow w-full bg-white text-black overflow-y-auto">
         <div className="h-full px-4 md:px-12">
           <DepoCard PubkeyDepoList={PubkeyDepoList} />
