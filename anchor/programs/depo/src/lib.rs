@@ -4,11 +4,11 @@ use anchor_lang::prelude::*;
 
 declare_id!("coUnmi3oBUtwtd9fjeAvSsJssXh5A5xyPbhpewyzRVF");
 
-pub mod constants;
-pub mod instructions;
-pub mod states;
-pub mod errors;
-pub mod utils;
+mod constants;
+mod instructions;
+mod states;
+mod errors;
+mod utils;
 
 use instructions::*;
 
@@ -39,5 +39,12 @@ pub mod depo {
         wallet_pubkey: Pubkey
     ) -> Result<()> {
         instructions::remove_recipient(ctx, escrow_id, wallet_pubkey)
+    }
+
+    pub fn add_minimum_amount(
+        ctx: Context<AddMinimumAmount>,
+        amount: u64
+    ) -> Result<()> {
+        instructions::add_minimum_amount(ctx, amount)
     }
 }

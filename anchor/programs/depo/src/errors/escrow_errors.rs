@@ -12,4 +12,6 @@ pub enum EscrowErrors {
     EscrowNotDraft,
     #[msg("No recipients in escrow")]
     NoRecipients,
-} 
+    #[msg("This module type already exists.")]
+    ModuleAlreadyExists,
+}

@@ -14,6 +14,74 @@ export type Depo = {
   },
   "instructions": [
     {
+      "name": "addMinimumAmount",
+      "discriminator": [
+        102,
+        225,
+        199,
+        232,
+        81,
+        3,
+        105,
+        30
+      ],
+      "accounts": [
+        {
+          "name": "escrow",
+          "writable": true
+        },
+        {
+          "name": "minimumAmount",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  105,
+                  110,
+                  105,
+                  109,
+                  117,
+                  109,
+                  95,
+                  97,
+                  109,
+                  111,
+                  117,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              }
+            ]
+          }
+        },
+        {
+          "name": "initializer",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "escrow"
+          ]
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
       "name": "addRecipient",
       "discriminator": [
         207,
@@ -285,6 +353,19 @@ export type Depo = {
       ]
     },
     {
+      "name": "minimumAmount",
+      "discriminator": [
+        246,
+        81,
+        90,
+        144,
+        94,
+        202,
+        225,
+        58
+      ]
+    },
+    {
       "name": "recipient",
       "discriminator": [
         80,
@@ -379,6 +460,18 @@ export type Depo = {
           {
             "name": "createdAt",
             "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "minimumAmount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "minAmount",
+            "type": "u64"
           }
         ]
       }
