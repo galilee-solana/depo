@@ -31,4 +31,11 @@ pub mod depo {
     ) -> Result<()> {
         instructions::add_recipient(ctx, escrow_id)
     }
+
+    pub fn remove_recipient(
+        ctx: Context<RemoveRecipientCtx>,
+        escrow_id: [u8; 16]
+    ) -> Result<()> {
+        instructions::remove_recipient(ctx, escrow_id)
+    }
 }

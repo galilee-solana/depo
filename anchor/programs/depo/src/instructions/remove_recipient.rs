@@ -1,0 +1,44 @@
+use anchor_lang::prelude::*;
+use crate::states::{Escrow, Recipient};
+
+/// Removes a recipient from the escrow
+///
+/// # Arguments
+/// * `ctx` - The context containing the account and signer
+/// * `_escrow_id` - The unique identifier (UUID) for the escrow
+///
+/// # Returns
+/// * `Result<()>` - Result indicating success or failure
+pub fn remove_recipient(
+    ctx: Context<RemoveRecipientCtx>,
+    _escrow_id: [u8; 16]
+) -> Result<()> {
+    let escrow = &mut ctx.accounts.escrow;
+    escrow.recipients_count -= 1;
+
+    Ok(())
+}
+
+#[derive(Accounts)]
+#[instruction(escrow_id: [u8; 16])]
+pub struct RemoveRecipientCtx<'info> {
+    #[account(
+      mut,
+      seeds = [b"escrow", escrow_id.as_ref()],
+      bump
+    )]
+    pub escrow: Account<'info, Escrow>,
+
+    #[account(
+        mut,
+        seeds = [b"recipient", escrow.key().as_ref(), signer.key().as_ref()],
+        bump,
+        constraint = escrow.initialiser == signer.key(), // Only the initialiser can remove a recipient
+        close = signer // TODO: Change to a fee collector
+    )]
+    pub recipient: Account<'info, Recipient>,
+
+    #[account(mut)]
+    pub signer: Signer<'info>,
+    pub system_program: Program<'info, System>,
+}

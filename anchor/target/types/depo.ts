@@ -166,6 +166,94 @@ export type Depo = {
           "type": "bytes"
         }
       ]
+    },
+    {
+      "name": "removeRecipient",
+      "discriminator": [
+        155,
+        185,
+        10,
+        53,
+        111,
+        57,
+        100,
+        149
+      ],
+      "accounts": [
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "escrowId"
+              }
+            ]
+          }
+        },
+        {
+          "name": "recipient",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  99,
+                  105,
+                  112,
+                  105,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              },
+              {
+                "kind": "account",
+                "path": "signer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "escrowId",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        }
+      ]
     }
   ],
   "accounts": [
@@ -199,8 +287,13 @@ export type Depo = {
   "errors": [
     {
       "code": 6000,
-      "name": "invalidVectorLength",
-      "msg": "Vector length exceeds allowed size."
+      "name": "nameTooLong",
+      "msg": "Escrow name is too long. Max length: 100 bytes."
+    },
+    {
+      "code": 6001,
+      "name": "descriptionTooLong",
+      "msg": "Escrow description is too long. Max length: 200 bytes."
     }
   ],
   "types": [
