@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-use crate::states::{Escrow, Recipient};
+use crate::states::{Escrow, Recipient, Status};
 use crate::errors::EscrowErrors;
 
 /// Removes a recipient from the escrow
@@ -11,7 +11,7 @@ use crate::errors::EscrowErrors;
 /// # Returns
 /// * `Result<()>` - Result indicating success or failure
 pub fn remove_recipient(
-    ctx: Context<RemoveRecipientCtx>,
+    ctx: Context<RemoveRecipient>,
     _escrow_id: [u8; 16]
 ) -> Result<()> {
     let escrow = &mut ctx.accounts.escrow;
@@ -22,7 +22,7 @@ pub fn remove_recipient(
 
 #[derive(Accounts)]
 #[instruction(escrow_id: [u8; 16])]
-pub struct RemoveRecipientCtx<'info> {
+pub struct RemoveRecipient<'info> {
     #[account(
       mut,
       seeds = [b"escrow", escrow_id.as_ref()],
@@ -35,6 +35,7 @@ pub struct RemoveRecipientCtx<'info> {
         seeds = [b"recipient", escrow.key().as_ref(), signer.key().as_ref()],
         bump,
         constraint = escrow.initialiser == signer.key() @ EscrowErrors::UnauthorizedRecipientModifier, // Only the initialiser can remove a recipient
+        constraint = escrow.status == Status::Draft @ EscrowErrors::EscrowNotDraft,
         close = signer // TODO: Change to a fee collector (initialiser for now)
     )]
     pub recipient: Account<'info, Recipient>,

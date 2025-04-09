@@ -1,6 +1,7 @@
 use anchor_lang::prelude::*;
-use crate::states::{Escrow, Recipient};
+use crate::states::{Escrow, Recipient, Status};
 use crate::errors::EscrowErrors;
+
 /// Adds a recipient to the escrow
 ///
 /// # Arguments
@@ -10,7 +11,7 @@ use crate::errors::EscrowErrors;
 /// # Returns
 /// * `Result<()>` - Result indicating success or failure
 pub fn add_recipient(
-    ctx: Context<AddRecipientCtx>,
+    ctx: Context<AddRecipient>,
     _escrow_id: [u8; 16]
 ) -> Result<()> {
     let recipient = &mut ctx.accounts.recipient;
@@ -27,7 +28,7 @@ pub fn add_recipient(
 
 #[derive(Accounts)]
 #[instruction(escrow_id: [u8; 16])]
-pub struct AddRecipientCtx<'info> {
+pub struct AddRecipient<'info> {
     #[account(
       mut,
       seeds = [b"escrow", escrow_id.as_ref()],
@@ -42,6 +43,7 @@ pub struct AddRecipientCtx<'info> {
         seeds = [b"recipient", escrow.key().as_ref(), signer.key().as_ref()],
         bump,
         constraint = escrow.initialiser == signer.key() @ EscrowErrors::UnauthorizedRecipientModifier, // Only the initialiser can add a recipient
+        constraint = escrow.status == Status::Draft @ EscrowErrors::EscrowNotDraft
     )]
     pub recipient: Account<'info, Recipient>,
 

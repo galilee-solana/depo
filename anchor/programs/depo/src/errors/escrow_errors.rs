@@ -8,4 +8,6 @@ pub enum EscrowErrors {
     DescriptionTooLong,
     #[msg("Unauthorized to add or remove recipient")]
     UnauthorizedRecipientModifier,
+    #[msg("Escrow must be in Draft status to modify it")]
+    EscrowNotDraft,
 } 

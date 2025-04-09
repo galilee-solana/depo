@@ -17,7 +17,7 @@ pub mod depo {
     use super::*;
 
     pub fn create_escrow(
-        ctx: Context<CreateEscrowCtx>,
+        ctx: Context<CreateEscrow>,
         escrow_id: [u8; 16],
         name: Vec<u8>,
         description: Vec<u8>
@@ -26,14 +26,14 @@ pub mod depo {
     }
 
     pub fn add_recipient(
-        ctx: Context<AddRecipientCtx>,
+        ctx: Context<AddRecipient>,
         escrow_id: [u8; 16]
     ) -> Result<()> {
         instructions::add_recipient(ctx, escrow_id)
     }
 
     pub fn remove_recipient(
-        ctx: Context<RemoveRecipientCtx>,
+        ctx: Context<RemoveRecipient>,
         escrow_id: [u8; 16]
     ) -> Result<()> {
         instructions::remove_recipient(ctx, escrow_id)
