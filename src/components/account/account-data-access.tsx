@@ -1,6 +1,8 @@
 'use client'
 
 import { TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token'
+// import { TOKEN_2022_PROGRAM_ID } from '@solana/spl-token-2022'
+// Import of spl-tolen-2022 not working_issue still to be resolved
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import {
   Connection,
