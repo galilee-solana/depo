@@ -21,7 +21,7 @@ describe('DEPO - Intruction: create_escrow', () => {
 
     await provider.connection.confirmTransaction(signature, 'confirmed')
   
-    const balance = await provider.connection.getBalance(initialiser.publicKey)
+    const balance = await provider.connection.getBalance(initializer.publicKey)
 
     assert(balance > 0, 'Airdrop failed')
   })
