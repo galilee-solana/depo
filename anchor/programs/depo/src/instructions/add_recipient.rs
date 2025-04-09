@@ -1,18 +1,27 @@
 use anchor_lang::prelude::*;
-use crate::states::{Escrow};
+use crate::states::{Escrow, Recipient};
 
 /// Adds a recipient to the escrow
 ///
 /// # Arguments
 /// * `ctx` - The context containing the account and signer
-/// * `escrow_id` - The unique identifier for the escrow
+/// * `_escrow_id` - The unique identifier (UUID) for the escrow
 ///
 /// # Returns
 /// * `Result<()>` - Result indicating success or failure
 pub fn add_recipient(
     ctx: Context<AddRecipientCtx>,
-    escrow_id: [u8; 16]
+    _escrow_id: [u8; 16]
 ) -> Result<()> {
+    let recipient = &mut ctx.accounts.recipient;
+    recipient.escrow = ctx.accounts.escrow.key();
+    recipient.wallet = ctx.accounts.signer.key();
+    recipient.amount = 0;
+    recipient.has_withdrawn = false;
+
+    let escrow = &mut ctx.accounts.escrow;
+    escrow.recipients_count += 1;    
+
     Ok(())
 }
 
@@ -25,6 +34,15 @@ pub struct AddRecipientCtx<'info> {
       bump
     )]
     pub escrow: Account<'info, Escrow>,
+
+    #[account(
+        init,
+        payer = signer,
+        space = Recipient::INIT_SPACE,
+        seeds = [b"recipient", escrow.key().as_ref(), signer.key().as_ref()],
+        bump
+    )]
+    pub recipient: Account<'info, Recipient>,
 
     #[account(mut)]
     pub signer: Signer<'info>,

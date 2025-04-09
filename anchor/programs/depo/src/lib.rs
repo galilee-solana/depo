@@ -24,4 +24,11 @@ pub mod depo {
     ) -> Result<()> {
         instructions::create_escrow(ctx, escrow_id, name, description)
     }
+
+    pub fn add_recipient(
+        ctx: Context<AddRecipientCtx>,
+        escrow_id: [u8; 16]
+    ) -> Result<()> {
+        instructions::add_recipient(ctx, escrow_id)
+    }
 }
