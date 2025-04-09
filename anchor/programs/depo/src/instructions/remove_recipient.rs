@@ -35,7 +35,7 @@ pub struct RemoveRecipientCtx<'info> {
         seeds = [b"recipient", escrow.key().as_ref(), signer.key().as_ref()],
         bump,
         constraint = escrow.initialiser == signer.key() @ EscrowErrors::UnauthorizedRecipientModifier, // Only the initialiser can remove a recipient
-        close = signer // TODO: Change to a fee collector
+        close = signer // TODO: Change to a fee collector (initialiser for now)
     )]
     pub recipient: Account<'info, Recipient>,
 
