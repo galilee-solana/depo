@@ -99,7 +99,7 @@ export default function DepoCard({ PubkeyDepoList }: { PubkeyDepoList: PubkeyDep
           onClick={() => router.push('/FindDepo')}
           className="px-6 py-3 border-2 border-black text-black bg-white rounded-lg hover:bg-gray-100 transition"
         >
-          Find Depo
+          Search Depo
         </button>
       </div>
     </div>

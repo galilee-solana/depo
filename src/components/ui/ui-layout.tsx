@@ -28,7 +28,7 @@ export function UiLayout({ children, links }: { children: ReactNode; links: { la
   return (
     <div className="h-screen flex flex-col overflow-hidden">
       {/* Navbar */}
-      <div className="navbar border bg-white text-black flex-col md:flex-row items-center justify-between px-4 py-4 min-h-[64px] flex-shrink-0">
+      <div className="navbar bg-white text-black flex-col md:flex-row items-center justify-between px-4 py-4 min-h-[64px] flex-shrink-0">
         <div className="h-full">
           <Image src="/D-logo-white.svg" alt="Logo" width={0} height={0} className="h-10 w-auto object-contain" priority />
         </div>
@@ -102,27 +102,27 @@ export function AppModal({
   )
 }
 
-export function AppHero({
-  children,
-  title,
-  subtitle,
-}: {
-  children?: ReactNode
-  title: ReactNode
-  subtitle: ReactNode
-}) {
-  return (
-    <div className="w-screen h-screen flex flex-col hero py-[64px]">
-      <div className="hero-content text-center">
-        <div className="max-w-2xl">
-          {typeof title === 'string' ? <h1 className="text-5xl font-bold">{title}</h1> : title}
-          {typeof subtitle === 'string' ? <p className="py-6">{subtitle}</p> : subtitle}
-          {children}
-        </div>
-      </div>
-    </div>
-  )
-}
+//export function AppHero({
+  //children,
+  //title,
+  //subtitle,
+//}: {
+  //children?: ReactNode
+  //title: ReactNode
+  //subtitle: ReactNode
+//}) {
+  //return (
+    //<div className="w-screen h-screen flex flex-col hero py-[64px]">
+      //<div className="hero-content text-center">
+        //<div className="max-w-2xl">
+          //{typeof title === 'string' ? <h1 className="text-5xl font-bold">{title}</h1> : title}
+          //{typeof subtitle === 'string' ? <p className="py-6">{subtitle}</p> : subtitle}
+          //{children}
+        //</div>
+      //</div>
+    //</div>
+  //)
+//}
 
 export function ellipsify(str = '', len = 4) {
   if (str.length > 30) {
