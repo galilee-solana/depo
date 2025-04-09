@@ -12,35 +12,40 @@ use crate::errors::EscrowErrors;
 /// * `Result<()>` - Result indicating success or failure
 pub fn remove_recipient(
     ctx: Context<RemoveRecipient>,
-    _escrow_id: [u8; 16]
+    _escrow_id: [u8; 16],
+    _wallet: Pubkey
 ) -> Result<()> {
     let escrow = &mut ctx.accounts.escrow;
+    
+    require!(escrow.recipients_count > 0, EscrowErrors::NoRecipients);
+
     escrow.recipients_count -= 1;
 
     Ok(())
 }
 
 #[derive(Accounts)]
-#[instruction(escrow_id: [u8; 16])]
+#[instruction(escrow_id: [u8; 16], wallet: Pubkey)]
 pub struct RemoveRecipient<'info> {
     #[account(
       mut,
       seeds = [b"escrow", escrow_id.as_ref()],
-      bump
+      bump,
+      has_one = initializer
     )]
     pub escrow: Account<'info, Escrow>,
 
     #[account(
         mut,
-        seeds = [b"recipient", escrow.key().as_ref(), signer.key().as_ref()],
+        seeds = [b"recipient", escrow.key().as_ref(), wallet.as_ref()],
         bump,
-        constraint = escrow.initialiser == signer.key() @ EscrowErrors::UnauthorizedRecipientModifier, // Only the initialiser can remove a recipient
+        constraint = escrow.initializer == initializer.key() @ EscrowErrors::UnauthorizedRecipientModifier, // Only the initialiser can remove a recipient
         constraint = escrow.status == Status::Draft @ EscrowErrors::EscrowNotDraft,
-        close = signer // TODO: Change to a fee collector (initialiser for now)
+        close = initializer // TODO: Change to a fee collector (initialiser for now)
     )]
     pub recipient: Account<'info, Recipient>,
 
     #[account(mut)]
-    pub signer: Signer<'info>,
+    pub initializer: Signer<'info>,
     pub system_program: Program<'info, System>,
 }

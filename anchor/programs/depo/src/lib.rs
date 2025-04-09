@@ -27,15 +27,17 @@ pub mod depo {
 
     pub fn add_recipient(
         ctx: Context<AddRecipient>,
-        escrow_id: [u8; 16]
+        escrow_id: [u8; 16],
+        wallet_pubkey: Pubkey
     ) -> Result<()> {
-        instructions::add_recipient(ctx, escrow_id)
+        instructions::add_recipient(ctx, escrow_id, wallet_pubkey)
     }
 
     pub fn remove_recipient(
         ctx: Context<RemoveRecipient>,
-        escrow_id: [u8; 16]
+        escrow_id: [u8; 16],
+        wallet_pubkey: Pubkey
     ) -> Result<()> {
-        instructions::remove_recipient(ctx, escrow_id)
+        instructions::remove_recipient(ctx, escrow_id, wallet_pubkey)
     }
 }

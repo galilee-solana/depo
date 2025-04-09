@@ -7,7 +7,7 @@ use crate::constants::MAX_MODULES;
 #[derive(InitSpace)]
 pub struct Escrow {
   pub id: [u8; 16], // UUID in bytes
-  pub initialiser: Pubkey,
+  pub initializer: Pubkey,
   pub name: [u8; 100],
   pub description: [u8; 200],
   pub total_amount: u64,

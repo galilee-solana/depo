@@ -10,4 +10,6 @@ pub enum EscrowErrors {
     UnauthorizedRecipientModifier,
     #[msg("Escrow must be in Draft status to modify it")]
     EscrowNotDraft,
+    #[msg("No recipients in escrow")]
+    NoRecipients,
 } 

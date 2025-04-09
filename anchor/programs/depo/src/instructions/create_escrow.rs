@@ -27,7 +27,7 @@ pub fn create_escrow(
 
     let escrow = &mut ctx.accounts.escrow;
     escrow.id = escrow_id;
-    escrow.initialiser = ctx.accounts.signer.key();
+    escrow.initializer = ctx.accounts.signer.key();
 
     escrow.name = vec_to_fixed_size::<100>(name)?;
     escrow.description = vec_to_fixed_size::<200>(description)?;

@@ -73,16 +73,19 @@ export type Depo = {
                 "path": "escrow"
               },
               {
-                "kind": "account",
-                "path": "signer"
+                "kind": "arg",
+                "path": "wallet"
               }
             ]
           }
         },
         {
-          "name": "signer",
+          "name": "initializer",
           "writable": true,
-          "signer": true
+          "signer": true,
+          "relations": [
+            "escrow"
+          ]
         },
         {
           "name": "systemProgram",
@@ -98,6 +101,10 @@ export type Depo = {
               16
             ]
           }
+        },
+        {
+          "name": "walletPubkey",
+          "type": "pubkey"
         }
       ]
     },
@@ -227,16 +234,19 @@ export type Depo = {
                 "path": "escrow"
               },
               {
-                "kind": "account",
-                "path": "signer"
+                "kind": "arg",
+                "path": "wallet"
               }
             ]
           }
         },
         {
-          "name": "signer",
+          "name": "initializer",
           "writable": true,
-          "signer": true
+          "signer": true,
+          "relations": [
+            "escrow"
+          ]
         },
         {
           "name": "systemProgram",
@@ -252,6 +262,10 @@ export type Depo = {
               16
             ]
           }
+        },
+        {
+          "name": "walletPubkey",
+          "type": "pubkey"
         }
       ]
     }
@@ -287,13 +301,8 @@ export type Depo = {
   "errors": [
     {
       "code": 6000,
-      "name": "nameTooLong",
-      "msg": "Escrow name is too long. Max length: 100 bytes."
-    },
-    {
-      "code": 6001,
-      "name": "descriptionTooLong",
-      "msg": "Escrow description is too long. Max length: 200 bytes."
+      "name": "invalidVectorLength",
+      "msg": "Vector length exceeds allowed size."
     }
   ],
   "types": [
@@ -312,7 +321,7 @@ export type Depo = {
             }
           },
           {
-            "name": "initialiser",
+            "name": "initializer",
             "type": "pubkey"
           },
           {

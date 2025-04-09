@@ -67,16 +67,19 @@
                 "path": "escrow"
               },
               {
-                "kind": "account",
-                "path": "signer"
+                "kind": "arg",
+                "path": "wallet"
               }
             ]
           }
         },
         {
-          "name": "signer",
+          "name": "initializer",
           "writable": true,
-          "signer": true
+          "signer": true,
+          "relations": [
+            "escrow"
+          ]
         },
         {
           "name": "system_program",
@@ -92,6 +95,10 @@
               16
             ]
           }
+        },
+        {
+          "name": "wallet_pubkey",
+          "type": "pubkey"
         }
       ]
     },
@@ -221,16 +228,19 @@
                 "path": "escrow"
               },
               {
-                "kind": "account",
-                "path": "signer"
+                "kind": "arg",
+                "path": "wallet"
               }
             ]
           }
         },
         {
-          "name": "signer",
+          "name": "initializer",
           "writable": true,
-          "signer": true
+          "signer": true,
+          "relations": [
+            "escrow"
+          ]
         },
         {
           "name": "system_program",
@@ -246,6 +256,10 @@
               16
             ]
           }
+        },
+        {
+          "name": "wallet_pubkey",
+          "type": "pubkey"
         }
       ]
     }
@@ -281,13 +295,8 @@
   "errors": [
     {
       "code": 6000,
-      "name": "NameTooLong",
-      "msg": "Escrow name is too long. Max length: 100 bytes."
-    },
-    {
-      "code": 6001,
-      "name": "DescriptionTooLong",
-      "msg": "Escrow description is too long. Max length: 200 bytes."
+      "name": "InvalidVectorLength",
+      "msg": "Vector length exceeds allowed size."
     }
   ],
   "types": [
@@ -306,7 +315,7 @@
             }
           },
           {
-            "name": "initialiser",
+            "name": "initializer",
             "type": "pubkey"
           },
           {
