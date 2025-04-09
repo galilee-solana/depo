@@ -19,11 +19,14 @@ export function UiLayout({ children, links }: { children: ReactNode; links: { la
     { id: 2, name: 'Escrow Alpha' },
     { id: 1, name: 'Paiement sécurisé très long' },
     { id: 3, name: 'Mini escrow' },
+    { id: 5, name: 'Caution pour paiement 5' },
+    { id: 6, name: 'Ne devrait pas apparaître' },
+    { id: 4, name: '4 : Celui-ci est vraiment vraiment vraiment très très long' },
   ]
 
   return (
-    <div className="h-full flex flex-col">
-      <div className="navbar bg-white text-black flex-col md:flex-row items-center justify-between px-4 py-2">
+    <div className="min-h-screen flex flex-col overflow-hidden">
+      <div className="navbar bg-white text-black flex-col md:flex-row items-center justify-between px-4 py-4 min-h-[64px] flex-shrink-0">
         <div className="h-full">
           <Image src="/D-logo-white.svg" alt="Logo" width={0} height={0} className="h-10 w-auto object-contain" priority />
         </div>
@@ -35,8 +38,8 @@ export function UiLayout({ children, links }: { children: ReactNode; links: { la
       <ClusterChecker>
         <AccountChecker />
       </ClusterChecker>
-      <div className="flex-grow w-full">
-        <div className="min-h-screen bg-white text-black px-4 md:px-12">
+      <div className="flex-grow w-full bg-white text-black overflow-y-auto">
+        <div className="h-full px-4 md:px-12">
           <DepoCard PubkeyDepoList={PubkeyDepoList} />
         </div>
         <Toaster position="bottom-right" />
