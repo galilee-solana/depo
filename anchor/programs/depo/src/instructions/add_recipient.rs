@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 use crate::states::{Escrow, Recipient};
-
+use crate::errors::EscrowErrors;
 /// Adds a recipient to the escrow
 ///
 /// # Arguments
@@ -40,7 +40,8 @@ pub struct AddRecipientCtx<'info> {
         payer = signer,
         space = Recipient::INIT_SPACE,
         seeds = [b"recipient", escrow.key().as_ref(), signer.key().as_ref()],
-        bump
+        bump,
+        constraint = escrow.initialiser == signer.key() @ EscrowErrors::UnauthorizedRecipientModifier, // Only the initialiser can add a recipient
     )]
     pub recipient: Account<'info, Recipient>,
 

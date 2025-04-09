@@ -1,5 +1,6 @@
 use anchor_lang::prelude::*;
 use crate::states::{Escrow, Recipient};
+use crate::errors::EscrowErrors;
 
 /// Removes a recipient from the escrow
 ///
@@ -33,7 +34,7 @@ pub struct RemoveRecipientCtx<'info> {
         mut,
         seeds = [b"recipient", escrow.key().as_ref(), signer.key().as_ref()],
         bump,
-        constraint = escrow.initialiser == signer.key(), // Only the initialiser can remove a recipient
+        constraint = escrow.initialiser == signer.key() @ EscrowErrors::UnauthorizedRecipientModifier, // Only the initialiser can remove a recipient
         close = signer // TODO: Change to a fee collector
     )]
     pub recipient: Account<'info, Recipient>,

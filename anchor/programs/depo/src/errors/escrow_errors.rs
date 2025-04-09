@@ -6,4 +6,6 @@ pub enum EscrowErrors {
     NameTooLong,
     #[msg("Escrow description is too long. Max length: 200 bytes.")]
     DescriptionTooLong,
+    #[msg("Unauthorized to add or remove recipient")]
+    UnauthorizedRecipientModifier,
 } 
