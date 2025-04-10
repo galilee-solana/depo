@@ -6,7 +6,6 @@ import React, { useState } from 'react'
 import CreateButton from '../create/CreateButton'
 import FindButton from '../find/FindButton'
 
-
 type Escrow = {
   id: number // u32
   name: string
@@ -93,9 +92,7 @@ export default function EscrowCard({ EscrowList }: { EscrowList: Escrow[] }) {
       {/* Nav buttons */}
       <div className="flex flex-col items-center space-y-4 mt-8 mb-4">
         <CreateButton></CreateButton>
-        <FindButton onStartFinding={function(): void {
-                  throw new Error('Function not implemented.')
-              } }></FindButton>
+        <FindButton></FindButton>
       </div>
     </div>
   )
