@@ -26,8 +26,7 @@ export default function CreateButton() {
       onClick={() => router.push('/create')}
       className="px-6 py-3 border-2 border-black text-black bg-white rounded-lg hover:bg-gray-100 transition"
     >
-      Create Escrow
->>>>>>> e0776a0 (src/components/create/CreateButton.tsx = first version of CreateButton.tsx passing on data to -create page-)
+      Create DEPO
     </button>
   )
 }

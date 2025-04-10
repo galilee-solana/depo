@@ -6,6 +6,7 @@ import React, { useState } from 'react'
 import CreateButton from '../create/CreateButton'
 import FindButton from '../find/FindButton'
 
+
 type Escrow = {
   id: number // u32
   name: string
