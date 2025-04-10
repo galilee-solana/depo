@@ -145,6 +145,79 @@ describe('DEPO - Instruction: add_recipient', () => {
       expect(error.toString()).toContain('Error Message: Unauthorized to add or remove recipient.')
     }
   });
-  it('Enforce Draft status requirement', async () => {});
-  it('Prevent duplicate recipient additions', async () => {});
+  it('Prevent duplicate recipient additions', async () => {
+    const uuid = uuidv4().replace(/-/g, '')
+    const escrowId = Uint8Array.from(Buffer.from(uuid, 'hex'))
+
+    const [escrowKey, _escrowBump] = anchor.web3.PublicKey.findProgramAddressSync(
+      [Buffer.from('escrow'), escrowId],
+      program.programId
+    )
+
+    const testName = 'TEST_ESCROW name'
+    const name = Buffer.from(testName, 'utf8')
+
+    const testDescription = 'TEST_ESCROW description'
+    const description = Buffer.from(testDescription, 'utf8')
+
+    await program.methods.createEscrow(
+      Array.from(escrowId),
+      name,
+      description
+    )
+    .accounts({
+      escrow: escrowKey,
+      signer: initializer.publicKey,
+      systemProgram: anchor.web3.SystemProgram.programId,
+    })
+    .signers([initializer])
+    .rpc()
+    
+    let escrowAccount = await program.account.escrow.fetch(escrowKey)
+    expect(escrowAccount.recipientsCount).toBe(0)
+
+    const [recipientKey, recipientBump] = anchor.web3.PublicKey.findProgramAddressSync(
+      [Buffer.from('recipient'), escrowKey.toBuffer(), recipientWallet.publicKey.toBuffer()],
+      program.programId
+    )
+
+    await program.methods.addRecipient(
+      Array.from(escrowId),
+      recipientWallet.publicKey
+    )
+    .accounts({
+      escrow: escrowKey,
+      recipient: recipientKey,
+      initializer: initializer.publicKey,
+      systemProgram: anchor.web3.SystemProgram.programId,
+    })
+    .signers([initializer])
+    .rpc()
+
+    escrowAccount = await program.account.escrow.fetch(escrowKey)
+    expect(escrowAccount.recipientsCount).toBe(1)
+
+    try {
+      await program.methods.addRecipient(
+        Array.from(escrowId),
+        recipientWallet.publicKey
+      )
+      .accounts({
+        escrow: escrowKey,
+        recipient: recipientKey,
+        initializer: initializer.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      })
+      .signers([initializer])
+      .rpc()
+
+      throw new Error('Should not be able to add recipient since recipient already exists')
+    } catch (error: any) {
+      expect(error.toString()).toContain(`account Address { address: ${recipientKey.toBase58()}, base: None } already in use`)
+    }
+  });
+  it('Enforce Draft status requirement', async () => {
+    // Can't be tested since we don't have a way to change the status of the escrow
+    // TODO: Add a test for this once we have the started instruction
+  });
 });
