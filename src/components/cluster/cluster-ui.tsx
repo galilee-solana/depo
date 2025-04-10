@@ -36,7 +36,7 @@ export function ClusterChecker({ children }: { children: ReactNode }) {
   }
   if (query.isError || !query.data) {
     return (
-      <div className="alert alert-warning text-warning-content/80 rounded-none flex justify-center">
+      <div className="alert alert-warning text-white bg-black text-warning-content/80 rounded-none flex justify-center">
         <span>
           Error connecting to cluster <strong>{cluster.name}</strong>
         </span>
@@ -53,14 +53,14 @@ export function ClusterUiSelect() {
   const { clusters, setCluster, cluster } = useCluster()
   return (
     <div className="dropdown dropdown-end">
-      <label tabIndex={0} className="btn btn-primary rounded-btn">
+      <label tabIndex={0} className="btn bg-black text-white hover:bg-gray-25 rounded-btn">
         {cluster.name}
       </label>
-      <ul tabIndex={0} className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-52 mt-4">
+      <ul tabIndex={0} className="menu dropdown-content z-[1] p-2 shadow bg-black rounded-box w-52 mt-4">
         {clusters.map((item) => (
           <li key={item.name}>
             <button
-              className={`btn btn-sm ${item.active ? 'btn-primary' : 'btn-ghost'}`}
+              className={`btn btn-sm ${item.active ? 'btn-primary text-white' : 'btn-ghost text-white'}`}
               onClick={() => setCluster(item)}
             >
               {item.name}
@@ -129,8 +129,8 @@ export function ClusterUiModal({ hideModal, show }: { hideModal: () => void; sho
 export function ClusterUiTable() {
   const { clusters, setCluster, deleteCluster } = useCluster()
   return (
-    <div className="overflow-x-auto">
-      <table className="table border-4 border-separate border-base-300">
+    <div className="overflow-x-auto text-white bg-black">
+      <table className="table border-4 border-separate border-base-300 text-white bg-black">
         <thead>
           <tr>
             <th>Name/ Network / Endpoint</th>
@@ -139,10 +139,10 @@ export function ClusterUiTable() {
         </thead>
         <tbody>
           {clusters.map((item) => (
-            <tr key={item.name} className={item?.active ? 'bg-base-200' : ''}>
+            <tr key={item.name} className={item?.active ? 'bg-base-200 text-white' : 'text-white'}>
               <td className="space-y-2">
                 <div className="whitespace-nowrap space-x-2">
-                  <span className="text-xl">
+                  <span className="text-xl text-white">
                     {item?.active ? (
                       item.name
                     ) : (
@@ -152,7 +152,7 @@ export function ClusterUiTable() {
                     )}
                   </span>
                 </div>
-                <span className="text-xs">Network: {item.network ?? 'custom'}</span>
+                <span className="text-xs text-white">Network: {item.network ?? 'custom'}</span>
                 <div className="whitespace-nowrap text-gray-500 text-xs">{item.endpoint}</div>
               </td>
               <td className="space-x-2 whitespace-nowrap text-center">
