@@ -1,4 +1,6 @@
 use anchor_lang::prelude::*;
+use crate::states::modules::ModuleType;
+use crate::states::status::Status;
 use crate::constants::MAX_MODULES;
 
 #[account]

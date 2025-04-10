@@ -12,4 +12,4 @@ pub use minimum_amount::MinimumAmount;
 pub use multisig_approval::MultisigApproval;
 pub use single_approval::SingleApproval;
 pub use target_amount::TargetAmount;
-pub use timelock::TimeLock;
+pub use timelock::Timelock;
