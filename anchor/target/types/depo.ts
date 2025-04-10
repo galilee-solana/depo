@@ -230,8 +230,8 @@ export type Depo = {
                 ]
               },
               {
-                "kind": "arg",
-                "path": "escrowId"
+                "kind": "account",
+                "path": "escrow"
               },
               {
                 "kind": "arg",
