@@ -1,6 +1,6 @@
-pub mod create_escrow;
-pub mod add_recipient;
-pub mod remove_recipient;
+mod create_escrow;
+mod add_recipient;
+mod remove_recipient;
 
 pub use create_escrow::*;
 pub use add_recipient::*;
