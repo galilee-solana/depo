@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
+import CreateButton from '../create/CreateButton'
 
 type Escrow = {
   id: number // u32
@@ -89,12 +90,7 @@ export default function EscrowCard({ EscrowList }: { EscrowList: Escrow[] }) {
       )}
       {/* Nav buttons */}
       <div className="flex flex-col items-center space-y-4 mt-8 mb-4">
-        <button
-          onClick={() => router.push('/CreateEscrow')}
-          className="px-6 py-3 border-2 border-black text-black bg-white rounded-lg hover:bg-gray-100 transition"
-        >
-          Create Depo
-        </button>
+        <CreateButton></CreateButton>
         <button
           onClick={() => router.push('/FindEscrow')}
           className="px-6 py-3 border-2 border-black text-black bg-white rounded-lg hover:bg-gray-100 transition"
