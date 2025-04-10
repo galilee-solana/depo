@@ -15,7 +15,7 @@ export function UiLayout({ children, links }: { children: ReactNode; links: { la
   const pathname = usePathname()
 
   // Add test const to check DepoCard display
-  const PubkeyDepoList = [
+  const EscrowList = [
     { id: 2, name: 'Escrow Alpha' },
     { id: 1, name: 'Paiement sécurisé très long' },
     { id: 3, name: 'Mini escrow' },
@@ -44,7 +44,7 @@ export function UiLayout({ children, links }: { children: ReactNode; links: { la
       {/* DepoCard Menu */}
       <div className="flex-grow w-full bg-white text-black overflow-y-auto">
         <div className="h-full px-4 md:px-12">
-          <DepoCard PubkeyDepoList={PubkeyDepoList} />
+          <DepoCard EscrowList={EscrowList} />
         </div>
         <Toaster position="bottom-right" />
       </div>
