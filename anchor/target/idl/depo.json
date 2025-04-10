@@ -224,8 +224,8 @@
                 ]
               },
               {
-                "kind": "account",
-                "path": "escrow"
+                "kind": "arg",
+                "path": "escrow_id"
               },
               {
                 "kind": "arg",
