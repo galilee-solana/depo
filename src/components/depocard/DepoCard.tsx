@@ -4,22 +4,22 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 
-type PubkeyDepo = {
+type Escrow = {
   id: number // u32
   name: string
 }
 
-export default function DepoCard({ PubkeyDepoList }: { PubkeyDepoList: PubkeyDepo[] }) {
+export default function EscrowCard({ EscrowList }: { EscrowList: Escrow[] }) {
   const router = useRouter()
 
   // Sorted by ID number
-  const sortedList = [...PubkeyDepoList].sort((a, b) => a.id - b.id)
+  const sortedList = [...EscrowList].sort((a, b) => a.id - b.id)
 
   // Set const State to scroll DepoCard
   const [startIndex, setStartIndex] = useState(0)
   const [isScrolling, setIsScrolling] = useState(false)
   const maxVisible = 5
-  const hasOverflow = PubkeyDepoList.length > maxVisible
+  const hasOverflow = EscrowList.length > maxVisible
   const visibleItems = sortedList.slice(startIndex, startIndex + maxVisible)
 
   const scrollUp = () => {
@@ -40,7 +40,7 @@ export default function DepoCard({ PubkeyDepoList }: { PubkeyDepoList: PubkeyDep
 
   return (
     <div className="flex flex-col justify-between min-h-full bg-white px-4 py-6">
-      {/* DepoCard window | scroll conditions */}
+      {/* EscrowCard window | scroll conditions */}
       <div className="w-full max-w-3xl mx-auto px-4 rounded-md p-4 bg-white">
         <div className={`relative space-y-4 transition-all duration-300 ease-in-out transform ${
           isScrolling ? 'opacity-50 translate-y-2' : 'opacity-100 translate-y-0'} min-h-[300px]`}>
@@ -90,13 +90,13 @@ export default function DepoCard({ PubkeyDepoList }: { PubkeyDepoList: PubkeyDep
       {/* Nav buttons */}
       <div className="flex flex-col items-center space-y-4 mt-8 mb-4">
         <button
-          onClick={() => router.push('/CreateDepo')}
+          onClick={() => router.push('/CreateEscrow')}
           className="px-6 py-3 border-2 border-black text-black bg-white rounded-lg hover:bg-gray-100 transition"
         >
           Create Depo
         </button>
         <button
-          onClick={() => router.push('/FindDepo')}
+          onClick={() => router.push('/FindEscrow')}
           className="px-6 py-3 border-2 border-black text-black bg-white rounded-lg hover:bg-gray-100 transition"
         >
           Search Depo
