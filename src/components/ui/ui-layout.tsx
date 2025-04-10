@@ -9,7 +9,7 @@ import toast, { Toaster } from 'react-hot-toast'
 import { AccountChecker } from '../account/account-ui'
 import { ClusterChecker, ClusterUiSelect, ExplorerLink } from '../cluster/cluster-ui'
 import { WalletButton } from '../solana/solana-provider'
-import DepoCard from '../depocard/DepoCard'
+import EscrowCard from '../escrowcard/EscrowCard'
 
 export function UiLayout({ children, links }: { children: ReactNode; links: { label: string; path: string }[] }) {
   const pathname = usePathname()
@@ -41,10 +41,10 @@ export function UiLayout({ children, links }: { children: ReactNode; links: { la
       <ClusterChecker>
         <AccountChecker />
       </ClusterChecker>
-      {/* DepoCard Menu */}
+      {/* EscrowCard Menu */}
       <div className="flex-grow w-full bg-white text-black overflow-y-auto">
         <div className="h-full px-4 md:px-12">
-          <DepoCard EscrowList={EscrowList} />
+          <EscrowCard EscrowList={EscrowList} />
         </div>
         <Toaster position="bottom-right" />
       </div>
