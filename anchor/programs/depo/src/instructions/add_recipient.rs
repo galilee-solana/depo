@@ -15,13 +15,15 @@ pub fn add_recipient(
     _escrow_id: [u8; 16],
     wallet: Pubkey
 ) -> Result<()> {
+    let escrow = &mut ctx.accounts.escrow;
+    require!(escrow.status == Status::Draft, EscrowErrors::EscrowNotDraft);
+
     let recipient = &mut ctx.accounts.recipient;
-    recipient.escrow = ctx.accounts.escrow.key();
+    recipient.escrow = escrow.key();
     recipient.wallet = wallet;
     recipient.amount = 0;
     recipient.has_withdrawn = false;
 
-    let escrow = &mut ctx.accounts.escrow;
     escrow.recipients_count += 1;    
 
     Ok(())
@@ -45,7 +47,6 @@ pub struct AddRecipient<'info> {
         seeds = [b"recipient", escrow.key().as_ref(),  wallet.key().as_ref()],
         bump,
         constraint = escrow.initializer == initializer.key() @ EscrowErrors::UnauthorizedRecipientModifier, // Only the initialiser can add a recipient
-        constraint = escrow.status == Status::Draft @ EscrowErrors::EscrowNotDraft
     )]
     pub recipient: Account<'info, Recipient>,
 
