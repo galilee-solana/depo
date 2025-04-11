@@ -47,4 +47,10 @@ pub mod depo {
     ) -> Result<()> {
         instructions::add_minimum_amount(ctx, amount)
     }
+    
+    pub fn remove_minimum_amount(
+        ctx: Context<RemoveMinimumAmount>,
+    ) -> Result<()> {
+        instructions::remove_minimum_amount(ctx, )
+    }
 }

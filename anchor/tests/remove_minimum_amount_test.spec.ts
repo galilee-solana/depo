@@ -7,7 +7,7 @@ import {strict as assert} from 'assert'
 import {BN} from 'bn.js';
 
 
-describe('add_minimum_amount instruction test', () => {
+describe('remove_minimum_amount instruction test', () => {
   const provider = anchor.AnchorProvider.env()
   anchor.setProvider(provider)
 
@@ -68,7 +68,7 @@ describe('add_minimum_amount instruction test', () => {
     expect(Buffer.from(escrowAccount.id).toString('hex')).toBe(uuid)
   })
 
-  describe('Add min amount', () => {
+  describe('Remove minimum amount', () => {
     let minimumAmountKey: anchor.web3.PublicKey
 
     beforeEach(async () => {
@@ -78,9 +78,7 @@ describe('add_minimum_amount instruction test', () => {
       )
 
       minimumAmountKey = key
-    });
 
-    it('creates a MinimumAmountAccount and adds a MinimumAmount module to the escrow', async () => {
       await program.methods.addMinimumAmount(
           new BN(2 * LAMPORTS_PER_SOL),
       )
@@ -93,35 +91,11 @@ describe('add_minimum_amount instruction test', () => {
       .signers([initializer])
       .rpc();
 
-      const minimumAmountAccount = await program.account.minimumAmount.fetch(minimumAmountKey);
-      expect(minimumAmountAccount.minAmount.toNumber()).toBe(2 * LAMPORTS_PER_SOL);
-    })
-
-    it('adds a MinimumAmount module to the escrow', async () => {
-      await program.methods.addMinimumAmount(
-          new BN(2 * LAMPORTS_PER_SOL),
-      )
-      .accounts({
-        escrow: escrowKey,
-        minimumAmount: minimumAmountKey,
-        initializer: initializer.publicKey,
-        systemProgram: anchor.web3.SystemProgram.programId,
-      })
-      .signers([initializer])
-      .rpc()
-
-      let escrowAccount = await program.account.escrow.fetch(escrowKey);
-
-      expect(escrowAccount.modules).toHaveLength(1);
-      expect(
-          escrowAccount.modules.some(mod => 'minimumAmount' in mod)
-      ).toBeTruthy();
     });
 
-    it('fails to add a second MinimumAmount module', async () => {
-      await program.methods.addMinimumAmount(
-          new BN(2 * LAMPORTS_PER_SOL),
-      )
+
+    it('removes the MinimumAmountAccount', async () => {
+      await program.methods.removeMinimumAmount()
       .accounts({
         escrow: escrowKey,
         minimumAmount: minimumAmountKey,
@@ -133,9 +107,46 @@ describe('add_minimum_amount instruction test', () => {
 
       let error
       try {
-        await program.methods.addMinimumAmount(
-            new BN(3 * LAMPORTS_PER_SOL),
-        )
+        await program.account.minimumAmount.fetch(minimumAmountKey)
+      } catch (err) {
+        error = err
+      }
+
+      expect(error).toBeDefined()
+      expect(error.message).toMatch(/Account does not exist/i)
+
+    })
+
+    it('removes the minimum amount account from the escrow module list', async () => {
+      await program.methods.removeMinimumAmount()
+      .accounts({
+        escrow: escrowKey,
+        minimumAmount: minimumAmountKey,
+        initializer: initializer.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      })
+      .signers([initializer])
+      .rpc()
+
+      let escrowAccount = await program.account.escrow.fetch(escrowKey);
+
+      expect(escrowAccount.modules).toHaveLength(0);
+    });
+
+    it('fails to remove a second time a minimumAmount module', async () => {
+      await program.methods.removeMinimumAmount()
+      .accounts({
+        escrow: escrowKey,
+        minimumAmount: minimumAmountKey,
+        initializer: initializer.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      })
+      .signers([initializer])
+      .rpc();
+
+      let error
+      try {
+        await program.methods.removeMinimumAmount()
         .accounts({
           escrow: escrowKey,
           minimumAmount: minimumAmountKey,
@@ -149,7 +160,7 @@ describe('add_minimum_amount instruction test', () => {
       }
 
       expect(error).toBeTruthy();
-      expect(error.message).toMatch(/already in use/i);
+      expect(error.message).toMatch(/AnchorError caused by account: minimum_amount. Error Code: AccountNotInitialized. Error Number: 3012. Error Message: The program expected this account to be already initialized./i);
     });
 
     it("fails if the escrow status is not 'draft'", async () => {
@@ -167,9 +178,7 @@ describe('add_minimum_amount instruction test', () => {
 
       let error
       try {
-        await program.methods.addMinimumAmount(
-            new BN(3 * LAMPORTS_PER_SOL),
-        )
+        await program.methods.removeMinimumAmount()
         .accounts({
           escrow: escrowKey,
           minimumAmount: minimumAmountKey,

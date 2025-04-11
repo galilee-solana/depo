@@ -14,4 +14,6 @@ pub enum EscrowErrors {
     NoRecipients,
     #[msg("This module type already exists.")]
     ModuleAlreadyExists,
+    #[msg("This module type doesn't exist.")]
+    ModuleDoesntExist,
 }

@@ -10,3 +10,4 @@ pub use modules::{
     MinimumAmount
 };
 pub use status::Status;
+pub use recipient::Recipient;
