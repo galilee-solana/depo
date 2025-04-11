@@ -16,17 +16,6 @@ export function UiLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname()
   const wallet = useWallet()
 
-  // Add test const to check DepoCard display
-  const EscrowList = [
-    { id: 2, name: 'Escrow Alpha' },
-    { id: 1, name: 'Paiement sécurisé très long' },
-    { id: 3, name: 'Mini escrow' },
-    { id: 5, name: 'Caution pour paiement 5' },
-    { id: 6, name: 'Ne devrait pas apparaître' },
-    { id: 4, name: '4 : Celui-ci est vraiment vraiment vraiment très très long' },
-    { id: 7, name: 'Achat groupé pour 7' },
-  ]
-
   return (
     <div className="h-screen flex flex-col overflow-hidden">
       {/* Navbar */}
@@ -43,18 +32,14 @@ export function UiLayout({ children }: { children: ReactNode }) {
       <ClusterChecker>
         <AccountChecker />
       </ClusterChecker>
-      {/* EscrowCard Menu */}
+      {/* Main Menu */}
       <div className="flex-grow w-full bg-white text-black overflow-y-auto">
         <div className="h-full px-4 md:px-12">
-          { wallet.connected ? (
-            <EscrowCard EscrowList={EscrowList} />
-          ) : (
-            <div className="text-center text-gray-500 mt-4">
-            Please connect your wallet.
-          </div>
-          )}
+          {children}
         </div>
-        <Toaster position="bottom-right" />
+        <div>
+          <Toaster position="bottom-right" />
+        </div>
       </div>
     </div>
   )

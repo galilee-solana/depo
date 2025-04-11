@@ -22,7 +22,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ReactQueryProvider>
           <ClusterProvider>
             <SolanaProvider>
-              <UiLayout></UiLayout>
+              <UiLayout>
+                {children}
+              </UiLayout>
             </SolanaProvider>
           </ClusterProvider>
         </ReactQueryProvider>
