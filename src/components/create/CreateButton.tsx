@@ -7,7 +7,7 @@ export default function CreateButton() {
   const router = useRouter()
 
   const handleClick = () => {
-    router.push('/create') // Route to page = src/app/create/page.tsx
+    router.push('/create/page.tsx') // Route to page = src/app/create/page.tsx
   }
 
   return (

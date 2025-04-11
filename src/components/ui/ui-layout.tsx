@@ -10,9 +10,11 @@ import { AccountChecker } from '../account/account-ui'
 import { ClusterChecker, ClusterUiSelect, ExplorerLink } from '../cluster/cluster-ui'
 import { WalletButton } from '../solana/solana-provider'
 import EscrowCard from '../escrowcard/EscrowCard'
+import { useWallet } from '@solana/wallet-adapter-react'
 
-export function UiLayout({ children, links }: { children: ReactNode; links: { label: string; path: string }[] }) {
+export function UiLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname()
+  const wallet = useWallet()
 
   // Add test const to check DepoCard display
   const EscrowList = [
@@ -44,7 +46,13 @@ export function UiLayout({ children, links }: { children: ReactNode; links: { la
       {/* EscrowCard Menu */}
       <div className="flex-grow w-full bg-white text-black overflow-y-auto">
         <div className="h-full px-4 md:px-12">
-          <EscrowCard EscrowList={EscrowList} />
+          { wallet.connected ? (
+            <EscrowCard EscrowList={EscrowList} />
+          ) : (
+            <div className="text-center text-gray-500 mt-4">
+            Please connect your wallet.
+          </div>
+          )}
         </div>
         <Toaster position="bottom-right" />
       </div>
