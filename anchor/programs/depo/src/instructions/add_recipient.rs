@@ -36,7 +36,7 @@ pub struct AddRecipient<'info> {
       mut,
       seeds = [b"escrow", escrow_id.as_ref()],
       bump,
-      has_one = initializer
+      has_one = initializer @ EscrowErrors::UnauthorizedRecipientModifier,
     )]
     pub escrow: Account<'info, Escrow>,
 
