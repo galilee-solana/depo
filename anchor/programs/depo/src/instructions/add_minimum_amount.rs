@@ -1,9 +1,8 @@
 use anchor_lang::prelude::*;
-use anchor_lang::solana_program::clock::Clock;
 use crate::states::{Escrow, MinimumAmount, ModuleType, Status};
 use crate::constants::ANCHOR_DISCRIMINATOR;
 use crate::errors::{EscrowErrors, MinimumAmountErrors};
-use crate::utils::vec_to_fixed_size;
+
 
 /// Add a minimum amount condition to the escrow
 ///

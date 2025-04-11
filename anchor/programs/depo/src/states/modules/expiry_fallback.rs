@@ -7,8 +7,8 @@ pub struct ExpiryFallback {
   pub refund_after: u64
 }
 
-impl ExpiryFallback {
-  pub fn is_satisfied() {
-    // TODO: Implement the logic to check if satisfied
-  }
-}
+// impl ExpiryFallback {
+//   pub fn is_satisfied() {
+//     // TODO: Implement the logic to check if satisfied
+//   }
+// }
