@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { strict as assert } from 'assert'
 
 
-describe('DEPO - Instruction: add_recipient', () => {
+describe('Test - Instruction: add_recipient', () => {
   const provider = anchor.AnchorProvider.env()
   anchor.setProvider(provider)
   
@@ -35,7 +35,7 @@ describe('DEPO - Instruction: add_recipient', () => {
     assert(balance2 > 0, 'Airdrop failed')
   })
 
-  it('Successfully add recipient and update escrow state', async () => {
+  it('Successfully add recipient: Verify escrow state and recipient account', async () => {
     const uuid = uuidv4().replace(/-/g, '')
     const escrowId = Uint8Array.from(Buffer.from(uuid, 'hex'))
 
@@ -93,7 +93,7 @@ describe('DEPO - Instruction: add_recipient', () => {
     expect(recipientAccount.amount.toNumber()).toBe(0)
     expect(recipientAccount.hasWithdrawn).toBe(false)
   });
-  it('Enforce initializer-only access control', async () => {
+  it('Fails when a non-initializer tries to add a recipient', async () => {
     const uuid = uuidv4().replace(/-/g, '')
     const escrowId = Uint8Array.from(Buffer.from(uuid, 'hex'))
 
@@ -145,7 +145,7 @@ describe('DEPO - Instruction: add_recipient', () => {
       expect(error.toString()).toContain('Error Message: Unauthorized to add or remove recipient.')
     }
   });
-  it('Prevent duplicate recipient additions', async () => {
+  it('fails when adding a duplicate recipient', async () => {
     const uuid = uuidv4().replace(/-/g, '')
     const escrowId = Uint8Array.from(Buffer.from(uuid, 'hex'))
 

@@ -5,7 +5,7 @@ import { Depo } from '../target/types/depo'
 import { v4 as uuidv4 } from 'uuid'
 import { strict as assert } from 'assert'
 
-describe('DEPO - Intruction: create_escrow', () => {
+describe('Test- Intruction: create_escrow', () => {
   const provider = anchor.AnchorProvider.env()
   anchor.setProvider(provider)
   
