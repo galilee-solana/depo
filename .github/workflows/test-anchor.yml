@@ -50,4 +50,4 @@ jobs:
         shell: bash
 
       - name: Run Rust unit tests
-        run: cargo test --lib
+        run: cd anchor && cargo test --lib
