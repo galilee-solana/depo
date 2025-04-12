@@ -10,8 +10,8 @@ pub struct MultisigApproval {
   pub threshold: u8,
 }
 
-impl MultisigApproval {
-  pub fn is_satisfied() {
-    // TODO: Implement the logic to check if satisfied
-  }
-}
+// impl MultisigApproval {
+//   pub fn is_satisfied() {
+//     // TODO: Implement the logic to check if satisfied
+//   }
+// }

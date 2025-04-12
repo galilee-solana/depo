@@ -6,8 +6,8 @@ pub struct TargetAmount {
   pub target_amount: u64,
 }
 
-impl TargetAmount {
-  pub fn is_satisfied() {
-    // TODO: Implement the logic to check if satisfied
-  }
-}
+// impl TargetAmount {
+//   pub fn is_satisfied() {
+//     // TODO: Implement the logic to check if satisfied
+//   }
+// }
