@@ -48,4 +48,12 @@ pub mod depo {
     ) -> Result<()> {
         instructions::add_depositor(ctx, escrow_id, wallet)
     }
+
+    pub fn remove_depositor(
+        ctx: Context<RemoveDepositor>,
+        escrow_id: [u8; 16],
+        wallet: Pubkey
+    ) -> Result<()> {
+        instructions::remove_depositor(ctx, escrow_id, wallet)
+    }
 }
