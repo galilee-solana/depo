@@ -110,6 +110,101 @@ export type Depo = {
       ]
     },
     {
+      "name": "addRecipient",
+      "discriminator": [
+        207,
+        170,
+        166,
+        28,
+        210,
+        186,
+        242,
+        145
+      ],
+      "accounts": [
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "escrowId"
+              }
+            ]
+          }
+        },
+        {
+          "name": "recipient",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  99,
+                  105,
+                  112,
+                  105,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              },
+              {
+                "kind": "arg",
+                "path": "wallet"
+              }
+            ]
+          }
+        },
+        {
+          "name": "initializer",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "escrow"
+          ]
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "escrowId",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        },
+        {
+          "name": "walletPubkey",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
       "name": "createEscrow",
       "discriminator": [
         253,
@@ -266,6 +361,101 @@ export type Depo = {
           }
         }
       ]
+    },
+    {
+      "name": "removeRecipient",
+      "discriminator": [
+        155,
+        185,
+        10,
+        53,
+        111,
+        57,
+        100,
+        149
+      ],
+      "accounts": [
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "escrowId"
+              }
+            ]
+          }
+        },
+        {
+          "name": "recipient",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  99,
+                  105,
+                  112,
+                  105,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              },
+              {
+                "kind": "arg",
+                "path": "wallet"
+              }
+            ]
+          }
+        },
+        {
+          "name": "initializer",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "escrow"
+          ]
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "escrowId",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        },
+        {
+          "name": "walletPubkey",
+          "type": "pubkey"
+        }
+      ]
     }
   ],
   "accounts": [
@@ -294,13 +484,56 @@ export type Depo = {
         225,
         58
       ]
+    },
+    {
+      "name": "recipient",
+      "discriminator": [
+        80,
+        186,
+        47,
+        196,
+        232,
+        251,
+        21,
+        148
+      ]
     }
   ],
   "errors": [
     {
       "code": 6000,
-      "name": "minimumAmountGreaterThanZero",
-      "msg": "Minimum amount must be greater than 0."
+      "name": "nameTooLong",
+      "msg": "Escrow name is too long. Max length: 100 bytes."
+    },
+    {
+      "code": 6001,
+      "name": "descriptionTooLong",
+      "msg": "Escrow description is too long. Max length: 200 bytes."
+    },
+    {
+      "code": 6002,
+      "name": "unauthorizedRecipientModifier",
+      "msg": "Unauthorized to add or remove recipient"
+    },
+    {
+      "code": 6003,
+      "name": "escrowNotDraft",
+      "msg": "Escrow must be in Draft status to modify it"
+    },
+    {
+      "code": 6004,
+      "name": "noRecipients",
+      "msg": "No recipients in escrow"
+    },
+    {
+      "code": 6005,
+      "name": "moduleAlreadyExists",
+      "msg": "This module type already exists."
+    },
+    {
+      "code": 6006,
+      "name": "moduleDoesntExist",
+      "msg": "This module type doesn't exist."
     }
   ],
   "types": [
@@ -415,6 +648,30 @@ export type Depo = {
           },
           {
             "name": "minimumAmount"
+          }
+        ]
+      }
+    },
+    {
+      "name": "recipient",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "escrow",
+            "type": "pubkey"
+          },
+          {
+            "name": "wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "hasWithdrawn",
+            "type": "bool"
           }
         ]
       }
