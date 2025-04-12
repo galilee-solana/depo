@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { strict as assert } from 'assert'
 
 
-describe('Test - Instruction: remove_depsoritor', () => {
+describe('Test - Instruction: remove_depositor', () => {
   const provider = anchor.AnchorProvider.env()
   anchor.setProvider(provider)
   
