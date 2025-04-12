@@ -80,6 +80,7 @@ describe('remove_minimum_amount instruction test', () => {
       minimumAmountKey = key
 
       await program.methods.addMinimumAmount(
+          Array.from(escrowId),
           new BN(2 * LAMPORTS_PER_SOL),
       )
       .accounts({
@@ -95,7 +96,7 @@ describe('remove_minimum_amount instruction test', () => {
 
 
     it('removes the MinimumAmountAccount', async () => {
-      await program.methods.removeMinimumAmount()
+      await program.methods.removeMinimumAmount(Array.from(escrowId))
       .accounts({
         escrow: escrowKey,
         minimumAmount: minimumAmountKey,
@@ -118,7 +119,7 @@ describe('remove_minimum_amount instruction test', () => {
     })
 
     it('removes the minimum amount account from the escrow module list', async () => {
-      await program.methods.removeMinimumAmount()
+      await program.methods.removeMinimumAmount(Array.from(escrowId))
       .accounts({
         escrow: escrowKey,
         minimumAmount: minimumAmountKey,
@@ -134,7 +135,7 @@ describe('remove_minimum_amount instruction test', () => {
     });
 
     it('fails to remove a second time a minimumAmount module', async () => {
-      await program.methods.removeMinimumAmount()
+      await program.methods.removeMinimumAmount(Array.from(escrowId))
       .accounts({
         escrow: escrowKey,
         minimumAmount: minimumAmountKey,
@@ -146,7 +147,7 @@ describe('remove_minimum_amount instruction test', () => {
 
       let error
       try {
-        await program.methods.removeMinimumAmount()
+        await program.methods.removeMinimumAmount(Array.from(escrowId))
         .accounts({
           escrow: escrowKey,
           minimumAmount: minimumAmountKey,
@@ -178,7 +179,7 @@ describe('remove_minimum_amount instruction test', () => {
 
       let error
       try {
-        await program.methods.removeMinimumAmount()
+        await program.methods.removeMinimumAmount(Array.from(escrowId))
         .accounts({
           escrow: escrowKey,
           minimumAmount: minimumAmountKey,

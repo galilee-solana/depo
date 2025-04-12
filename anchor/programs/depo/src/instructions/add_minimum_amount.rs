@@ -14,6 +14,7 @@ use crate::errors::{EscrowErrors, MinimumAmountErrors};
 /// * `Result<()>` - Result indicating success or failure
 pub fn add_minimum_amount(
     ctx: Context<AddMinimumAmount>,
+    _escrow_id: [u8; 16],
     min_amount: u64
 ) -> Result<()> {
     require!(min_amount > 0, MinimumAmountErrors::MinimumAmountGreaterThanZero);
@@ -35,8 +36,14 @@ pub fn add_minimum_amount(
 }
 
 #[derive(Accounts)]
+#[instruction(escrow_id: [u8; 16])]
 pub struct AddMinimumAmount<'info> {
-    #[account(mut, has_one = initializer)]
+    #[account(
+        mut,
+        seeds = [b"escrow", escrow_id.as_ref()],
+        bump,
+        has_one = initializer
+    )]
     pub escrow: Account<'info, Escrow>,
 
     #[account(

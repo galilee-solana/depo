@@ -28,7 +28,26 @@ export type Depo = {
       "accounts": [
         {
           "name": "escrow",
-          "writable": true
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "escrowId"
+              }
+            ]
+          }
         },
         {
           "name": "minimumAmount",
@@ -76,92 +95,6 @@ export type Depo = {
       ],
       "args": [
         {
-          "name": "amount",
-          "type": "u64"
-        }
-      ]
-    },
-    {
-      "name": "addRecipient",
-      "discriminator": [
-        207,
-        170,
-        166,
-        28,
-        210,
-        186,
-        242,
-        145
-      ],
-      "accounts": [
-        {
-          "name": "escrow",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  101,
-                  115,
-                  99,
-                  114,
-                  111,
-                  119
-                ]
-              },
-              {
-                "kind": "arg",
-                "path": "escrowId"
-              }
-            ]
-          }
-        },
-        {
-          "name": "recipient",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  114,
-                  101,
-                  99,
-                  105,
-                  112,
-                  105,
-                  101,
-                  110,
-                  116
-                ]
-              },
-              {
-                "kind": "account",
-                "path": "escrow"
-              },
-              {
-                "kind": "arg",
-                "path": "wallet"
-              }
-            ]
-          }
-        },
-        {
-          "name": "initializer",
-          "writable": true,
-          "signer": true,
-          "relations": [
-            "escrow"
-          ]
-        },
-        {
-          "name": "systemProgram",
-          "address": "11111111111111111111111111111111"
-        }
-      ],
-      "args": [
-        {
           "name": "escrowId",
           "type": {
             "array": [
@@ -171,8 +104,8 @@ export type Depo = {
           }
         },
         {
-          "name": "walletPubkey",
-          "type": "pubkey"
+          "name": "amount",
+          "type": "u64"
         }
       ]
     },
@@ -243,16 +176,16 @@ export type Depo = {
       ]
     },
     {
-      "name": "removeRecipient",
+      "name": "removeMinimumAmount",
       "discriminator": [
-        155,
-        185,
-        10,
-        53,
+        7,
+        0,
         111,
-        57,
-        100,
-        149
+        90,
+        190,
+        141,
+        54,
+        101
       ],
       "accounts": [
         {
@@ -279,20 +212,25 @@ export type Depo = {
           }
         },
         {
-          "name": "recipient",
+          "name": "minimumAmount",
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "const",
                 "value": [
-                  114,
-                  101,
-                  99,
+                  109,
                   105,
-                  112,
+                  110,
                   105,
-                  101,
+                  109,
+                  117,
+                  109,
+                  95,
+                  97,
+                  109,
+                  111,
+                  117,
                   110,
                   116
                 ]
@@ -300,10 +238,6 @@ export type Depo = {
               {
                 "kind": "account",
                 "path": "escrow"
-              },
-              {
-                "kind": "arg",
-                "path": "wallet"
               }
             ]
           }
@@ -330,10 +264,6 @@ export type Depo = {
               16
             ]
           }
-        },
-        {
-          "name": "walletPubkey",
-          "type": "pubkey"
         }
       ]
     }
@@ -364,26 +294,33 @@ export type Depo = {
         225,
         58
       ]
-    },
-    {
-      "name": "recipient",
-      "discriminator": [
-        80,
-        186,
-        47,
-        196,
-        232,
-        251,
-        21,
-        148
-      ]
     }
   ],
   "errors": [
     {
       "code": 6000,
-      "name": "invalidVectorLength",
-      "msg": "Vector length exceeds allowed size."
+      "name": "nameTooLong",
+      "msg": "Escrow name is too long. Max length: 100 bytes."
+    },
+    {
+      "code": 6001,
+      "name": "descriptionTooLong",
+      "msg": "Escrow description is too long. Max length: 200 bytes."
+    },
+    {
+      "code": 6002,
+      "name": "moduleAlreadyExists",
+      "msg": "This module type already exists."
+    },
+    {
+      "code": 6003,
+      "name": "moduleDoesntExist",
+      "msg": "This module type doesn't exist."
+    },
+    {
+      "code": 6004,
+      "name": "escrowNotDraft",
+      "msg": "Escrow must be in Draft status to modify it"
     }
   ],
   "types": [
@@ -498,30 +435,6 @@ export type Depo = {
           },
           {
             "name": "minimumAmount"
-          }
-        ]
-      }
-    },
-    {
-      "name": "recipient",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "escrow",
-            "type": "pubkey"
-          },
-          {
-            "name": "wallet",
-            "type": "pubkey"
-          },
-          {
-            "name": "amount",
-            "type": "u64"
-          },
-          {
-            "name": "hasWithdrawn",
-            "type": "bool"
           }
         ]
       }

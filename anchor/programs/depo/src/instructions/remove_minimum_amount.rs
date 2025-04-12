@@ -6,17 +6,18 @@ use crate::errors::{EscrowErrors};
 /// Remove minimum amount condition from the escrow
 ///
 /// # Arguments
-/// * `ctx` - The context containing the escrow account, minimum amount account 
+/// * `ctx` - The context containing the escrow account, minimum amount account
 /// and signer (the initializer of the escrow)
 ///
 /// # Returns
 /// * `Result<()>` - Result indicating success or failure
 pub fn remove_minimum_amount(
     ctx: Context<RemoveMinimumAmount>,
+    _escrow_id: [u8; 16],
 ) -> Result<()> {
     let escrow = &mut ctx.accounts.escrow;
     require!(
-        escrow.modules.contains(&ModuleType::MinimumAmount), 
+        escrow.modules.contains(&ModuleType::MinimumAmount),
         EscrowErrors::ModuleDoesntExist
     );
 
@@ -30,8 +31,14 @@ pub fn remove_minimum_amount(
 }
 
 #[derive(Accounts)]
+#[instruction(escrow_id: [u8; 16])]
 pub struct RemoveMinimumAmount<'info> {
-    #[account(mut, has_one = initializer)]
+    #[account(
+        mut,
+        seeds = [b"escrow", escrow_id.as_ref()],
+        bump,
+        has_one = initializer
+    )]
     pub escrow: Account<'info, Escrow>,
 
     #[account(

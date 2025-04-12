@@ -1,6 +1,12 @@
 import * as anchor from '@coral-xyz/anchor'
 import {Program} from '@coral-xyz/anchor'
-import {Keypair, LAMPORTS_PER_SOL} from '@solana/web3.js'
+import {
+  Keypair,
+  LAMPORTS_PER_SOL, PublicKey,
+  SystemProgram,
+  Transaction,
+  TransactionInstruction
+} from '@solana/web3.js'
 import {Depo} from '../target/types/depo'
 import {v4 as uuidv4} from 'uuid'
 import {strict as assert} from 'assert'
@@ -82,6 +88,7 @@ describe('add_minimum_amount instruction test', () => {
 
     it('creates a MinimumAmountAccount and adds a MinimumAmount module to the escrow', async () => {
       await program.methods.addMinimumAmount(
+          Array.from(escrowId),
           new BN(2 * LAMPORTS_PER_SOL),
       )
       .accounts({
@@ -99,6 +106,7 @@ describe('add_minimum_amount instruction test', () => {
 
     it('adds a MinimumAmount module to the escrow', async () => {
       await program.methods.addMinimumAmount(
+          Array.from(escrowId),
           new BN(2 * LAMPORTS_PER_SOL),
       )
       .accounts({
@@ -120,6 +128,7 @@ describe('add_minimum_amount instruction test', () => {
 
     it('fails to add a second MinimumAmount module', async () => {
       await program.methods.addMinimumAmount(
+          Array.from(escrowId),
           new BN(2 * LAMPORTS_PER_SOL),
       )
       .accounts({
@@ -134,6 +143,7 @@ describe('add_minimum_amount instruction test', () => {
       let error
       try {
         await program.methods.addMinimumAmount(
+            Array.from(escrowId),
             new BN(3 * LAMPORTS_PER_SOL),
         )
         .accounts({
@@ -168,6 +178,7 @@ describe('add_minimum_amount instruction test', () => {
       let error
       try {
         await program.methods.addMinimumAmount(
+            Array.from(escrowId),
             new BN(3 * LAMPORTS_PER_SOL),
         )
         .accounts({
@@ -185,6 +196,5 @@ describe('add_minimum_amount instruction test', () => {
       expect(error).toBeTruthy()
       expect(error.message).toMatch(/AnchorError caused by account: escrow. Error Code: ConstraintHasOne. Error Number: 2001. Error Message: A has one constraint was violated./i)
     })
-
   });
 });

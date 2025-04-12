@@ -43,14 +43,16 @@ pub mod depo {
 
     pub fn add_minimum_amount(
         ctx: Context<AddMinimumAmount>,
+        escrow_id: [u8; 16],
         amount: u64
     ) -> Result<()> {
-        instructions::add_minimum_amount(ctx, amount)
+        instructions::add_minimum_amount(ctx, escrow_id, amount)
     }
     
     pub fn remove_minimum_amount(
         ctx: Context<RemoveMinimumAmount>,
+        escrow_id: [u8; 16],
     ) -> Result<()> {
-        instructions::remove_minimum_amount(ctx, )
+        instructions::remove_minimum_amount(ctx, escrow_id)
     }
 }
