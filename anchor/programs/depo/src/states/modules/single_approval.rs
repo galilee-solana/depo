@@ -7,8 +7,8 @@ pub struct SingleApproval {
   pub approved: bool,
 }
 
-impl SingleApproval {
-  pub fn is_satisfied() {
-    // TODO: Implement the logic to check if satisfied
-  }
-}
+// impl SingleApproval {
+//   pub fn is_satisfied() {
+//     // TODO: Implement the logic to check if satisfied
+//   }
+// }

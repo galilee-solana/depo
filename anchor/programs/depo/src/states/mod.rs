@@ -5,15 +5,9 @@ mod modules;
 mod status;
 
 pub use escrow::Escrow;
-pub use depositor::Depositor;
-pub use recipient::Recipient;
 pub use modules::{
     ModuleType,
-    ExpiryFallback,
-    MinimumAmount,
-    MultisigApproval,
-    SingleApproval,
-    TargetAmount,
-    Timelock
+    MinimumAmount
 };
 pub use status::Status;
+pub use recipient::Recipient;

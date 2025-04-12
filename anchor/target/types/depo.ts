@@ -14,6 +14,102 @@ export type Depo = {
   },
   "instructions": [
     {
+      "name": "addMinimumAmount",
+      "discriminator": [
+        102,
+        225,
+        199,
+        232,
+        81,
+        3,
+        105,
+        30
+      ],
+      "accounts": [
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "escrowId"
+              }
+            ]
+          }
+        },
+        {
+          "name": "minimumAmount",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  105,
+                  110,
+                  105,
+                  109,
+                  117,
+                  109,
+                  95,
+                  97,
+                  109,
+                  111,
+                  117,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              }
+            ]
+          }
+        },
+        {
+          "name": "initializer",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "escrow"
+          ]
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "escrowId",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
       "name": "addRecipient",
       "discriminator": [
         207,
@@ -175,6 +271,98 @@ export type Depo = {
       ]
     },
     {
+      "name": "removeMinimumAmount",
+      "discriminator": [
+        7,
+        0,
+        111,
+        90,
+        190,
+        141,
+        54,
+        101
+      ],
+      "accounts": [
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "escrowId"
+              }
+            ]
+          }
+        },
+        {
+          "name": "minimumAmount",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  105,
+                  110,
+                  105,
+                  109,
+                  117,
+                  109,
+                  95,
+                  97,
+                  109,
+                  111,
+                  117,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              }
+            ]
+          }
+        },
+        {
+          "name": "initializer",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "escrow"
+          ]
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "escrowId",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        }
+      ]
+    },
+    {
       "name": "removeRecipient",
       "discriminator": [
         155,
@@ -285,6 +473,19 @@ export type Depo = {
       ]
     },
     {
+      "name": "minimumAmount",
+      "discriminator": [
+        246,
+        81,
+        90,
+        144,
+        94,
+        202,
+        225,
+        58
+      ]
+    },
+    {
       "name": "recipient",
       "discriminator": [
         80,
@@ -301,8 +502,38 @@ export type Depo = {
   "errors": [
     {
       "code": 6000,
-      "name": "invalidVectorLength",
-      "msg": "Vector length exceeds allowed size."
+      "name": "nameTooLong",
+      "msg": "Escrow name is too long. Max length: 100 bytes."
+    },
+    {
+      "code": 6001,
+      "name": "descriptionTooLong",
+      "msg": "Escrow description is too long. Max length: 200 bytes."
+    },
+    {
+      "code": 6002,
+      "name": "unauthorizedRecipientModifier",
+      "msg": "Unauthorized to add or remove recipient"
+    },
+    {
+      "code": 6003,
+      "name": "escrowNotDraft",
+      "msg": "Escrow must be in Draft status to modify it"
+    },
+    {
+      "code": 6004,
+      "name": "noRecipients",
+      "msg": "No recipients in escrow"
+    },
+    {
+      "code": 6005,
+      "name": "moduleAlreadyExists",
+      "msg": "This module type already exists."
+    },
+    {
+      "code": 6006,
+      "name": "moduleDoesntExist",
+      "msg": "This module type doesn't exist."
     }
   ],
   "types": [
@@ -379,6 +610,18 @@ export type Depo = {
           {
             "name": "createdAt",
             "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "minimumAmount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "minAmount",
+            "type": "u64"
           }
         ]
       }
