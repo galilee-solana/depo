@@ -699,13 +699,8 @@
   "errors": [
     {
       "code": 6000,
-      "name": "MinimumAmountGreaterThanZero",
-      "msg": "Minimum amount must be greater than 0."
-    },
-    {
-      "code": 6001,
-      "name": "InsufficientAmount",
-      "msg": "Amount deposited is too low."
+      "name": "AlwaysFails",
+      "msg": "Always fails for testing"
     }
   ],
   "types": [

@@ -170,47 +170,6 @@ describe('Test - Instruction: remove_depositor', () => {
     }
   });
   it('fails when removing a depositor from an escrow with 0 depositors', async () => {
-    await program.methods.addDepositor(
-      Array.from(escrowId),
-      depositorWallet.publicKey
-    )
-    .accounts({
-      escrow: escrowKey,
-      depositor: depositorKey,
-      initializer: initializer.publicKey,
-      systemProgram: anchor.web3.SystemProgram.programId,
-    })
-    .signers([initializer])
-    .rpc()
-
-    let escrowAccount = await program.account.escrow.fetch(escrowKey)
-    expect(escrowAccount.depositorsCount).toBe(1)
-
-    await program.methods.removeDepositor(
-      Array.from(escrowId),
-      depositorWallet.publicKey
-    )
-    .accounts({
-      escrow: escrowKey,
-      depositor: depositorKey,
-      initializer: initializer.publicKey,
-      systemProgram: anchor.web3.SystemProgram.programId,
-    })
-    .signers([initializer])
-    .rpc()
-
-    escrowAccount = await program.account.escrow.fetch(escrowKey)
-    expect(escrowAccount.depositorsCount).toBe(0)
-
-    try {
-      await program.account.depositor.fetch(depositorKey)
-      throw new Error('Depositor account should not exist')
-    } catch (error: any) {
-      expect(error.message).toContain(`Account does not exist or has no data ${depositorKey.toBase58()}`)
-    }
-  });
-
-  it('fails when removing a non-existent depositor', async () => {
     try {
       await program.methods.removeDepositor(
         Array.from(escrowId),

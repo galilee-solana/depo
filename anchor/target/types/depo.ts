@@ -705,13 +705,8 @@ export type Depo = {
   "errors": [
     {
       "code": 6000,
-      "name": "minimumAmountGreaterThanZero",
-      "msg": "Minimum amount must be greater than 0."
-    },
-    {
-      "code": 6001,
-      "name": "insufficientAmount",
-      "msg": "Amount deposited is too low."
+      "name": "alwaysFails",
+      "msg": "Always fails for testing"
     }
   ],
   "types": [
