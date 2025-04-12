@@ -3,10 +3,20 @@
 console.log('ESCROW PAGE LOADED')
 
 import { useWallet } from '@solana/wallet-adapter-react'
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import EscrowCard from '@/components/escrowcard/EscrowCard'
 
 export default function EscrowPage() {
-  const wallet = useWallet()
+  const { connected } = useWallet()
+  const router = useRouter()
+
+  // Redirected to / if wallet not connected
+  useEffect(() => {
+    if (!connected) {
+      router.push('/')
+    }
+  }, [connected, router])
 
   // Add test const to check DepoCard display
   const EscrowList = [
@@ -19,17 +29,11 @@ export default function EscrowPage() {
     { id: 7, name: 'Achat groupé pour 7' },
   ]
 
-  console.log('WALLET CONNECTED ?', wallet.connected)
+  console.log('WALLET CONNECTED ?', connected.connected)
 
   return (
     <div>
-      {wallet.connected ? (
-        <EscrowCard EscrowList={EscrowList} />
-      ) : (
-        <div className="text-gray-500 text-center mt-6">
-          Please connect your wallet to view escrows.
-        </div>
-      )}
+        <EscrowCard EscrowList={EscrowList}/>
     </div>
   )
 }
