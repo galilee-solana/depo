@@ -2,11 +2,13 @@ use anchor_lang::prelude::*;
 use crate::states::{Escrow, Recipient, Status};
 use crate::errors::EscrowErrors;
 use crate::constants::ANCHOR_DISCRIMINATOR;
+
 /// Adds a recipient to the escrow
 ///
 /// # Arguments
 /// * `ctx` - The context containing the account and signer
 /// * `_escrow_id` - The unique identifier (UUID) for the escrow
+/// * `wallet` - The wallet address of the recipient
 ///
 /// # Returns
 /// * `Result<()>` - Result indicating success or failure
@@ -36,7 +38,7 @@ pub struct AddRecipient<'info> {
       mut,
       seeds = [b"escrow", escrow_id.as_ref()],
       bump,
-      has_one = initializer @ EscrowErrors::UnauthorizedRecipientModifier,
+      has_one = initializer @ EscrowErrors::UnauthorizedDepositorModifier,
     )]
     pub escrow: Account<'info, Escrow>,
 
@@ -46,7 +48,7 @@ pub struct AddRecipient<'info> {
         space = ANCHOR_DISCRIMINATOR + Recipient::INIT_SPACE,
         seeds = [b"recipient", escrow.key().as_ref(),  wallet.as_ref()],
         bump,
-        constraint = escrow.initializer == initializer.key() @ EscrowErrors::UnauthorizedRecipientModifier, // Only the initialiser can add a recipient
+        constraint = escrow.initializer == initializer.key() @ EscrowErrors::UnauthorizedDepositorModifier,
     )]
     pub recipient: Account<'info, Recipient>,
 
