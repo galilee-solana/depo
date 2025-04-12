@@ -127,40 +127,6 @@ describe('Test - Instruction: remove_recipient', () => {
   });
 
   it('fails when removing a non-existent recipient', async () => {
-    const uuid = uuidv4().replace(/-/g, '')
-    const escrowId = Uint8Array.from(Buffer.from(uuid, 'hex'))
-
-    const [escrowKey, _escrowBump] = anchor.web3.PublicKey.findProgramAddressSync(
-      [Buffer.from('escrow'), escrowId],
-      program.programId
-    )
-
-    const testName = 'TEST_ESCROW name'
-    const name = Buffer.from(testName, 'utf8')
-
-    const testDescription = 'TEST_ESCROW description'
-    const description = Buffer.from(testDescription, 'utf8')
-
-    await program.methods.createEscrow(
-      Array.from(escrowId),
-      name,
-      description
-    )
-    .accounts({
-      escrow: escrowKey,
-      signer: initializer.publicKey,
-      systemProgram: anchor.web3.SystemProgram.programId,
-    })
-    .signers([initializer])
-    .rpc()
-    
-    let escrowAccount = await program.account.escrow.fetch(escrowKey)
-    expect(escrowAccount.recipientsCount).toBe(0)
-
-    const [recipientKey, recipientBump] = anchor.web3.PublicKey.findProgramAddressSync(
-      [Buffer.from('recipient'), escrowKey.toBuffer(), recipientWallet.publicKey.toBuffer()],
-      program.programId
-    )
 
     await program.methods.addRecipient(
       Array.from(escrowId),
@@ -175,7 +141,7 @@ describe('Test - Instruction: remove_recipient', () => {
     .signers([initializer])
     .rpc()
 
-    escrowAccount = await program.account.escrow.fetch(escrowKey)
+    let escrowAccount = await program.account.escrow.fetch(escrowKey)
     expect(escrowAccount.recipientsCount).toBe(1)
 
     const recipientWallet2 = Keypair.generate()
@@ -205,41 +171,6 @@ describe('Test - Instruction: remove_recipient', () => {
     }
   });
   it('fails when removing a recipient from an escrow with 0 recipients', async () => {
-    const uuid = uuidv4().replace(/-/g, '')
-    const escrowId = Uint8Array.from(Buffer.from(uuid, 'hex'))
-
-    const [escrowKey, _escrowBump] = anchor.web3.PublicKey.findProgramAddressSync(
-      [Buffer.from('escrow'), escrowId],
-      program.programId
-    )
-
-    const testName = 'TEST_ESCROW name'
-    const name = Buffer.from(testName, 'utf8')
-
-    const testDescription = 'TEST_ESCROW description'
-    const description = Buffer.from(testDescription, 'utf8')
-
-    await program.methods.createEscrow(
-      Array.from(escrowId),
-      name,
-      description
-    )
-    .accounts({
-      escrow: escrowKey,
-      signer: initializer.publicKey,
-      systemProgram: anchor.web3.SystemProgram.programId,
-    })
-    .signers([initializer])
-    .rpc()
-    
-    let escrowAccount = await program.account.escrow.fetch(escrowKey)
-    expect(escrowAccount.recipientsCount).toBe(0)
-
-    const [recipientKey, recipientBump] = anchor.web3.PublicKey.findProgramAddressSync(
-      [Buffer.from('recipient'), escrowKey.toBuffer(), recipientWallet.publicKey.toBuffer()],
-      program.programId
-    )
-
     await program.methods.addRecipient(
       Array.from(escrowId),
       recipientWallet.publicKey
@@ -253,7 +184,7 @@ describe('Test - Instruction: remove_recipient', () => {
     .signers([initializer])
     .rpc()
 
-    escrowAccount = await program.account.escrow.fetch(escrowKey)
+    let escrowAccount = await program.account.escrow.fetch(escrowKey)
     expect(escrowAccount.recipientsCount).toBe(1)
 
     await program.methods.removeRecipient(
@@ -281,41 +212,6 @@ describe('Test - Instruction: remove_recipient', () => {
   });
 
   it('fails when removing a non-existent recipient', async () => {
-    const uuid = uuidv4().replace(/-/g, '')
-    const escrowId = Uint8Array.from(Buffer.from(uuid, 'hex'))
-
-    const [escrowKey, _escrowBump] = anchor.web3.PublicKey.findProgramAddressSync(
-      [Buffer.from('escrow'), escrowId],
-      program.programId
-    )
-
-    const testName = 'TEST_ESCROW name'
-    const name = Buffer.from(testName, 'utf8')
-
-    const testDescription = 'TEST_ESCROW description'
-    const description = Buffer.from(testDescription, 'utf8')
-
-    await program.methods.createEscrow(
-      Array.from(escrowId),
-      name,
-      description
-    )
-    .accounts({
-      escrow: escrowKey,
-      signer: initializer.publicKey,
-      systemProgram: anchor.web3.SystemProgram.programId,
-    })
-    .signers([initializer])
-    .rpc()
-    
-    let escrowAccount = await program.account.escrow.fetch(escrowKey)
-    expect(escrowAccount.recipientsCount).toBe(0)
-
-    const [recipientKey, recipientBump] = anchor.web3.PublicKey.findProgramAddressSync(
-      [Buffer.from('recipient'), escrowKey.toBuffer(), recipientWallet.publicKey.toBuffer()],
-      program.programId
-    )
-
     try {
       await program.methods.removeRecipient(
         Array.from(escrowId),
@@ -336,42 +232,7 @@ describe('Test - Instruction: remove_recipient', () => {
       expect(error.toString()).toContain('Error Message: The program expected this account to be already initialized.')
     }
   });
-  it('Fails when a non-initializer tries to add a recipient', async () => {
-    const uuid = uuidv4().replace(/-/g, '')
-    const escrowId = Uint8Array.from(Buffer.from(uuid, 'hex'))
-
-    const [escrowKey, _escrowBump] = anchor.web3.PublicKey.findProgramAddressSync(
-      [Buffer.from('escrow'), escrowId],
-      program.programId
-    )
-
-    const testName = 'TEST_ESCROW name'
-    const name = Buffer.from(testName, 'utf8')
-
-    const testDescription = 'TEST_ESCROW description'
-    const description = Buffer.from(testDescription, 'utf8')
-
-    await program.methods.createEscrow(
-      Array.from(escrowId),
-      name,
-      description
-    )
-    .accounts({
-      escrow: escrowKey,
-      signer: initializer.publicKey,
-      systemProgram: anchor.web3.SystemProgram.programId,
-    })
-    .signers([initializer])
-    .rpc()
-    
-    let escrowAccount = await program.account.escrow.fetch(escrowKey)
-    expect(escrowAccount.recipientsCount).toBe(0)
-
-    const [recipientKey, recipientBump] = anchor.web3.PublicKey.findProgramAddressSync(
-      [Buffer.from('recipient'), escrowKey.toBuffer(), recipientWallet.publicKey.toBuffer()],
-      program.programId
-    )
-
+  it('Fails when a non-initializer tries to remove a recipient', async () => {
     await program.methods.addRecipient(
       Array.from(escrowId),
       recipientWallet.publicKey
@@ -385,7 +246,7 @@ describe('Test - Instruction: remove_recipient', () => {
     .signers([initializer])
     .rpc()
 
-    escrowAccount = await program.account.escrow.fetch(escrowKey)
+    let escrowAccount = await program.account.escrow.fetch(escrowKey)
     expect(escrowAccount.recipientsCount).toBe(1)
 
     try {
