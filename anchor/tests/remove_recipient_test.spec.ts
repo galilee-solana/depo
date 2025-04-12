@@ -15,6 +15,11 @@ describe('Test - Instruction: remove_recipient', () => {
   const initializer = Keypair.generate()
   const recipientWallet = Keypair.generate()
 
+  let escrowKey: anchor.web3.PublicKey
+  let escrowId: Uint8Array
+
+  let recipientKey: anchor.web3.PublicKey
+
   beforeAll(async () => {
     // Airdrop to initializer
     const signature = await provider.connection.requestAirdrop(
@@ -35,20 +40,26 @@ describe('Test - Instruction: remove_recipient', () => {
     assert(balance2 > 0, 'Airdrop failed')
   })
 
-  it('Successfully Remove recipient and update escrow state', async () => {
+  beforeEach(async() => {
     const uuid = uuidv4().replace(/-/g, '')
-    const escrowId = Uint8Array.from(Buffer.from(uuid, 'hex'))
+    escrowId = Uint8Array.from(Buffer.from(uuid, 'hex'))
 
-    const [escrowKey, _escrowBump] = anchor.web3.PublicKey.findProgramAddressSync(
+    // Escrow Name (100 bytes)
+    const testName = 'TEST_ESCROW name'
+    const name = Buffer.alloc(100)
+    name.write(testName)
+
+    // Escrow Description (200 bytes)
+    const testDescription = 'TEST_ESCROW description'
+    const description = Buffer.alloc(200)
+    description.write(testDescription)
+
+    const [escrowkey, _escrowBump] = anchor.web3.PublicKey.findProgramAddressSync(
       [Buffer.from('escrow'), escrowId],
       program.programId
     )
 
-    const testName = 'TEST_ESCROW name'
-    const name = Buffer.from(testName, 'utf8')
-
-    const testDescription = 'TEST_ESCROW description'
-    const description = Buffer.from(testDescription, 'utf8')
+    escrowKey = escrowkey
 
     await program.methods.createEscrow(
       Array.from(escrowId),
@@ -64,13 +75,17 @@ describe('Test - Instruction: remove_recipient', () => {
     .rpc()
     
     let escrowAccount = await program.account.escrow.fetch(escrowKey)
-    expect(escrowAccount.recipientsCount).toBe(0)
+    expect(Buffer.from(escrowAccount.id).toString('hex')).toBe(uuid)
 
-    const [recipientKey, recipientBump] = anchor.web3.PublicKey.findProgramAddressSync(
+    const [recipientkey, _recipientBump] = anchor.web3.PublicKey.findProgramAddressSync(
       [Buffer.from('recipient'), escrowKey.toBuffer(), recipientWallet.publicKey.toBuffer()],
       program.programId
     )
 
+    recipientKey = recipientkey
+  })
+
+  it('Successfully Remove recipient and update escrow state', async () => {
     await program.methods.addRecipient(
       Array.from(escrowId),
       recipientWallet.publicKey
@@ -84,7 +99,7 @@ describe('Test - Instruction: remove_recipient', () => {
     .signers([initializer])
     .rpc()
 
-    escrowAccount = await program.account.escrow.fetch(escrowKey)
+    let escrowAccount = await program.account.escrow.fetch(escrowKey)
     expect(escrowAccount.recipientsCount).toBe(1)
 
     await program.methods.removeRecipient(
