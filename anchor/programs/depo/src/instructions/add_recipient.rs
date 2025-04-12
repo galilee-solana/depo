@@ -38,7 +38,7 @@ pub struct AddRecipient<'info> {
       mut,
       seeds = [b"escrow", escrow_id.as_ref()],
       bump,
-      has_one = initializer @ EscrowErrors::UnauthorizedDepositorModifier,
+      has_one = initializer @ EscrowErrors::UnauthorizedRecipientModifier,
     )]
     pub escrow: Account<'info, Escrow>,
 
@@ -48,7 +48,7 @@ pub struct AddRecipient<'info> {
         space = ANCHOR_DISCRIMINATOR + Recipient::INIT_SPACE,
         seeds = [b"recipient", escrow.key().as_ref(),  wallet.as_ref()],
         bump,
-        constraint = escrow.initializer == initializer.key() @ EscrowErrors::UnauthorizedDepositorModifier,
+        constraint = escrow.initializer == initializer.key() @ EscrowErrors::UnauthorizedRecipientModifier,
     )]
     pub recipient: Account<'info, Recipient>,
 

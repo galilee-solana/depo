@@ -26,6 +26,8 @@ pub fn add_depositor(
     depositor.amount = 0;
     depositor.was_refunded = false;
 
+    escrow.depositors_count += 1;
+
     Ok(())
 }
 

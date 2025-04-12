@@ -14,6 +14,101 @@ export type Depo = {
   },
   "instructions": [
     {
+      "name": "addDepositor",
+      "discriminator": [
+        115,
+        182,
+        221,
+        66,
+        112,
+        99,
+        44,
+        207
+      ],
+      "accounts": [
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "escrowId"
+              }
+            ]
+          }
+        },
+        {
+          "name": "depositor",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  112,
+                  111,
+                  115,
+                  105,
+                  116,
+                  111,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              },
+              {
+                "kind": "arg",
+                "path": "wallet"
+              }
+            ]
+          }
+        },
+        {
+          "name": "initializer",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "escrow"
+          ]
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "escrowId",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        },
+        {
+          "name": "wallet",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
       "name": "addRecipient",
       "discriminator": [
         207,
@@ -103,7 +198,7 @@ export type Depo = {
           }
         },
         {
-          "name": "walletPubkey",
+          "name": "wallet",
           "type": "pubkey"
         }
       ]
@@ -171,6 +266,101 @@ export type Depo = {
         {
           "name": "description",
           "type": "bytes"
+        }
+      ]
+    },
+    {
+      "name": "removeDepositor",
+      "discriminator": [
+        249,
+        204,
+        46,
+        217,
+        104,
+        32,
+        111,
+        42
+      ],
+      "accounts": [
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "escrowId"
+              }
+            ]
+          }
+        },
+        {
+          "name": "depositor",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  112,
+                  111,
+                  115,
+                  105,
+                  116,
+                  111,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              },
+              {
+                "kind": "arg",
+                "path": "wallet"
+              }
+            ]
+          }
+        },
+        {
+          "name": "initializer",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "escrow"
+          ]
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "escrowId",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        },
+        {
+          "name": "wallet",
+          "type": "pubkey"
         }
       ]
     },
@@ -264,13 +454,26 @@ export type Depo = {
           }
         },
         {
-          "name": "walletPubkey",
+          "name": "wallet",
           "type": "pubkey"
         }
       ]
     }
   ],
   "accounts": [
+    {
+      "name": "depositor",
+      "discriminator": [
+        219,
+        74,
+        92,
+        245,
+        101,
+        149,
+        45,
+        97
+      ]
+    },
     {
       "name": "escrow",
       "discriminator": [
@@ -306,6 +509,30 @@ export type Depo = {
     }
   ],
   "types": [
+    {
+      "name": "depositor",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "escrow",
+            "type": "pubkey"
+          },
+          {
+            "name": "wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "wasRefunded",
+            "type": "bool"
+          }
+        ]
+      }
+    },
     {
       "name": "escrow",
       "type": {
