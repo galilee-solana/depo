@@ -16,9 +16,11 @@ describe('remove_minimum_amount instruction test', () => {
   const initializer = Keypair.generate()
 
   let escrowKey: anchor.web3.PublicKey
+  let minimumAmountKey: anchor.web3.PublicKey
+
   let escrowId: Uint8Array
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const signature = await provider.connection.requestAirdrop(
         initializer.publicKey,
         10 * LAMPORTS_PER_SOL
@@ -28,7 +30,9 @@ describe('remove_minimum_amount instruction test', () => {
 
     const balance = await provider.connection.getBalance(initializer.publicKey)
     assert(balance > 0, 'Airdrop failed')
+  });
 
+  beforeEach(async () => {
     // UUID Generation
     const uuid = uuidv4().replace(/-/g, '')
     // Convert UUID to Uint8Array (16 bytes)
@@ -44,12 +48,12 @@ describe('remove_minimum_amount instruction test', () => {
     const description = Buffer.alloc(200)
     description.write(testDescription)
 
-    const [key, _] = anchor.web3.PublicKey.findProgramAddressSync(
+    const [escrowPDA, _escrowBump] = anchor.web3.PublicKey.findProgramAddressSync(
         [Buffer.from('escrow'), escrowId],
         program.programId
     )
 
-    escrowKey = key
+    escrowKey = escrowPDA
 
     await program.methods.createEscrow(
         Array.from(escrowId),
@@ -66,18 +70,14 @@ describe('remove_minimum_amount instruction test', () => {
 
     let escrowAccount = await program.account.escrow.fetch(escrowKey)
     expect(Buffer.from(escrowAccount.id).toString('hex')).toBe(uuid)
-  })
 
-  describe('Remove minimum amount', () => {
-    let minimumAmountKey: anchor.web3.PublicKey
 
-    beforeEach(async () => {
-      const [key, _] = anchor.web3.PublicKey.findProgramAddressSync(
+      const [minimumAmountPDA, _minimumAmountBump] = anchor.web3.PublicKey.findProgramAddressSync(
           [Buffer.from('minimum_amount'), escrowKey.toBuffer()],
           program.programId
       )
 
-      minimumAmountKey = key
+      minimumAmountKey = minimumAmountPDA
 
       await program.methods.addMinimumAmount(
           Array.from(escrowId),
@@ -95,7 +95,7 @@ describe('remove_minimum_amount instruction test', () => {
     });
 
 
-    it('removes the MinimumAmountAccount', async () => {
+    it('removes the MinimumAmountAccount and removes the minimum amount account from the escrow module list', async () => {
       await program.methods.removeMinimumAmount(Array.from(escrowId))
       .accounts({
         escrow: escrowKey,
@@ -116,23 +116,10 @@ describe('remove_minimum_amount instruction test', () => {
       expect(error).toBeDefined()
       expect(error.message).toMatch(/Account does not exist/i)
 
-    })
-
-    it('removes the minimum amount account from the escrow module list', async () => {
-      await program.methods.removeMinimumAmount(Array.from(escrowId))
-      .accounts({
-        escrow: escrowKey,
-        minimumAmount: minimumAmountKey,
-        initializer: initializer.publicKey,
-        systemProgram: anchor.web3.SystemProgram.programId,
-      })
-      .signers([initializer])
-      .rpc()
-
       let escrowAccount = await program.account.escrow.fetch(escrowKey);
 
       expect(escrowAccount.modules).toHaveLength(0);
-    });
+    })
 
     it('fails to remove a second time a minimumAmount module', async () => {
       await program.methods.removeMinimumAmount(Array.from(escrowId))
@@ -195,6 +182,4 @@ describe('remove_minimum_amount instruction test', () => {
       expect(error).toBeTruthy()
       expect(error.message).toMatch(/AnchorError caused by account: escrow. Error Code: ConstraintHasOne. Error Number: 2001. Error Message: A has one constraint was violated./i)
     })
-
-  });
 });

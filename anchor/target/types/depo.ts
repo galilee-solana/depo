@@ -299,28 +299,8 @@ export type Depo = {
   "errors": [
     {
       "code": 6000,
-      "name": "nameTooLong",
-      "msg": "Escrow name is too long. Max length: 100 bytes."
-    },
-    {
-      "code": 6001,
-      "name": "descriptionTooLong",
-      "msg": "Escrow description is too long. Max length: 200 bytes."
-    },
-    {
-      "code": 6002,
-      "name": "moduleAlreadyExists",
-      "msg": "This module type already exists."
-    },
-    {
-      "code": 6003,
-      "name": "moduleDoesntExist",
-      "msg": "This module type doesn't exist."
-    },
-    {
-      "code": 6004,
-      "name": "escrowNotDraft",
-      "msg": "Escrow must be in Draft status to modify it"
+      "name": "minimumAmountGreaterThanZero",
+      "msg": "Minimum amount must be greater than 0."
     }
   ],
   "types": [

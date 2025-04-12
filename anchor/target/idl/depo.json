@@ -293,28 +293,8 @@
   "errors": [
     {
       "code": 6000,
-      "name": "NameTooLong",
-      "msg": "Escrow name is too long. Max length: 100 bytes."
-    },
-    {
-      "code": 6001,
-      "name": "DescriptionTooLong",
-      "msg": "Escrow description is too long. Max length: 200 bytes."
-    },
-    {
-      "code": 6002,
-      "name": "ModuleAlreadyExists",
-      "msg": "This module type already exists."
-    },
-    {
-      "code": 6003,
-      "name": "ModuleDoesntExist",
-      "msg": "This module type doesn't exist."
-    },
-    {
-      "code": 6004,
-      "name": "EscrowNotDraft",
-      "msg": "Escrow must be in Draft status to modify it"
+      "name": "MinimumAmountGreaterThanZero",
+      "msg": "Minimum amount must be greater than 0."
     }
   ],
   "types": [
