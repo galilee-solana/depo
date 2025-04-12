@@ -16,7 +16,7 @@ use crate::utils::vec_to_fixed_size;
 /// # Returns
 /// * `Result<()>` - Result indicating success or failure
 pub fn create_escrow(
-    ctx: Context<CreateEscrowCtx>,
+    ctx: Context<CreateEscrow>,
     escrow_id: [u8; 16],
     name: Vec<u8>,
     description: Vec<u8>
@@ -27,7 +27,7 @@ pub fn create_escrow(
 
     let escrow = &mut ctx.accounts.escrow;
     escrow.id = escrow_id;
-    escrow.initialiser = ctx.accounts.signer.key();
+    escrow.initializer = ctx.accounts.signer.key();
 
     escrow.name = vec_to_fixed_size::<100>(name)?;
     escrow.description = vec_to_fixed_size::<200>(description)?;
@@ -47,7 +47,7 @@ pub fn create_escrow(
 
 #[derive(Accounts)]
 #[instruction(escrow_id: [u8; 16])]
-pub struct CreateEscrowCtx<'info> {
+pub struct CreateEscrow<'info> {
     #[account(
       init,
       payer = signer,

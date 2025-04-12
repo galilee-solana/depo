@@ -17,11 +17,27 @@ pub mod depo {
     use super::*;
 
     pub fn create_escrow(
-        ctx: Context<CreateEscrowCtx>,
+        ctx: Context<CreateEscrow>,
         escrow_id: [u8; 16],
         name: Vec<u8>,
         description: Vec<u8>
     ) -> Result<()> {
         instructions::create_escrow(ctx, escrow_id, name, description)
+    }
+
+    pub fn add_recipient(
+        ctx: Context<AddRecipient>,
+        escrow_id: [u8; 16],
+        wallet_pubkey: Pubkey
+    ) -> Result<()> {
+        instructions::add_recipient(ctx, escrow_id, wallet_pubkey)
+    }
+
+    pub fn remove_recipient(
+        ctx: Context<RemoveRecipient>,
+        escrow_id: [u8; 16],
+        wallet_pubkey: Pubkey
+    ) -> Result<()> {
+        instructions::remove_recipient(ctx, escrow_id, wallet_pubkey)
     }
 }
