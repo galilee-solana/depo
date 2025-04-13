@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-use crate::states::{Escrow, MinimumAmount, ModuleType, Status};
+use crate::states::{Escrow, MinimumAmount, ModuleAccount, ModuleType, Status};
 use crate::constants::ANCHOR_DISCRIMINATOR;
 use crate::errors::{EscrowErrors, MinimumAmountErrors};
 
@@ -20,14 +20,18 @@ pub fn add_minimum_amount(
     require!(min_amount > 0, MinimumAmountErrors::MinimumAmountGreaterThanZero);
 
     let escrow = &mut ctx.accounts.escrow;
-    require!(
-        !escrow.modules.contains(&ModuleType::MinimumAmount), 
-        EscrowErrors::ModuleAlreadyExists
-    );
 
     require!(escrow.status == Status::Draft, EscrowErrors::EscrowNotDraft);
 
-    escrow.modules.push(ModuleType::MinimumAmount);
+    require!(
+        !escrow.modules.iter().any(|m| m.module_type == ModuleType::MinimumAmount), 
+        EscrowErrors::ModuleAlreadyExists
+    );
+
+    escrow.modules.push(ModuleAccount {
+        module_type: ModuleType::MinimumAmount,
+        key: ctx.accounts.minimum_amount.key(),
+    });
 
     let minimum = &mut ctx.accounts.minimum_amount;
     minimum.min_amount = min_amount;

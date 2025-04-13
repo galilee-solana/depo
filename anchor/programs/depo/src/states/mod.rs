@@ -8,6 +8,8 @@ mod validation;
 pub use escrow::Escrow;
 pub use modules::{
     ModuleType,
+    ModuleAccount,
+    ConditionModule,
     MinimumAmount
 };
 pub use status::Status;

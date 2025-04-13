@@ -6,10 +6,12 @@ mod single_approval;
 mod target_amount;
 mod timelock;
 mod condition;
+mod module_account;
 
 pub use module_type::ModuleType;
 pub use minimum_amount::MinimumAmount;
 pub use condition::ConditionModule;
+pub use module_account::ModuleAccount;
 // pub use expiry_fallback::ExpiryFallback;
 // pub use multisig_approval::MultisigApproval;
 // pub use single_approval::SingleApproval;
