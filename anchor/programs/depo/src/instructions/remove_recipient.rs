@@ -7,6 +7,7 @@ use crate::errors::EscrowErrors;
 /// # Arguments
 /// * `ctx` - The context containing the account and signer
 /// * `_escrow_id` - The unique identifier (UUID) for the escrow
+/// * `_wallet` - The wallet address of the recipient
 ///
 /// # Returns
 /// * `Result<()>` - Result indicating success or failure
@@ -16,7 +17,7 @@ pub fn remove_recipient(
     _wallet: Pubkey
 ) -> Result<()> {
     let escrow = &mut ctx.accounts.escrow;
-    
+    require!(escrow.status == Status::Draft, EscrowErrors::EscrowNotDraft);
     require!(escrow.recipients_count > 0, EscrowErrors::NoRecipients);
 
     escrow.recipients_count -= 1;
@@ -39,8 +40,7 @@ pub struct RemoveRecipient<'info> {
         mut,
         seeds = [b"recipient", escrow.key().as_ref(), wallet.as_ref()],
         bump,
-        constraint = escrow.initializer == initializer.key() @ EscrowErrors::UnauthorizedRecipientModifier, // Only the initialiser can remove a recipient
-        constraint = escrow.status == Status::Draft @ EscrowErrors::EscrowNotDraft,
+        constraint = escrow.initializer == initializer.key() @ EscrowErrors::UnauthorizedRecipientModifier,
         close = initializer // TODO: Change to a fee collector (initialiser for now)
     )]
     pub recipient: Account<'info, Recipient>,

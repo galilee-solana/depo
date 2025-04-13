@@ -12,4 +12,5 @@ pub use modules::{
 };
 pub use status::Status;
 pub use recipient::Recipient;
+pub use depositor::Depositor;
 pub use validation::EscrowContext;

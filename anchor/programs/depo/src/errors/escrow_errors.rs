@@ -8,10 +8,14 @@ pub enum EscrowErrors {
     DescriptionTooLong,
     #[msg("Unauthorized to add or remove recipient")]
     UnauthorizedRecipientModifier,
+    #[msg("Unauthorized to add or remove depositor")]
+    UnauthorizedDepositorModifier,
     #[msg("Escrow must be in Draft status to modify it")]
     EscrowNotDraft,
     #[msg("No recipients in escrow")]
     NoRecipients,
+    #[msg("No depositors in escrow")]
+    NoDepositors,
     #[msg("This module type already exists.")]
     ModuleAlreadyExists,
     #[msg("This module type doesn't exist.")]
