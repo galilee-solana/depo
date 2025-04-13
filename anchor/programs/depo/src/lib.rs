@@ -86,4 +86,11 @@ pub mod depo {
     ) -> Result<()> {
         instructions::start_escrow(ctx, escrow_id)
     }
+    
+    pub fn release_escrow(
+        ctx: Context<ReleaseEscrow>,
+        escrow_id: [u8; 16],
+    ) -> Result<()> {
+        instructions::release_escrow(ctx, escrow_id)
+    }
 }

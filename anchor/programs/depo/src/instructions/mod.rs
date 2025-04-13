@@ -7,6 +7,7 @@ mod add_minimum_amount;
 mod remove_minimum_amount;
 mod deposit_escrow;
 mod start_escrow;
+mod release_escrow;
 
 pub use create_escrow::*;
 pub use add_recipient::*;
@@ -17,3 +18,4 @@ pub use add_minimum_amount::*;
 pub use remove_minimum_amount::*;
 pub use deposit_escrow::*;
 pub use start_escrow::*;
+pub use release_escrow::*;
