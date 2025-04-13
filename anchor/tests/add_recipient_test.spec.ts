@@ -135,7 +135,7 @@ describe('Test - Instruction: add_recipient', () => {
     }
 
     expect(err.error.errorCode.code).toBe("MaxPercentage")
-    expect(err.error.errorMessage).toBe("Max percentage is 10 0000 (represents 100%)")
+    expect(err.error.errorMessage).toBe("Max percentage is 10 000 (represents 100%)")
   })
   it("fails when adding a second recipient and then the percentage amount is greater than 100", async () => {
     await program.methods.addRecipient(

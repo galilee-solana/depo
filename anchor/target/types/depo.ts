@@ -984,12 +984,17 @@ export type Depo = {
     {
       "code": 6012,
       "name": "maxPercentage",
-      "msg": "Max percentage is 10 0000 (represents 100%)"
+      "msg": "Max percentage is 10 000 (represents 100%)"
     },
     {
       "code": 6013,
       "name": "escrowPercentageFull",
       "msg": "Insufficient remaining percentage in the escrow"
+    },
+    {
+      "code": 6014,
+      "name": "percentageDistribution",
+      "msg": "Percentage distribution should be equal to 10 000 (100%)"
     }
   ],
   "types": [

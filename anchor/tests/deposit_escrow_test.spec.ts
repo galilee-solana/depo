@@ -75,6 +75,26 @@ describe('Test - Instruction: deposit_escrow', () => {
     .signers([initializer])
     .rpc()
 
+    let recipientWallet = Keypair.generate()
+    const [recipientPDA, _recipientBump] = anchor.web3.PublicKey.findProgramAddressSync(
+        [Buffer.from('recipient'), escrowKey.toBuffer(), recipientWallet.publicKey.toBuffer()],
+        program.programId
+    )
+    await program.methods.addRecipient(
+        Array.from(escrowId),
+        recipientWallet.publicKey,
+        new BN(100 * 100)
+    )
+    .accounts({
+      escrow: escrowKey,
+      recipient: recipientPDA,
+      initializer: initializer.publicKey,
+      systemProgram: anchor.web3.SystemProgram.programId,
+    })
+    .signers([initializer])
+    .rpc()
+
+
     let escrowAccount = await program.account.escrow.fetch(escrowKey)
     expect(Buffer.from(escrowAccount.id).toString('hex')).toBe(uuid)
 

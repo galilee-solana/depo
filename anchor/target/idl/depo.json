@@ -978,12 +978,17 @@
     {
       "code": 6012,
       "name": "MaxPercentage",
-      "msg": "Max percentage is 10 0000 (represents 100%)"
+      "msg": "Max percentage is 10 000 (represents 100%)"
     },
     {
       "code": 6013,
       "name": "EscrowPercentageFull",
       "msg": "Insufficient remaining percentage in the escrow"
+    },
+    {
+      "code": 6014,
+      "name": "PercentageDistribution",
+      "msg": "Percentage distribution should be equal to 10 000 (100%)"
     }
   ],
   "types": [
