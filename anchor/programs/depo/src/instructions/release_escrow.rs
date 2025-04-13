@@ -16,6 +16,7 @@ pub fn release_escrow(
     _escrow_id: [u8; 16],
 ) -> Result<()> {
     let escrow = &mut ctx.accounts.escrow;
+    require!(escrow.status == Status::Started, EscrowErrors::EscrowNotStarted);
 
     // TODO check conditions for release
     
@@ -32,7 +33,6 @@ pub struct ReleaseEscrow<'info> {
       seeds = [b"escrow", escrow_id.as_ref()],
       bump,
       has_one = initializer,
-      constraint = escrow.status == Status::Started @ EscrowErrors::EscrowNotStarted
     )]
     pub escrow: Account<'info, Escrow>,
 
