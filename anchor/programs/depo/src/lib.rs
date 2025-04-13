@@ -64,11 +64,26 @@ pub mod depo {
     ) -> Result<()> {
         instructions::add_minimum_amount(ctx, escrow_id, amount)
     }
-    
+
     pub fn remove_minimum_amount(
         ctx: Context<RemoveMinimumAmount>,
         escrow_id: [u8; 16],
     ) -> Result<()> {
         instructions::remove_minimum_amount(ctx, escrow_id)
+    }
+
+    pub fn deposit_escrow(
+        ctx: Context<DepositEscrow>,
+        escrow_id: [u8; 16],
+        amount: u64,
+    ) -> Result<()> {
+        instructions::deposit_escrow(ctx, escrow_id, amount)
+    }
+    
+    pub fn start_escrow(
+        ctx: Context<StartEscrow>,
+        escrow_id: [u8; 16],
+    ) -> Result<()> {
+        instructions::start_escrow(ctx, escrow_id)
     }
 }

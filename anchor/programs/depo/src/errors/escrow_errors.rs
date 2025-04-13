@@ -12,6 +12,8 @@ pub enum EscrowErrors {
     UnauthorizedDepositorModifier,
     #[msg("Escrow must be in Draft status to modify it")]
     EscrowNotDraft,
+    #[msg("Escrow must be in Draft status to modify it")]
+    EscrowNotStarted,
     #[msg("No recipients in escrow")]
     NoRecipients,
     #[msg("No depositors in escrow")]
@@ -20,4 +22,8 @@ pub enum EscrowErrors {
     ModuleAlreadyExists,
     #[msg("This module type doesn't exist.")]
     ModuleDoesntExist,
+    #[msg("Invalid deposit amount.")]
+    InvalidDepositAmount,
+    #[msg("Unauthorized depositor.")]
+    UnauthorizedDepositor,
 }
