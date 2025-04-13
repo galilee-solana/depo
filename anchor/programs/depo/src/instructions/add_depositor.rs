@@ -1,7 +1,7 @@
-use anchor_lang::prelude::*;
-use crate::states::{Escrow, Depositor, Status};
-use crate::errors::EscrowErrors;
 use crate::constants::ANCHOR_DISCRIMINATOR;
+use crate::errors::EscrowErrors;
+use crate::states::{Depositor, Escrow, Status};
+use anchor_lang::prelude::*;
 
 /// Adds a depositor to the escrow
 ///
@@ -27,6 +27,7 @@ pub fn add_depositor(
     depositor.was_refunded = false;
 
     escrow.depositors_count += 1;
+    depositor.is_initialized = true;
 
     Ok(())
 }

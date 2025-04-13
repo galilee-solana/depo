@@ -1,3 +1,4 @@
+use crate::constants::ANCHOR_DISCRIMINATOR;
 use crate::errors::EscrowErrors;
 use crate::states::{Depositor, Escrow, Status};
 use anchor_lang::prelude::*;
@@ -18,10 +19,27 @@ pub fn deposit_escrow(
     amount: u64,
 ) -> Result<()> {
     let escrow = &mut ctx.accounts.escrow;
-    require!(escrow.status == Status::Started, EscrowErrors::EscrowNotStarted);
-    
+    require!(
+        escrow.status == Status::Started,
+        EscrowErrors::EscrowNotStarted
+    );
+
+    let depositor = &mut ctx.accounts.depositor;
+    if !depositor.is_initialized {
+        depositor.escrow = escrow.key();
+        depositor.deposited_amount = 0;
+        depositor.was_refunded = false;
+        depositor.is_initialized = true;
+        depositor.wallet = ctx.accounts.signer.key();
+        escrow.depositors_count += 1;
+    }
+    require!(
+        depositor.wallet == ctx.accounts.signer.key(),
+        EscrowErrors::UnauthorizedDepositor
+    );
+
     require!(amount > 0, EscrowErrors::InvalidDepositAmount);
-    
+
     system_program::transfer(
         CpiContext::new(
             ctx.accounts.system_program.to_account_info(),
@@ -33,10 +51,7 @@ pub fn deposit_escrow(
         amount,
     )?;
 
-    let depositor = &mut ctx.accounts.depositor;
     depositor.deposited_amount += amount;
-    
-    
     escrow.deposited_amount += amount;
 
     Ok(())
@@ -53,9 +68,11 @@ pub struct DepositEscrow<'info> {
     pub escrow: Account<'info, Escrow>,
 
     #[account(
+        init_if_needed,
+        payer = signer,
         seeds = [b"depositor", escrow.key().as_ref(), signer.key().as_ref()],
         bump,
-        constraint = depositor.wallet == signer.key() @ EscrowErrors::UnauthorizedDepositor
+        space = ANCHOR_DISCRIMINATOR + Depositor::INIT_SPACE,
     )]
     pub depositor: Account<'info, Depositor>,
 

@@ -917,73 +917,8 @@
   "errors": [
     {
       "code": 6000,
-      "name": "NameTooLong",
-      "msg": "Escrow name is too long. Max length: 100 bytes."
-    },
-    {
-      "code": 6001,
-      "name": "DescriptionTooLong",
-      "msg": "Escrow description is too long. Max length: 200 bytes."
-    },
-    {
-      "code": 6002,
-      "name": "UnauthorizedRecipientModifier",
-      "msg": "Unauthorized to add or remove recipient"
-    },
-    {
-      "code": 6003,
-      "name": "UnauthorizedDepositorModifier",
-      "msg": "Unauthorized to add or remove depositor"
-    },
-    {
-      "code": 6004,
-      "name": "EscrowNotDraft",
-      "msg": "Escrow must be in Draft status to modify it"
-    },
-    {
-      "code": 6005,
-      "name": "EscrowNotStarted",
-      "msg": "Escrow must be in Draft status to modify it"
-    },
-    {
-      "code": 6006,
-      "name": "NoRecipients",
-      "msg": "No recipients in escrow"
-    },
-    {
-      "code": 6007,
-      "name": "NoDepositors",
-      "msg": "No depositors in escrow"
-    },
-    {
-      "code": 6008,
-      "name": "ModuleAlreadyExists",
-      "msg": "This module type already exists."
-    },
-    {
-      "code": 6009,
-      "name": "ModuleDoesntExist",
-      "msg": "This module type doesn't exist."
-    },
-    {
-      "code": 6010,
-      "name": "InvalidDepositAmount",
-      "msg": "Invalid deposit amount."
-    },
-    {
-      "code": 6011,
-      "name": "UnauthorizedDepositor",
-      "msg": "Unauthorized depositor."
-    },
-    {
-      "code": 6012,
-      "name": "MaxPercentage",
-      "msg": "Max percentage is 10 0000 (represents 100%)"
-    },
-    {
-      "code": 6013,
-      "name": "EscrowPercentageFull",
-      "msg": "Insufficient remaining percentage in the escrow"
+      "name": "AlwaysFails",
+      "msg": "Always fails for testing"
     }
   ],
   "types": [
@@ -1006,6 +941,10 @@
           },
           {
             "name": "was_refunded",
+            "type": "bool"
+          },
+          {
+            "name": "is_initialized",
             "type": "bool"
           }
         ]
