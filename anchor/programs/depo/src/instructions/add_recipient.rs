@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use crate::states::{Escrow, Recipient, Status};
 use crate::errors::EscrowErrors;
-use crate::constants::ANCHOR_DISCRIMINATOR;
+use crate::constants::{ANCHOR_DISCRIMINATOR, MAX_PERCENTAGE};
 
 /// Adds a recipient to the escrow
 ///
@@ -15,18 +15,23 @@ use crate::constants::ANCHOR_DISCRIMINATOR;
 pub fn add_recipient(
     ctx: Context<AddRecipient>,
     _escrow_id: [u8; 16],
-    wallet: Pubkey
+    wallet: Pubkey,
+    percentage: u16,
 ) -> Result<()> {
     let escrow = &mut ctx.accounts.escrow;
     require!(escrow.status == Status::Draft, EscrowErrors::EscrowNotDraft);
+    
+    require!(percentage <= MAX_PERCENTAGE, EscrowErrors::MaxPercentage);
+    require!(escrow.remaining_percentage >= percentage, EscrowErrors::EscrowPercentageFull);
 
     let recipient = &mut ctx.accounts.recipient;
     recipient.escrow = escrow.key();
     recipient.wallet = wallet;
-    recipient.amount = 0;
+    recipient.percentage = percentage;
     recipient.has_withdrawn = false;
 
-    escrow.recipients_count += 1;    
+    escrow.recipients_count += 1;
+    escrow.remaining_percentage -= percentage;
 
     Ok(())
 }

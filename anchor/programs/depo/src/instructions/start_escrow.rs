@@ -16,6 +16,7 @@ pub fn start_escrow(
     _escrow_id: [u8; 16],
 ) -> Result<()> {
     let escrow = &mut ctx.accounts.escrow;
+    require!(escrow.status == Status::Draft, EscrowErrors::EscrowNotDraft);
 
     escrow.status = Status::Started;
 
@@ -30,7 +31,6 @@ pub struct StartEscrow<'info> {
       seeds = [b"escrow", escrow_id.as_ref()],
       bump,
       has_one = initializer,
-      constraint = escrow.status == Status::Draft @ EscrowErrors::EscrowNotDraft
     )]
     pub escrow: Account<'info, Escrow>,
 

@@ -4,6 +4,7 @@ import { Keypair, LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { Depo } from '../target/types/depo'
 import { v4 as uuidv4 } from 'uuid'
 import { strict as assert } from 'assert'
+import {BN} from "bn.js";
 
 
 describe('Test - Instruction: remove_recipient', () => {
@@ -88,7 +89,8 @@ describe('Test - Instruction: remove_recipient', () => {
   it('Successfully Remove recipient and update escrow state', async () => {
     await program.methods.addRecipient(
       Array.from(escrowId),
-      recipientWallet.publicKey
+      recipientWallet.publicKey,
+      new BN(5 * 100)
     )
     .accounts({
       escrow: escrowKey,
@@ -101,6 +103,7 @@ describe('Test - Instruction: remove_recipient', () => {
 
     let escrowAccount = await program.account.escrow.fetch(escrowKey)
     expect(escrowAccount.recipientsCount).toBe(1)
+    expect(escrowAccount.remainingPercentage).toBe(9500) // 95% in basis points
 
     await program.methods.removeRecipient(
       Array.from(escrowId),
@@ -117,6 +120,7 @@ describe('Test - Instruction: remove_recipient', () => {
 
     escrowAccount = await program.account.escrow.fetch(escrowKey)
     expect(escrowAccount.recipientsCount).toBe(0)
+    expect(escrowAccount.remainingPercentage).toBe(10000) // 100% in basis points
 
     try {
       await program.account.recipient.fetch(recipientKey)
@@ -130,7 +134,8 @@ describe('Test - Instruction: remove_recipient', () => {
 
     await program.methods.addRecipient(
       Array.from(escrowId),
-      recipientWallet.publicKey
+      recipientWallet.publicKey,
+      new BN(5 * 100)
     )
     .accounts({
       escrow: escrowKey,
@@ -173,7 +178,8 @@ describe('Test - Instruction: remove_recipient', () => {
   it('fails when removing a recipient from an escrow with 0 recipients', async () => {
     await program.methods.addRecipient(
       Array.from(escrowId),
-      recipientWallet.publicKey
+      recipientWallet.publicKey,
+      new BN(5 * 100)
     )
     .accounts({
       escrow: escrowKey,
@@ -235,7 +241,8 @@ describe('Test - Instruction: remove_recipient', () => {
   it('Fails when a non-initializer tries to remove a recipient', async () => {
     await program.methods.addRecipient(
       Array.from(escrowId),
-      recipientWallet.publicKey
+      recipientWallet.publicKey,
+      new BN(5*100)
     )
     .accounts({
       escrow: escrowKey,

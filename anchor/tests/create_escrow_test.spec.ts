@@ -70,7 +70,9 @@ describe('Test- Intruction: create_escrow', () => {
 
     expect(storedName).toBe(testName)
     expect(storedDescription).toBe(testDescription)
-    expect(escrowAccount.totalAmount.toNumber()).toBe(0)
+    expect(escrowAccount.depositedAmount.toNumber()).toBe(0)
+    expect(escrowAccount.withdrawnAmount.toNumber()).toBe(0)
+    expect(escrowAccount.remainingPercentage).toBe(10000); // 100% in basis points
     expect(escrowAccount.isPublicDeposit).toBe(true)
     expect(escrowAccount.depositorsCount).toBe(0)
     expect(escrowAccount.recipientsCount).toBe(0)

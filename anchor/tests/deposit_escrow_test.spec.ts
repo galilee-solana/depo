@@ -106,7 +106,7 @@ describe('Test - Instruction: deposit_escrow', () => {
       expect(escrowAccount.depositorsCount).toBe(1)
 
       const depositorAccount = await program.account.depositor.fetch(depositorKey)
-      expect(depositorAccount.amount.toNumber()).toBe(0);
+      expect(depositorAccount.depositedAmount.toNumber()).toBe(0);
     });
 
     describe("when the escrow is started", () => {
@@ -144,13 +144,16 @@ describe('Test - Instruction: deposit_escrow', () => {
         ).signers([depositorWallet]).rpc()
 
         const depositorAccount = await program.account.depositor.fetch(depositorKey)
-        expect(depositorAccount.amount.toNumber()).toBe(2 * LAMPORTS_PER_SOL)
+        expect(depositorAccount.depositedAmount.toNumber()).toBe(2 * LAMPORTS_PER_SOL)
 
-        depositorBalance = await provider.connection.getBalance(depositorWallet.publicKey);
-        expect(depositorBalance).toBe(8 * LAMPORTS_PER_SOL);
+        depositorBalance = await provider.connection.getBalance(depositorWallet.publicKey)
+        expect(depositorBalance).toBe(8 * LAMPORTS_PER_SOL)
 
-        let escrowBalanceAfter = await provider.connection.getBalance(escrowKey);
-        expect(escrowBalanceAfter - escrowBalanceBefore).toBe(2 * LAMPORTS_PER_SOL);
+        let escrowBalanceAfter = await provider.connection.getBalance(escrowKey)
+        expect(escrowBalanceAfter - escrowBalanceBefore).toBe(2 * LAMPORTS_PER_SOL)
+
+        let escrow = await program.account.escrow.fetch(escrowKey)
+        expect(escrow.depositedAmount.toNumber()).toBe(2 * LAMPORTS_PER_SOL)
       });
 
       it("fails when amount is zero", async () => {

@@ -17,6 +17,9 @@ pub fn deposit_escrow(
     _escrow_id: [u8; 16],
     amount: u64,
 ) -> Result<()> {
+    let escrow = &mut ctx.accounts.escrow;
+    require!(escrow.status == Status::Started, EscrowErrors::EscrowNotStarted);
+    
     require!(amount > 0, EscrowErrors::InvalidDepositAmount);
     
     system_program::transfer(
@@ -24,14 +27,17 @@ pub fn deposit_escrow(
             ctx.accounts.system_program.to_account_info(),
             system_program::Transfer {
                 from: ctx.accounts.signer.to_account_info(),
-                to: ctx.accounts.escrow.to_account_info(),
+                to: escrow.to_account_info(),
             },
         ),
         amount,
     )?;
 
     let depositor = &mut ctx.accounts.depositor;
-    depositor.amount += amount;
+    depositor.deposited_amount += amount;
+    
+    
+    escrow.deposited_amount += amount;
 
     Ok(())
 }
@@ -43,12 +49,10 @@ pub struct DepositEscrow<'info> {
       mut,
       seeds = [b"escrow", escrow_id.as_ref()],
       bump,
-      constraint = escrow.status == Status::Started @ EscrowErrors::EscrowNotStarted
     )]
     pub escrow: Account<'info, Escrow>,
 
     #[account(
-        mut,
         seeds = [b"depositor", escrow.key().as_ref(), signer.key().as_ref()],
         bump,
         constraint = depositor.wallet == signer.key() @ EscrowErrors::UnauthorizedDepositor
