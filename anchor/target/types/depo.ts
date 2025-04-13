@@ -864,6 +864,94 @@ export type Depo = {
           }
         }
       ]
+    },
+    {
+      "name": "withdrawEscrow",
+      "discriminator": [
+        81,
+        84,
+        226,
+        128,
+        245,
+        47,
+        96,
+        104
+      ],
+      "accounts": [
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "escrowId"
+              }
+            ]
+          }
+        },
+        {
+          "name": "recipient",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  99,
+                  105,
+                  112,
+                  105,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              },
+              {
+                "kind": "account",
+                "path": "signer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "escrowId",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        }
+      ]
     }
   ],
   "accounts": [
@@ -995,6 +1083,26 @@ export type Depo = {
       "code": 6014,
       "name": "percentageDistribution",
       "msg": "Percentage distribution should be equal to 10 000 (100%)"
+    },
+    {
+      "code": 6015,
+      "name": "alreadyWithdrawn",
+      "msg": "Recipient has already withdrawn"
+    },
+    {
+      "code": 6016,
+      "name": "withdrawInvalidEscrowStatus",
+      "msg": "Withdraw is only available when the escrow is released"
+    },
+    {
+      "code": 6017,
+      "name": "unauthorizedToWithdraw",
+      "msg": "Unauthorized to withdraw escrow"
+    },
+    {
+      "code": 6018,
+      "name": "insufficientFunds",
+      "msg": "Escrow has insufficient funds"
     }
   ],
   "types": [

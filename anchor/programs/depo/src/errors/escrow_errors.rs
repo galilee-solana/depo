@@ -31,5 +31,13 @@ pub enum EscrowErrors {
     #[msg("Insufficient remaining percentage in the escrow")]
     EscrowPercentageFull,
     #[msg("Percentage distribution should be equal to 10 000 (100%)")]
-    PercentageDistribution
+    PercentageDistribution,
+    #[msg("Recipient has already withdrawn")]
+    AlreadyWithdrawn,
+    #[msg("Withdraw is only available when the escrow is released")]
+    WithdrawInvalidEscrowStatus,
+    #[msg("Unauthorized to withdraw escrow")]
+    UnauthorizedToWithdraw,
+    #[msg("Escrow has insufficient funds")]
+    InsufficientFunds
 }
