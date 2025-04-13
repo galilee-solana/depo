@@ -923,8 +923,73 @@ export type Depo = {
   "errors": [
     {
       "code": 6000,
-      "name": "alwaysFails",
-      "msg": "Always fails for testing"
+      "name": "nameTooLong",
+      "msg": "Escrow name is too long. Max length: 100 bytes."
+    },
+    {
+      "code": 6001,
+      "name": "descriptionTooLong",
+      "msg": "Escrow description is too long. Max length: 200 bytes."
+    },
+    {
+      "code": 6002,
+      "name": "unauthorizedRecipientModifier",
+      "msg": "Unauthorized to add or remove recipient"
+    },
+    {
+      "code": 6003,
+      "name": "unauthorizedDepositorModifier",
+      "msg": "Unauthorized to add or remove depositor"
+    },
+    {
+      "code": 6004,
+      "name": "escrowNotDraft",
+      "msg": "Escrow must be in Draft status to modify it"
+    },
+    {
+      "code": 6005,
+      "name": "escrowNotStarted",
+      "msg": "Escrow must be in Draft status to modify it"
+    },
+    {
+      "code": 6006,
+      "name": "noRecipients",
+      "msg": "No recipients in escrow"
+    },
+    {
+      "code": 6007,
+      "name": "noDepositors",
+      "msg": "No depositors in escrow"
+    },
+    {
+      "code": 6008,
+      "name": "moduleAlreadyExists",
+      "msg": "This module type already exists."
+    },
+    {
+      "code": 6009,
+      "name": "moduleDoesntExist",
+      "msg": "This module type doesn't exist."
+    },
+    {
+      "code": 6010,
+      "name": "invalidDepositAmount",
+      "msg": "Invalid deposit amount."
+    },
+    {
+      "code": 6011,
+      "name": "unauthorizedDepositor",
+      "msg": "Unauthorized depositor."
+    },
+    {
+      "code": 6012,
+      "name": "maxPercentage",
+      "msg": "Max percentage is 10 0000 (represents 100%)"
+    },
+    {
+      "code": 6013,
+      "name": "escrowPercentageFull",
+      "msg": "Insufficient remaining percentage in the escrow"
     }
   ],
   "types": [
