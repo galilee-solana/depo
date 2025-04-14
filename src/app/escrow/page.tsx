@@ -29,7 +29,7 @@ export default function EscrowPage() {
     { id: 7, name: 'Achat groupé pour 7' },
   ]
 
-  console.log('WALLET CONNECTED ?', connected.connected)
+  console.log('WALLET CONNECTED ?', connected)
 
   return (
     <div>
