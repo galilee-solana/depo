@@ -10,12 +10,13 @@ use crate::errors::{EscrowErrors, ReleaseErrors, GeneralErrors};
 ///
 /// # Returns
 /// * `Result<()>` - Result indicating success or failure
-pub fn release_escrow<'a, 'b, 'c, 'info>(
-    ctx: Context<'a, 'b, 'c, 'info, ReleaseEscrow<'info>>,
+pub fn release_escrow<'ctx_lifetime, 'accounts, 'remaining, 'info>(
+    ctx: Context<'ctx_lifetime, 'accounts, 'remaining, 'info, ReleaseEscrow<'info>>,
     _escrow_id: [u8; 16],
 ) -> Result<()> 
 where
-    'c: 'info,
+    // remaining accounts lifetime must outlive the program account lifetime
+    'remaining: 'info,
 {
     let escrow = &mut ctx.accounts.escrow;
     require!(escrow.status == Status::Started, EscrowErrors::EscrowNotStarted);
