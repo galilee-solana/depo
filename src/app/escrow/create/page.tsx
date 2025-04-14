@@ -103,11 +103,11 @@ export default function CreateEscrow() {
       />
 
       <button
-        onClick={() => router.push('/escrow/create/add_description')}
+        onClick={() => router.push('/escrow/create/add_options')}
         className="text-left text-black flex items-center space-x-2"
       >
         <span>➕</span>
-        <span>Add a description message</span>
+        <span>Add options</span>
       </button>
 
       <button
