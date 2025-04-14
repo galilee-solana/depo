@@ -1,5 +1,4 @@
 use crate::states::Escrow;
-use crate::states::modules::ConditionModuleTrait;
 use crate::states::modules::ConditionModule;
 use anchor_lang::prelude::*;
 
@@ -48,6 +47,7 @@ mod tests {
     use crate::utils::test_helpers::mocks::MockEscrow;
     use crate::states::MinimumAmount;
     use crate::errors::MinimumAmountErrors;
+    use crate::states::modules::ConditionModuleTrait;
     use super::*;
     
     #[error_code]
