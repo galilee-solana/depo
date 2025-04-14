@@ -12,6 +12,7 @@ export default function CreateEscrow() {
   const router = useRouter()
 
   const [name, setName] = useState('')
+  const [description, setDescription] = useState('')
   const [startTimeEnabled, setStartTimeEnabled] = useState(false)
   const [startTime, setStartTime] = useState('')
   const [timelockEnabled, setTimelockEnabled] = useState(false)
@@ -59,6 +60,13 @@ export default function CreateEscrow() {
       <input
         placeholder="Deposit name #1"
         className="w-full px-3 py-2 border-2 border-black rounded-2xl bg-white text-black"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+      />
+
+      <input
+        placeholder="Description"
+        className="w-full px-3 py-2 border-2 border-black rounded-2xl bg-white text-black"
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
@@ -102,7 +110,7 @@ export default function CreateEscrow() {
       <button
         onClick={() => router.push('/escrow/create/add_options')}
         className="text-left text-black flex items-center space-x-2"
-      >
+        >
         <span>➕</span>
         <span>Add options</span>
       </button>
