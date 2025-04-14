@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 use crate::errors::MinimumAmountErrors;
-use crate::states::modules::condition::ConditionModuleTrait;
+use crate::states::modules::ConditionModuleTrait;
 use crate::states::EscrowContext;
 
 #[account]
