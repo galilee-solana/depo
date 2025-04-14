@@ -9,7 +9,7 @@ pub struct MinimumAmount {
   pub min_amount: u64   
 }
 
-impl<'info> ConditionModule for MinimumAmount {
+impl ConditionModule for MinimumAmount {
   fn is_satisfied(&self, escrow_account: &dyn EscrowContext) -> Result<()>{
     let escrow_balance = escrow_account.lamports();
 

@@ -44,9 +44,9 @@ pub fn validate_escrow_conditions(
 }
 
 // Add new function that uses the enum
-pub fn validate_module_conditions<'info>(
+pub fn validate_module_conditions(
     escrow: &dyn EscrowContext,
-    modules: &[ModuleCondition<'info>]
+    modules: &[ModuleCondition]
 ) -> Result<()> {
     let mut errors = Vec::new();
 
