@@ -1011,8 +1011,8 @@ export type Depo = {
   "errors": [
     {
       "code": 6000,
-      "name": "invalidVectorLength",
-      "msg": "Vector length exceeds allowed size."
+      "name": "alwaysFails",
+      "msg": "Always fails for testing"
     }
   ],
   "types": [

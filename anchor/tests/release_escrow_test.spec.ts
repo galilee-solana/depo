@@ -13,11 +13,13 @@ describe('Test - Instruction: release_escrow', () => {
 
   const initializer = Keypair.generate()
   const depositorWallet = Keypair.generate()
+  const recipientWallet = Keypair.generate()
 
   let escrowKey: anchor.web3.PublicKey
   let escrowId: Uint8Array
 
   let depositorKey: anchor.web3.PublicKey
+  let recipientKey: anchor.web3.PublicKey
 
   let minimumAmountKey: anchor.web3.PublicKey
 
@@ -42,9 +44,7 @@ describe('Test - Instruction: release_escrow', () => {
   })
 
   beforeEach(async () => {
-    // UUID Generation
     const uuid = uuidv4().replace(/-/g, '')
-    // Convert UUID to Uint8Array (16 bytes)
     escrowId = Uint8Array.from(Buffer.from(uuid, 'hex'))
 
     // Escrow Name (100 bytes)
@@ -80,21 +80,41 @@ describe('Test - Instruction: release_escrow', () => {
     let escrowAccount = await program.account.escrow.fetch(escrowKey)
     expect(Buffer.from(escrowAccount.id).toString('hex')).toBe(uuid)
 
-    const [minimumAmountPDA, _] = anchor.web3.PublicKey.findProgramAddressSync(
-        [Buffer.from('minimum_amount'), escrowKey.toBuffer()],
-        program.programId
-    )
-    minimumAmountKey = minimumAmountPDA
-
     const [depositorPDA, _depositorBump] = anchor.web3.PublicKey.findProgramAddressSync(
       [Buffer.from('depositor'), escrowKey.toBuffer(), depositorWallet.publicKey.toBuffer()],
       program.programId
     )
     depositorKey = depositorPDA
+
+    const [recipientPDA, _recipientBump] = anchor.web3.PublicKey.findProgramAddressSync(
+      [Buffer.from('recipient'), escrowKey.toBuffer(), recipientWallet.publicKey.toBuffer()],
+      program.programId
+    )
+    recipientKey = recipientPDA
+
+    await program.methods.addRecipient(
+      Array.from(escrowId),
+      recipientWallet.publicKey,
+      100 * 100 // 100%
+    )
+    .accounts({
+      escrow: escrowKey,
+      recipient: recipientKey,
+      initializer: initializer.publicKey,
+      systemProgram: anchor.web3.SystemProgram.programId,
+    })
+    .signers([initializer])
+    .rpc()
   })
 
   describe("when the escrow is started & one module is added (MinimunAmount)", () => {
     beforeEach(async () => {
+      const [minimumAmountPDA, _] = anchor.web3.PublicKey.findProgramAddressSync(
+        [Buffer.from('minimum_amount'), escrowKey.toBuffer()],
+        program.programId
+      )
+      minimumAmountKey = minimumAmountPDA
+
       // Add MinimumAmount of 2 SOL
       await program.methods.addMinimumAmount(
         Array.from(escrowId),
@@ -131,7 +151,35 @@ describe('Test - Instruction: release_escrow', () => {
     })
 
     it("Successfully released an escrow with one module: MinimunAmount", async () => {
+      await program.methods.depositEscrow(
+        Array.from(escrowId),
+        new BN(2 * LAMPORTS_PER_SOL)
+      ).accounts(
+        {
+          escrow: escrowKey,
+          depositor: depositorKey,
+          signer: depositorWallet.publicKey,
+          systemProgram: anchor.web3.SystemProgram.programId,
+        }
+      ).signers([depositorWallet]).rpc()
 
+      await program.methods.releaseEscrow(
+        Array.from(escrowId)
+      ).accounts({
+        escrow: escrowKey,
+        initializer: initializer.publicKey,
+      }).signers([initializer])
+      .remainingAccounts([
+        {
+          pubkey: minimumAmountKey,
+          isWritable: true,
+          isSigner: false
+        }
+      ])
+      .rpc()
+
+      let escrowAccount = await program.account.escrow.fetch(escrowKey)
+      expect(escrowAccount.status).toEqual({released: {}});
     })
 
     it("Fails when module condition is not met", async () => {
