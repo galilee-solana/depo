@@ -4,6 +4,6 @@ use anchor_lang::prelude::*;
 pub enum GeneralErrors {
   #[msg("Vector length exceeds allowed size.")]
   InvalidVectorLength,
-  #[msg("Invalid account owner.")]
+  #[msg("Account does not have the correct program id")]
   InvalidAccountOwner,
 }

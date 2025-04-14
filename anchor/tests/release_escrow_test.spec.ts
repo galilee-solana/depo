@@ -183,24 +183,115 @@ describe('Test - Instruction: release_escrow', () => {
     })
 
     it("Fails when module condition is not met", async () => {
+      await program.methods.depositEscrow(
+        Array.from(escrowId),
+        new BN(1.99 * LAMPORTS_PER_SOL)
+      ).accounts(
+        {
+          escrow: escrowKey,
+          depositor: depositorKey,
+          signer: depositorWallet.publicKey,
+          systemProgram: anchor.web3.SystemProgram.programId,
+        }
+      ).signers([depositorWallet]).rpc()
 
+      try {
+        await program.methods.releaseEscrow(
+          Array.from(escrowId)
+        ).accounts({
+          escrow: escrowKey,
+          initializer: initializer.publicKey,
+        }).signers([initializer]) 
+        .remainingAccounts([
+          {
+            pubkey: minimumAmountKey,
+            isWritable: true,
+            isSigner: false
+          }
+        ])
+      .rpc()
+
+      throw new Error('Should not be able to release escrow since minimum amount is not met')
+      } catch (error: any) {
+        expect(error.toString()).toContain('Error Code: ValidationFailed')
+        expect(error.toString()).toContain('Validation failed. The escrow is not released.')
+
+        let escrowAccount = await program.account.escrow.fetch(escrowKey)
+        expect(escrowAccount.status).toEqual({started: {}});
+      }
     })
 
     it("Fails when not all modules are provided in remaining_accounts", async () => {
+      try {
+        await program.methods.releaseEscrow(
+          Array.from(escrowId)
+        ).accounts({
+          escrow: escrowKey,
+          initializer: initializer.publicKey,
+        }).signers([initializer])
+        .remainingAccounts([])
+        .rpc()
 
+        throw new Error('Should not be able to release escrow since minimum amount is not met')
+      } catch (error: any) {
+        expect(error.toString()).toContain('Error Code: InvalidNumberOfAccounts')
+        expect(error.toString()).toContain('Error Message: Invalid number of accounts.')
+      }
     })
 
     it("Fails when providing invalid module accounts", async () => {
-
+      
     })
 
     it("Fails when module account has invalid owner", async () => {
-
+      // Create a system-owned account (not owned by our program)
+      const randomKeypair = Keypair.generate();
+      const signature = await provider.connection.requestAirdrop(
+        randomKeypair.publicKey,
+        1 * LAMPORTS_PER_SOL
+      );
+      await provider.connection.confirmTransaction(signature);
+      
+      try {
+        await program.methods.releaseEscrow(
+          Array.from(escrowId)
+        ).accounts({
+          escrow: escrowKey,
+          initializer: initializer.publicKey,
+          systemProgram: anchor.web3.SystemProgram.programId,
+        }).signers([initializer])
+        .remainingAccounts([
+          {
+            pubkey: randomKeypair.publicKey, // This key is owned by System Program, not our program
+            isWritable: true,
+            isSigner: false
+          }
+        ])
+        .rpc();
+        
+        throw new Error('Should fail when account owner is not the program');
+      } catch (error: any) {
+        expect(error.toString()).toContain('Error Code: InvalidAccountOwner');
+        expect(error.toString()).toContain('Account does not have the correct program id');
+      }
     })
   })
 
   it("Fails when the escrow isn't Started", async () => {
+    try {
+      await program.methods.releaseEscrow(
+        Array.from(escrowId)
+      ).accounts({
+        escrow: escrowKey,
+        initializer: initializer.publicKey,
+      }).signers([initializer])
+      .rpc()
 
+      throw new Error('Should fail when escrow is not started')
+    } catch (error: any) {
+      expect(error.toString()).toContain('Error Code: EscrowNotStarted')
+      expect(error.toString()).toContain('Error Message: Escrow must be in Draft status to modify it')
+    }
   })  
 
   it("Fails when providing duplicated module accounts", async () => {
