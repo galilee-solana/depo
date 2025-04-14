@@ -1,5 +1,5 @@
 import * as anchor from '@coral-xyz/anchor'
-import { Program } from '@coral-xyz/anchor'
+import { BN, Program } from '@coral-xyz/anchor'
 import { Keypair, LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { Depo } from '../target/types/depo'
 import { v4 as uuidv4 } from 'uuid'
@@ -93,33 +93,73 @@ describe('Test - Instruction: release_escrow', () => {
     depositorKey = depositorPDA
   })
 
-  it("Successfully released an escrow with one module: MinimunAmount", async () => {
+  describe("when the escrow is started & one module is added (MinimunAmount)", () => {
+    beforeEach(async () => {
+      // Add MinimumAmount of 2 SOL
+      await program.methods.addMinimumAmount(
+        Array.from(escrowId),
+        new BN(2 * LAMPORTS_PER_SOL),
+      )
+      .accounts({
+        escrow: escrowKey,
+        minimumAmount: minimumAmountKey,
+        initializer: initializer.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      })
+      .signers([initializer])
+      .rpc();
+  
+      const minimumAmountAccount = await program.account.minimumAmount.fetch(minimumAmountKey);
+      expect(minimumAmountAccount.minAmount.toNumber()).toBe(2 * LAMPORTS_PER_SOL);
+  
+      let escrowAccount = await program.account.escrow.fetch(escrowKey);
+  
+      expect(escrowAccount.modules).toHaveLength(1);
 
-  })
+      await program.methods.startEscrow(
+        Array.from(escrowId)
+      )
+      .accounts({
+        escrow: escrowKey,
+        initializer: initializer.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      }).signers([initializer])
+      .rpc()
 
-  it("Fails when module condition is not met", async () => {
+      escrowAccount = await program.account.escrow.fetch(escrowKey)
+      expect(escrowAccount.status).toEqual({started: {}});
+    })
 
+    it("Successfully released an escrow with one module: MinimunAmount", async () => {
+
+    })
+
+    it("Fails when module condition is not met", async () => {
+
+    })
+
+    it("Fails when not all modules are provided in remaining_accounts", async () => {
+
+    })
+
+    it("Fails when providing invalid module accounts", async () => {
+
+    })
+
+    it("Fails when module account has invalid owner", async () => {
+
+    })
   })
 
   it("Fails when the escrow isn't Started", async () => {
 
-  })
-  
-  it("Fails when not all modules are provided in remaining_accounts", async () => {
-
-  })
+  })  
 
   it("Fails when providing duplicated module accounts", async () => {
-
+    // TODO: This test need to be implemented when multiple modules are ready
+    //       I can't add multiple modules to test this. 
+    //       Only the module: MinimumAmount is implemented and the module len vec will always be 1
   })
-
-  it("Fails when providing invalid module accounts", async () => {
-
-  })
-
-  it("Fails when module account has invalid owner", async () => {
-
-  })  
 
   it("Successfully released an escrow with multiple modules", () => {
     // TODO: This test need to be implemented when multiple modules are ready
