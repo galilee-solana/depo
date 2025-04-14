@@ -3,7 +3,7 @@ use crate::states::{Escrow, Status};
 use crate::errors::EscrowErrors;
 
 
-/// Releases the escrow 
+/// Starts the escrow (conditions could not be updated after that)
 ///
 /// # Arguments
 /// * `ctx` - The context containing the escrow account and signer
@@ -11,28 +11,27 @@ use crate::errors::EscrowErrors;
 ///
 /// # Returns
 /// * `Result<()>` - Result indicating success or failure
-pub fn release_escrow(
-    ctx: Context<ReleaseEscrow>,
+pub fn start_escrow(
+    ctx: Context<StartEscrow>,
     _escrow_id: [u8; 16],
 ) -> Result<()> {
     let escrow = &mut ctx.accounts.escrow;
+    require!(escrow.remaining_percentage == 0, EscrowErrors::PercentageDistribution);
+    require!(escrow.status == Status::Draft, EscrowErrors::EscrowNotDraft);
 
-    // TODO check conditions for release
-    
-    escrow.status = Status::Released;
+    escrow.status = Status::Started;
 
     Ok(())
 }
 
 #[derive(Accounts)]
 #[instruction(escrow_id: [u8; 16])]
-pub struct ReleaseEscrow<'info> {
+pub struct StartEscrow<'info> {
     #[account(
       mut, 
       seeds = [b"escrow", escrow_id.as_ref()],
       bump,
       has_one = initializer,
-      constraint = escrow.status == Status::Started @ EscrowErrors::EscrowNotStarted
     )]
     pub escrow: Account<'info, Escrow>,
 

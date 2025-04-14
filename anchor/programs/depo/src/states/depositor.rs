@@ -5,6 +5,7 @@ use anchor_lang::prelude::*;
 pub struct Depositor {
   pub escrow: Pubkey,
   pub wallet: Pubkey,
-  pub amount: u64,
-  pub was_refunded: bool
+  pub deposited_amount: u64,
+  pub was_refunded: bool,
+  pub is_initialized: bool
 }
