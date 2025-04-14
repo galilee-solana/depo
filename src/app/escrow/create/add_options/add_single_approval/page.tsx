@@ -33,7 +33,11 @@ export default function Add_description() {
         placeholder="Please enter a valid Solana public address."
         enabled={singleApprovalEnabled}
         setEnabled={setSingleApprovalEnabled}
+<<<<<<< HEAD
         value={singleApprovalAddress}
+=======
+        value={setSingleApprovalAddress}
+>>>>>>> d37932f (keep track of set_depositor_address | set_recipient_address | add_single_approval | add_multisig_approval)
         setValue={setSingleApprovalAddress}
       />
     {/* Add confirm button to add description*/}
