@@ -189,6 +189,10 @@ describe('Test - Instruction: withdraw_escrow', () => {
         systemProgram: anchor.web3.SystemProgram.programId,
       }).signers([recipientWallet]).rpc()
 
+      let escrowAccount = await program.account.escrow.fetch(escrowKey)
+      expect(escrowAccount.withdrawnAmount.toNumber()).toEqual(1.9 * LAMPORTS_PER_SOL);
+
+
       const recipientAccount = await program.account.recipient.fetch(recipientKey)
       expect(recipientAccount.hasWithdrawn).toBeTruthy()
 
@@ -211,6 +215,10 @@ describe('Test - Instruction: withdraw_escrow', () => {
 
       const otherRecipientBalanceAfter = await provider.connection.getBalance(otherRecipientWallet.publicKey)
       expect(otherRecipientBalanceAfter - otherRecipientBalanceBefore).toBe(0.1 * LAMPORTS_PER_SOL)
+
+      escrowAccount = await program.account.escrow.fetch(escrowKey)
+      expect(escrowAccount.withdrawnAmount.toNumber()).toEqual(2 * LAMPORTS_PER_SOL);
+
     })
 
     it("fails when the recipient has already withdrawn", async () => {

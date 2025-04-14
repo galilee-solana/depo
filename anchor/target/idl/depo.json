@@ -1005,8 +1005,8 @@
   "errors": [
     {
       "code": 6000,
-      "name": "AlwaysFails",
-      "msg": "Always fails for testing"
+      "name": "InvalidVectorLength",
+      "msg": "Vector length exceeds allowed size."
     }
   ],
   "types": [

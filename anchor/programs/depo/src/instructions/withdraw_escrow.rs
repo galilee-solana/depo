@@ -22,14 +22,17 @@ pub fn withdraw_escrow(
     require!(!recipient.has_withdrawn, EscrowErrors::AlreadyWithdrawn);
    
     let amount = recipient.percentage as u64 * escrow.deposited_amount  / MAX_PERCENTAGE as u64;
+    
+    require!(escrow.withdrawn_amount + amount <= escrow.deposited_amount, EscrowErrors::InsufficientFunds);
 
-    let escrow_lamports = **ctx.accounts.escrow.to_account_info().lamports.borrow();
+    let escrow_lamports = **escrow.to_account_info().lamports.borrow();
     require!(escrow_lamports >= amount, EscrowErrors::InsufficientFunds);
 
-    **ctx.accounts.escrow.to_account_info().try_borrow_mut_lamports()? -= amount;
+    **escrow.to_account_info().try_borrow_mut_lamports()? -= amount;
     **ctx.accounts.signer.to_account_info().try_borrow_mut_lamports()? += amount;
 
     recipient.has_withdrawn = true;
+    escrow.withdrawn_amount += amount;
 
     Ok(())
 }
