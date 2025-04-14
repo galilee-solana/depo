@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_lang::solana_program::clock::Clock;
 use crate::states::{Escrow, Status};
-use crate::constants::ANCHOR_DISCRIMINATOR;
+use crate::constants::{ANCHOR_DISCRIMINATOR, MAX_PERCENTAGE};
 use crate::errors::EscrowErrors;
 use crate::utils::vec_to_fixed_size;
 
@@ -34,7 +34,7 @@ pub fn create_escrow(
 
     escrow.deposited_amount = 0;
     escrow.withdrawn_amount = 0;
-    escrow.remaining_percentage = 10_000; // 100 % * 100 to handle decimals 
+    escrow.remaining_percentage = MAX_PERCENTAGE; 
         
     escrow.is_public_deposit = true;
     escrow.depositors_count = 0;
