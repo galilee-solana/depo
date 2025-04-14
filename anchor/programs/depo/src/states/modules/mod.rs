@@ -12,6 +12,7 @@ pub use module_type::ModuleType;
 pub use minimum_amount::MinimumAmount;
 pub use condition::ConditionModule;
 pub use module_reference::ModuleReference;
+pub use condition::ModuleCondition;
 // pub use expiry_fallback::ExpiryFallback;
 // pub use multisig_approval::MultisigApproval;
 // pub use single_approval::SingleApproval;

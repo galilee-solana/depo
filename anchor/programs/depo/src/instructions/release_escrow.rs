@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
-use crate::states::{Escrow, Status, ConditionModule, ModuleType, MinimumAmount};
+use crate::states::{Escrow, Status, ModuleCondition, validate_module_conditions};
 use crate::errors::{EscrowErrors, ReleaseErrors, GeneralErrors};
-use crate::states::validate_escrow_conditions;
+use crate::utils::parse_module;
 
 /// Releases the escrow 
 ///
@@ -11,10 +11,13 @@ use crate::states::validate_escrow_conditions;
 ///
 /// # Returns
 /// * `Result<()>` - Result indicating success or failure
-pub fn release_escrow(
-    ctx: Context<ReleaseEscrow>,
+pub fn release_escrow<'a, 'b, 'c, 'info>(
+    ctx: Context<'a, 'b, 'c, 'info, ReleaseEscrow<'info>>,
     _escrow_id: [u8; 16],
-) -> Result<()> {
+) -> Result<()> 
+where
+    'c: 'info,
+{
     let escrow = &mut ctx.accounts.escrow;
     require!(escrow.status == Status::Started, EscrowErrors::EscrowNotStarted);
 
@@ -23,10 +26,11 @@ pub fn release_escrow(
         ReleaseErrors::InvalidNumberOfAccounts
     );
 
-    let mut condition_modules: Vec<Box<dyn ConditionModule>> = Vec::new();
+    let mut condition_modules: Vec<ModuleCondition<'info>> = Vec::new();
     let mut processed_modules: Vec<bool> = vec![false; escrow.modules.len()];
 
-    for account in ctx.remaining_accounts {
+    for i in 0..ctx.remaining_accounts.len() {
+        let account = &ctx.remaining_accounts[i];
         require!(
             account.owner == ctx.program_id,
             GeneralErrors::InvalidAccountOwner
@@ -40,21 +44,12 @@ pub fn release_escrow(
 
         processed_modules[module_idx] = true;        
         
-        match escrow.modules[module_idx].module_type {
-            ModuleType::MinimumAmount => {
-                let minimum_amount = Account::<MinimumAmount>::try_from(account)?;
-                condition_modules.push(Box::new(minimum_amount));
-            },
-            // Add other module types as they get implemented
-            _ => return err!(ReleaseErrors::UnsupportedModule)
-        }
+        let module_type = &escrow.modules[module_idx].module_type;
+        let module_condition = parse_module(module_type, account)?;
+        condition_modules.push(module_condition);
     }
 
-    let module_refs: Vec<&dyn ConditionModule> = condition_modules.iter()
-        .map(|m| m.as_ref())
-        .collect();
-
-    if let Err(err) = validate_escrow_conditions(escrow, &module_refs) {
+    if let Err(_) = validate_module_conditions(escrow, &condition_modules) {
         return err!(ReleaseErrors::ValidationFailed);
     }
     

@@ -919,8 +919,8 @@ export type Depo = {
   "errors": [
     {
       "code": 6000,
-      "name": "invalidNumberOfAccounts",
-      "msg": "Invalid number of accounts."
+      "name": "alwaysFails",
+      "msg": "Always fails for testing"
     }
   ],
   "types": [
@@ -1005,7 +1005,7 @@ export type Depo = {
             "type": {
               "vec": {
                 "defined": {
-                  "name": "moduleAccount"
+                  "name": "moduleReference"
                 }
               }
             }
@@ -1038,7 +1038,7 @@ export type Depo = {
       }
     },
     {
-      "name": "moduleAccount",
+      "name": "moduleReference",
       "type": {
         "kind": "struct",
         "fields": [

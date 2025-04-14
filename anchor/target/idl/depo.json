@@ -913,8 +913,8 @@
   "errors": [
     {
       "code": 6000,
-      "name": "InvalidNumberOfAccounts",
-      "msg": "Invalid number of accounts."
+      "name": "AlwaysFails",
+      "msg": "Always fails for testing"
     }
   ],
   "types": [
@@ -999,7 +999,7 @@
             "type": {
               "vec": {
                 "defined": {
-                  "name": "ModuleAccount"
+                  "name": "ModuleReference"
                 }
               }
             }
@@ -1032,7 +1032,7 @@
       }
     },
     {
-      "name": "ModuleAccount",
+      "name": "ModuleReference",
       "type": {
         "kind": "struct",
         "fields": [

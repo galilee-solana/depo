@@ -87,10 +87,13 @@ pub mod depo {
         instructions::start_escrow(ctx, escrow_id)
     }
     
-    pub fn release_escrow(
-        ctx: Context<ReleaseEscrow>,
+    pub fn release_escrow<'a, 'b, 'c, 'info>(
+        ctx: Context<'a, 'b, 'c, 'info, ReleaseEscrow<'info>>,
         escrow_id: [u8; 16],
-    ) -> Result<()> {
+    ) -> Result<()> 
+    where
+        'c: 'info,
+    {
         instructions::release_escrow(ctx, escrow_id)
     }
 }
