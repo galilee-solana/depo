@@ -1,7 +1,6 @@
 'use client'
 
 import Image from 'next/image'
-import { usePathname } from 'next/navigation'
 import * as React from 'react'
 import { ReactNode, useEffect, useRef } from 'react'
 import toast, { Toaster } from 'react-hot-toast'
@@ -9,21 +8,8 @@ import toast, { Toaster } from 'react-hot-toast'
 import { AccountChecker } from '../account/account-ui'
 import { ClusterChecker, ClusterUiSelect, ExplorerLink } from '../cluster/cluster-ui'
 import { WalletButton } from '../solana/solana-provider'
-import EscrowCard from '../escrowcard/EscrowCard'
 
-export function UiLayout({ children, links }: { children: ReactNode; links: { label: string; path: string }[] }) {
-  const pathname = usePathname()
-
-  // Add test const to check DepoCard display
-  const EscrowList = [
-    { id: 2, name: 'Escrow Alpha' },
-    { id: 1, name: 'Paiement sécurisé très long' },
-    { id: 3, name: 'Mini escrow' },
-    { id: 5, name: 'Caution pour paiement 5' },
-    { id: 6, name: 'Ne devrait pas apparaître' },
-    { id: 4, name: '4 : Celui-ci est vraiment vraiment vraiment très très long' },
-    { id: 7, name: 'Achat groupé pour 7' },
-  ]
+export function UiLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">
@@ -41,12 +27,14 @@ export function UiLayout({ children, links }: { children: ReactNode; links: { la
       <ClusterChecker>
         <AccountChecker />
       </ClusterChecker>
-      {/* EscrowCard Menu */}
+      {/* Main Menu */}
       <div className="flex-grow w-full bg-white text-black overflow-y-auto">
         <div className="h-full px-4 md:px-12">
-          <EscrowCard EscrowList={EscrowList} />
+          {children}
         </div>
-        <Toaster position="bottom-right" />
+        <div>
+          <Toaster position="bottom-right" />
+        </div>
       </div>
     </div>
   )
