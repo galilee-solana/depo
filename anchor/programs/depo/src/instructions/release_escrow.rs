@@ -1,7 +1,6 @@
 use anchor_lang::prelude::*;
-use crate::states::{Escrow, Status, ModuleCondition, validate_module_conditions};
+use crate::states::{Escrow, Status, ConditionModule, validate_module_conditions, parse_module};
 use crate::errors::{EscrowErrors, ReleaseErrors, GeneralErrors};
-use crate::utils::parse_module;
 
 /// Releases the escrow 
 ///
@@ -26,7 +25,7 @@ where
         ReleaseErrors::InvalidNumberOfAccounts
     );
 
-    let mut condition_modules: Vec<ModuleCondition<'info>> = Vec::new();
+    let mut condition_modules: Vec<ConditionModule<'info>> = Vec::new();
     let mut processed_modules: Vec<bool> = vec![false; escrow.modules.len()];
 
     for i in 0..ctx.remaining_accounts.len() {

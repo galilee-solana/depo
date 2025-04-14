@@ -9,8 +9,9 @@ pub use escrow::Escrow;
 pub use modules::{
     ModuleType,
     ModuleReference,
-    ModuleCondition,
+    ConditionModule,
     MinimumAmount,
+    parse_module
 };
 pub use status::Status;
 pub use recipient::Recipient;
