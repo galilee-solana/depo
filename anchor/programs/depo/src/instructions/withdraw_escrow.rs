@@ -1,6 +1,7 @@
 use crate::errors::EscrowErrors;
 use crate::states::{Escrow, Recipient, Status};
 use anchor_lang::prelude::*;
+use crate::constants::MAX_PERCENTAGE;
 
 /// Withdraw from the escrow
 ///
@@ -20,7 +21,7 @@ pub fn withdraw_escrow(
     let recipient = &mut ctx.accounts.recipient;
     require!(!recipient.has_withdrawn, EscrowErrors::AlreadyWithdrawn);
    
-    let amount = recipient.percentage as u64 * escrow.deposited_amount  / 10000;
+    let amount = recipient.percentage as u64 * escrow.deposited_amount  / MAX_PERCENTAGE as u64;
 
     let escrow_lamports = **ctx.accounts.escrow.to_account_info().lamports.borrow();
     require!(escrow_lamports >= amount, EscrowErrors::InsufficientFunds);
