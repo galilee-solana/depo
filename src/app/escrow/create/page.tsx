@@ -20,9 +20,8 @@ export default function CreateEscrow() {
   const [minimumAmount, setMinimumAmount] = useState('')
   const [targetAmountEnabled, setTargetAmountEnabled] = useState(false)
   const [targetAmount, setTargetAmount] = useState('')
-  const [description, setDescription] = useState('')
-  const [singleApproval, setSingleApproval] = useState(false)
-  const [multisigApproval, setMultisigApproval] = useState('')
+  const [DepositorEnabled, setDepositorEnabled] = useState(false)
+  const [RecipientEnabled, setRecipientEnabled] = useState(false)
 
   useEffect(() => {
     if (publicKey) {
@@ -45,9 +44,6 @@ export default function CreateEscrow() {
     timelock: timelockEnabled ? timelock : null,
     minimum_amount: minimumAmountEnabled ? minimumAmount : null,
     target_amount: targetAmountEnabled ? targetAmount : null,
-    description,
-    single_approval: singleApproval,
-    multisig_approval: multisigApproval,
     walletPublicKey: publicKey.toBase58(),
   }
 
@@ -114,17 +110,17 @@ export default function CreateEscrow() {
       <ToogleInputLink
         question="Is this a private or public DEPO ?"
         linkLabel="List of depositor address"
-        href="escrow/create/set_depositor_address"
-        enabled={enabled}
-        setEnabled={setEnabled}
+        href="create/set_depositor_address"
+        enabled={DepositorEnabled}
+        setEnabled={setDepositorEnabled}
       />
 
       <ToogleInputLink
         question="Is there multiple recipients ?"
         linkLabel="List of recipient address"
-        href="escrow/create/set_recipient_address"
-        enabled={enabled}
-        setEnabled={setEnabled}
+        href="create/set_recipient_address"
+        enabled={RecipientEnabled}
+        setEnabled={setRecipientEnabled}
       />
 
       <button
