@@ -8,11 +8,14 @@ mod validation;
 pub use escrow::Escrow;
 pub use modules::{
     ModuleType,
-    ModuleAccount,
+    ModuleReference,
     ConditionModule,
     MinimumAmount
 };
 pub use status::Status;
 pub use recipient::Recipient;
 pub use depositor::Depositor;
-pub use validation::EscrowContext;
+pub use validation::{
+    EscrowContext,
+    validate_escrow_conditions
+};

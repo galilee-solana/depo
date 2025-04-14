@@ -919,8 +919,8 @@ export type Depo = {
   "errors": [
     {
       "code": 6000,
-      "name": "alwaysFails",
-      "msg": "Always fails for testing"
+      "name": "invalidNumberOfAccounts",
+      "msg": "Invalid number of accounts."
     }
   ],
   "types": [
@@ -1005,7 +1005,7 @@ export type Depo = {
             "type": {
               "vec": {
                 "defined": {
-                  "name": "moduleType"
+                  "name": "moduleAccount"
                 }
               }
             }
@@ -1033,6 +1033,26 @@ export type Depo = {
           {
             "name": "minAmount",
             "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "moduleAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "moduleType",
+            "type": {
+              "defined": {
+                "name": "moduleType"
+              }
+            }
+          },
+          {
+            "name": "key",
+            "type": "pubkey"
           }
         ]
       }

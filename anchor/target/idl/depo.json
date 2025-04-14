@@ -913,8 +913,8 @@
   "errors": [
     {
       "code": 6000,
-      "name": "AlwaysFails",
-      "msg": "Always fails for testing"
+      "name": "InvalidNumberOfAccounts",
+      "msg": "Invalid number of accounts."
     }
   ],
   "types": [
@@ -999,7 +999,7 @@
             "type": {
               "vec": {
                 "defined": {
-                  "name": "ModuleType"
+                  "name": "ModuleAccount"
                 }
               }
             }
@@ -1027,6 +1027,26 @@
           {
             "name": "min_amount",
             "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ModuleAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "module_type",
+            "type": {
+              "defined": {
+                "name": "ModuleType"
+              }
+            }
+          },
+          {
+            "name": "key",
+            "type": "pubkey"
           }
         ]
       }

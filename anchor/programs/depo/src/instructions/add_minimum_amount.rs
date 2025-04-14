@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-use crate::states::{Escrow, MinimumAmount, ModuleAccount, ModuleType, Status};
+use crate::states::{Escrow, MinimumAmount, ModuleReference, ModuleType, Status};
 use crate::constants::ANCHOR_DISCRIMINATOR;
 use crate::errors::{EscrowErrors, MinimumAmountErrors};
 
@@ -28,7 +28,7 @@ pub fn add_minimum_amount(
         EscrowErrors::ModuleAlreadyExists
     );
 
-    escrow.modules.push(ModuleAccount {
+    escrow.modules.push(ModuleReference {
         module_type: ModuleType::MinimumAmount,
         key: ctx.accounts.minimum_amount.key(),
     });
