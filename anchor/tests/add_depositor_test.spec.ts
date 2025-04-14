@@ -4,6 +4,7 @@ import { Keypair, LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { Depo } from '../target/types/depo'
 import { v4 as uuidv4 } from 'uuid'
 import { strict as assert } from 'assert'
+import {BN} from "bn.js";
 
 
 describe('Test - Instruction: add_depositor', () => {
@@ -104,11 +105,12 @@ describe('Test - Instruction: add_depositor', () => {
 
     escrowAccount = await program.account.escrow.fetch(escrowKey)
     expect(escrowAccount.depositorsCount).toBe(1)
-    
+    expect(escrowAccount.depositedAmount.toNumber()).toBe(0)
+
     const depositorAccount = await program.account.depositor.fetch(depositorKey)
     expect(depositorAccount.escrow.toBase58()).toBe(escrowKey.toBase58())
     expect(depositorAccount.wallet.toBase58()).toBe(depositorWallet.publicKey.toBase58())
-    expect(depositorAccount.amount.toNumber()).toBe(0)
+    expect(depositorAccount.depositedAmount.toNumber()).toBe(0)
     expect(depositorAccount.wasRefunded).toBe(false)
   });
   it('Fails when a non-initializer tries to add a depositor', async () => {

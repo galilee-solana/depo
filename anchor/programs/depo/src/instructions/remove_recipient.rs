@@ -21,6 +21,7 @@ pub fn remove_recipient(
     require!(escrow.recipients_count > 0, EscrowErrors::NoRecipients);
 
     escrow.recipients_count -= 1;
+    escrow.remaining_percentage += ctx.accounts.recipient.percentage;
 
     Ok(())
 }

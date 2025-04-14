@@ -26,4 +26,10 @@ pub enum EscrowErrors {
     InvalidDepositAmount,
     #[msg("Unauthorized depositor.")]
     UnauthorizedDepositor,
+    #[msg("Max percentage is 10 000 (represents 100%)")]
+    MaxPercentage,
+    #[msg("Insufficient remaining percentage in the escrow")]
+    EscrowPercentageFull,
+    #[msg("Percentage distribution should be equal to 10 000 (100%)")]
+    PercentageDistribution
 }

@@ -1,7 +1,7 @@
-use anchor_lang::prelude::*;
-use crate::states::{Escrow, Depositor, Status};
-use crate::errors::EscrowErrors;
 use crate::constants::ANCHOR_DISCRIMINATOR;
+use crate::errors::EscrowErrors;
+use crate::states::{Depositor, Escrow, Status};
+use anchor_lang::prelude::*;
 
 /// Adds a depositor to the escrow
 ///
@@ -15,7 +15,7 @@ use crate::constants::ANCHOR_DISCRIMINATOR;
 pub fn add_depositor(
     ctx: Context<AddDepositor>,
     _escrow_id: [u8; 16],
-    wallet: Pubkey
+    wallet: Pubkey,
 ) -> Result<()> {
     let escrow = &mut ctx.accounts.escrow;
     require!(escrow.status == Status::Draft, EscrowErrors::EscrowNotDraft);
@@ -23,10 +23,11 @@ pub fn add_depositor(
     let depositor = &mut ctx.accounts.depositor;
     depositor.escrow = escrow.key();
     depositor.wallet = wallet;
-    depositor.amount = 0;
+    depositor.deposited_amount = 0;
     depositor.was_refunded = false;
 
     escrow.depositors_count += 1;
+    depositor.is_initialized = true;
 
     Ok(())
 }

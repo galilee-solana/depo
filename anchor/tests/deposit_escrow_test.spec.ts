@@ -75,6 +75,26 @@ describe('Test - Instruction: deposit_escrow', () => {
     .signers([initializer])
     .rpc()
 
+    let recipientWallet = Keypair.generate()
+    const [recipientPDA, _recipientBump] = anchor.web3.PublicKey.findProgramAddressSync(
+        [Buffer.from('recipient'), escrowKey.toBuffer(), recipientWallet.publicKey.toBuffer()],
+        program.programId
+    )
+    await program.methods.addRecipient(
+        Array.from(escrowId),
+        recipientWallet.publicKey,
+        new BN(100 * 100)
+    )
+    .accounts({
+      escrow: escrowKey,
+      recipient: recipientPDA,
+      initializer: initializer.publicKey,
+      systemProgram: anchor.web3.SystemProgram.programId,
+    })
+    .signers([initializer])
+    .rpc()
+
+
     let escrowAccount = await program.account.escrow.fetch(escrowKey)
     expect(Buffer.from(escrowAccount.id).toString('hex')).toBe(uuid)
 
@@ -106,7 +126,7 @@ describe('Test - Instruction: deposit_escrow', () => {
       expect(escrowAccount.depositorsCount).toBe(1)
 
       const depositorAccount = await program.account.depositor.fetch(depositorKey)
-      expect(depositorAccount.amount.toNumber()).toBe(0);
+      expect(depositorAccount.depositedAmount.toNumber()).toBe(0);
     });
 
     describe("when the escrow is started", () => {
@@ -144,13 +164,16 @@ describe('Test - Instruction: deposit_escrow', () => {
         ).signers([depositorWallet]).rpc()
 
         const depositorAccount = await program.account.depositor.fetch(depositorKey)
-        expect(depositorAccount.amount.toNumber()).toBe(2 * LAMPORTS_PER_SOL)
+        expect(depositorAccount.depositedAmount.toNumber()).toBe(2 * LAMPORTS_PER_SOL)
 
-        depositorBalance = await provider.connection.getBalance(depositorWallet.publicKey);
-        expect(depositorBalance).toBe(8 * LAMPORTS_PER_SOL);
+        depositorBalance = await provider.connection.getBalance(depositorWallet.publicKey)
+        expect(depositorBalance).toBe(8 * LAMPORTS_PER_SOL)
 
-        let escrowBalanceAfter = await provider.connection.getBalance(escrowKey);
-        expect(escrowBalanceAfter - escrowBalanceBefore).toBe(2 * LAMPORTS_PER_SOL);
+        let escrowBalanceAfter = await provider.connection.getBalance(escrowKey)
+        expect(escrowBalanceAfter - escrowBalanceBefore).toBe(2 * LAMPORTS_PER_SOL)
+
+        let escrow = await program.account.escrow.fetch(escrowKey)
+        expect(escrow.depositedAmount.toNumber()).toBe(2 * LAMPORTS_PER_SOL)
       });
 
       it("fails when amount is zero", async () => {
@@ -206,7 +229,7 @@ describe('Test - Instruction: deposit_escrow', () => {
         expect(err.error.errorMessage).toBe("A seeds constraint was violated")
       })
 
-      it("fails to deposit from someone who is not a depositor", async () => {
+      it("creates a depositor and deposit from someone who is not a registered depositor", async () => {
         const otherWallet = Keypair.generate();
         const signature = await provider.connection.requestAirdrop(
             otherWallet.publicKey,
@@ -219,25 +242,35 @@ describe('Test - Instruction: deposit_escrow', () => {
             program.programId
         )
 
-        let err: any
-        try {
-          await program.methods.depositEscrow(
-              Array.from(escrowId),
-              new BN(2 * LAMPORTS_PER_SOL)
-          ).accounts(
-              {
-                escrow: escrowKey,
-                depositor: nonExistingDepositorPDA,
-                signer: otherWallet.publicKey,
-                systemProgram: anchor.web3.SystemProgram.programId,
-              }
-          ).signers([otherWallet]).rpc()
-        } catch (error) {
-          err = error
-        }
-        expect(err).toBeDefined()
-        expect(err.error.errorCode.code).toBe("AccountNotInitialized")
-        expect(err.error.errorMessage).toBe("The program expected this account to be already initialized")
+        let depositorBalanceBefore = await provider.connection.getBalance(otherWallet.publicKey);
+        let escrowBalanceBefore = await provider.connection.getBalance(escrowKey);
+
+        await program.methods.depositEscrow(
+            Array.from(escrowId),
+            new BN(2 * LAMPORTS_PER_SOL)
+        ).accounts(
+            {
+              escrow: escrowKey,
+              depositor: nonExistingDepositorPDA,
+              signer: otherWallet.publicKey,
+              systemProgram: anchor.web3.SystemProgram.programId,
+            }
+        ).signers([otherWallet]).rpc()
+
+        const depositorAccount = await program.account.depositor.fetch(nonExistingDepositorPDA)
+        expect(depositorAccount.depositedAmount.toNumber()).toBe(2 * LAMPORTS_PER_SOL)
+
+        let depositorBalanceAfter = await provider.connection.getBalance(otherWallet.publicKey)
+        // expected -2 sol minus the fees for creating the account
+        const space = 32 + 32 + 8 + 1 + 1 + 8
+        const rentExemption = await provider.connection.getMinimumBalanceForRentExemption(space);
+        expect(depositorBalanceAfter - depositorBalanceBefore).toBe(-2 * LAMPORTS_PER_SOL - rentExemption)
+
+        let escrowBalanceAfter = await provider.connection.getBalance(escrowKey)
+        expect(escrowBalanceAfter - escrowBalanceBefore).toBe(2 * LAMPORTS_PER_SOL)
+
+        let escrow = await program.account.escrow.fetch(escrowKey)
+        expect(escrow.depositedAmount.toNumber()).toBe(2 * LAMPORTS_PER_SOL)
       });
     })
     describe("when the escrow is not started", () => {
@@ -283,29 +316,39 @@ describe('Test - Instruction: deposit_escrow', () => {
         expect(escrowAccount.status).toEqual({started: {}});
       })
 
-      it("fails to deposit", async () => {
-        let err: any
-        try {
-          await program.methods.depositEscrow(
-              Array.from(escrowId),
-              new BN(2 * LAMPORTS_PER_SOL)
-          ).accounts(
-              {
-                escrow: escrowKey,
-                depositor: depositorKey,
-                signer: depositorWallet.publicKey,
-                systemProgram: anchor.web3.SystemProgram.programId,
-              }
-          ).signers([depositorWallet]).rpc()
-        } catch (error) {
-          err = error
-        }
+      it("creates the depositor account and deposits", async () => {
+        let depositorBalanceBefore = await provider.connection.getBalance(depositorWallet.publicKey);
+        let escrowBalanceBefore = await provider.connection.getBalance(escrowKey);
 
-        expect(err).toBeDefined()
-        expect(err.error.errorCode.code).toBe("AccountNotInitialized")
-        expect(err.error.errorMessage).toBe("The program expected this account to be already initialized")
+        await program.methods.depositEscrow(
+            Array.from(escrowId),
+            new BN(2 * LAMPORTS_PER_SOL)
+        ).accounts(
+            {
+              escrow: escrowKey,
+              depositor: depositorKey,
+              signer: depositorWallet.publicKey,
+              systemProgram: anchor.web3.SystemProgram.programId,
+            }
+        ).signers([depositorWallet]).rpc()
+
+        const depositorAccount = await program.account.depositor.fetch(depositorKey)
+        expect(depositorAccount.depositedAmount.toNumber()).toBe(2 * LAMPORTS_PER_SOL)
+
+        let depositorBalanceAfter = await provider.connection.getBalance(depositorWallet.publicKey)
+        // expected -2 sol minus the fees for creating the account
+        const space = 32 + 32 + 8 + 1 + 1 + 8
+        const rentExemption = await provider.connection.getMinimumBalanceForRentExemption(space);
+        expect(depositorBalanceAfter - depositorBalanceBefore).toBe(-2 * LAMPORTS_PER_SOL - rentExemption)
+
+        let escrowBalanceAfter = await provider.connection.getBalance(escrowKey)
+        expect(escrowBalanceAfter - escrowBalanceBefore).toBe(2 * LAMPORTS_PER_SOL)
+
+        let escrow = await program.account.escrow.fetch(escrowKey)
+        expect(escrow.depositedAmount.toNumber()).toBe(2 * LAMPORTS_PER_SOL)
       })
     })
+
     describe("when the escrow is not started", () => {
       it("fails to deposit", async () => {
         let err: any
@@ -326,10 +369,9 @@ describe('Test - Instruction: deposit_escrow', () => {
         }
 
         expect(err).toBeDefined()
-        expect(err.error.errorCode.code).toBe("AccountNotInitialized")
-        expect(err.error.errorMessage).toBe("The program expected this account to be already initialized")
+        expect(err.error.errorCode.code).toBe("EscrowNotStarted")
+        expect(err.error.errorMessage).toBe("Escrow must be in Draft status to modify it")
       })
     })
   })
-
 });
