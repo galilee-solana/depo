@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import ToogleInputFieldNumber from '@/components/create/ToogleInputFieldNumber'
 import ToogleInputFieldDateTime from '@/components/create/ToogleInputFieldDateTime'
+import ToogleInputLink from '@/components/create/ToogleInputLink'
 
 export default function CreateEscrow() {
   const { publicKey } = useWallet()
@@ -110,21 +111,21 @@ export default function CreateEscrow() {
         <span>Add options</span>
       </button>
 
-      <button
-        onClick={() => router.push('/escrow/create/add_single_approval')}
-        className="text-left text-black flex items-center space-x-2"
-      >
-        <span>➕</span>
-        <span>Set manual approval</span>
-      </button>
+      <ToogleInputLink
+        question="Is this a private or public DEPO ?"
+        linkLabel="List of depositor address"
+        href="escrow/create/set_depositor_address"
+        enabled={enabled}
+        setEnabled={setEnabled}
+      />
 
-      <button
-        onClick={() => router.push('/escrow/create/add_multisig_approval')}
-        className="text-left text-black flex items-center space-x-2"
-      >
-        <span>➕</span>
-        <span>Add multisig address</span>
-      </button>
+      <ToogleInputLink
+        question="Is there multiple recipients ?"
+        linkLabel="List of recipient address"
+        href="escrow/create/set_recipient_address"
+        enabled={enabled}
+        setEnabled={setEnabled}
+      />
 
       <button
         onClick={handleConfirm}
