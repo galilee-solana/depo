@@ -296,6 +296,10 @@ export type Depo = {
         {
           "name": "wallet",
           "type": "pubkey"
+        },
+        {
+          "name": "percentage",
+          "type": "u16"
         }
       ]
     },
@@ -860,6 +864,94 @@ export type Depo = {
           }
         }
       ]
+    },
+    {
+      "name": "withdrawEscrow",
+      "discriminator": [
+        81,
+        84,
+        226,
+        128,
+        245,
+        47,
+        96,
+        104
+      ],
+      "accounts": [
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "escrowId"
+              }
+            ]
+          }
+        },
+        {
+          "name": "recipient",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  99,
+                  105,
+                  112,
+                  105,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              },
+              {
+                "kind": "account",
+                "path": "signer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "escrowId",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        }
+      ]
     }
   ],
   "accounts": [
@@ -919,8 +1011,8 @@ export type Depo = {
   "errors": [
     {
       "code": 6000,
-      "name": "alwaysFails",
-      "msg": "Always fails for testing"
+      "name": "invalidVectorLength",
+      "msg": "Vector length exceeds allowed size."
     }
   ],
   "types": [
@@ -938,11 +1030,15 @@ export type Depo = {
             "type": "pubkey"
           },
           {
-            "name": "amount",
+            "name": "depositedAmount",
             "type": "u64"
           },
           {
             "name": "wasRefunded",
+            "type": "bool"
+          },
+          {
+            "name": "isInitialized",
             "type": "bool"
           }
         ]
@@ -985,8 +1081,16 @@ export type Depo = {
             }
           },
           {
-            "name": "totalAmount",
+            "name": "depositedAmount",
             "type": "u64"
+          },
+          {
+            "name": "withdrawnAmount",
+            "type": "u64"
+          },
+          {
+            "name": "remainingPercentage",
+            "type": "u16"
           },
           {
             "name": "isPublicDeposit",
@@ -1097,8 +1201,8 @@ export type Depo = {
             "type": "pubkey"
           },
           {
-            "name": "amount",
-            "type": "u64"
+            "name": "percentage",
+            "type": "u16"
           },
           {
             "name": "hasWithdrawn",

@@ -28,9 +28,10 @@ pub mod depo {
     pub fn add_recipient(
         ctx: Context<AddRecipient>,
         escrow_id: [u8; 16],
-        wallet: Pubkey
+        wallet: Pubkey,
+        percentage: u16
     ) -> Result<()> {
-        instructions::add_recipient(ctx, escrow_id, wallet)
+        instructions::add_recipient(ctx, escrow_id, wallet, percentage)
     }
 
     pub fn remove_recipient(
@@ -45,7 +46,7 @@ pub mod depo {
         ctx: Context<AddDepositor>,
         escrow_id: [u8; 16],
         wallet: Pubkey
-    ) -> Result<()> {
+    ) -> Result<()> { 
         instructions::add_depositor(ctx, escrow_id, wallet)
     }
 
@@ -95,5 +96,12 @@ pub mod depo {
         'c: 'info,
     {
         instructions::release_escrow(ctx, escrow_id)
+    }
+
+    pub fn withdraw_escrow(
+        ctx: Context<WithdrawEscrow>,
+        escrow_id: [u8; 16],
+    ) -> Result<()> {
+        instructions::withdraw_escrow(ctx, escrow_id)
     }
 }

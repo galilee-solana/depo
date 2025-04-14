@@ -290,6 +290,10 @@
         {
           "name": "wallet",
           "type": "pubkey"
+        },
+        {
+          "name": "percentage",
+          "type": "u16"
         }
       ]
     },
@@ -854,6 +858,94 @@
           }
         }
       ]
+    },
+    {
+      "name": "withdraw_escrow",
+      "discriminator": [
+        81,
+        84,
+        226,
+        128,
+        245,
+        47,
+        96,
+        104
+      ],
+      "accounts": [
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "escrow_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "recipient",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  99,
+                  105,
+                  112,
+                  105,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              },
+              {
+                "kind": "account",
+                "path": "signer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "escrow_id",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        }
+      ]
     }
   ],
   "accounts": [
@@ -913,8 +1005,8 @@
   "errors": [
     {
       "code": 6000,
-      "name": "AlwaysFails",
-      "msg": "Always fails for testing"
+      "name": "InvalidVectorLength",
+      "msg": "Vector length exceeds allowed size."
     }
   ],
   "types": [
@@ -932,11 +1024,15 @@
             "type": "pubkey"
           },
           {
-            "name": "amount",
+            "name": "deposited_amount",
             "type": "u64"
           },
           {
             "name": "was_refunded",
+            "type": "bool"
+          },
+          {
+            "name": "is_initialized",
             "type": "bool"
           }
         ]
@@ -979,8 +1075,16 @@
             }
           },
           {
-            "name": "total_amount",
+            "name": "deposited_amount",
             "type": "u64"
+          },
+          {
+            "name": "withdrawn_amount",
+            "type": "u64"
+          },
+          {
+            "name": "remaining_percentage",
+            "type": "u16"
           },
           {
             "name": "is_public_deposit",
@@ -1091,8 +1195,8 @@
             "type": "pubkey"
           },
           {
-            "name": "amount",
-            "type": "u64"
+            "name": "percentage",
+            "type": "u16"
           },
           {
             "name": "has_withdrawn",

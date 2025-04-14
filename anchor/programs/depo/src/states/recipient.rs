@@ -5,6 +5,6 @@ use anchor_lang::prelude::*;
 pub struct Recipient {
   pub escrow: Pubkey,
   pub wallet: Pubkey,
-  pub amount: u64,
+  pub percentage: u16, // percentage * 100. Ex: 5,55% = 555
   pub has_withdrawn: bool
 }

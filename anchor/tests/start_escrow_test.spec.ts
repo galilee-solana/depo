@@ -1,10 +1,11 @@
 import * as anchor from '@coral-xyz/anchor'
-import { Program } from '@coral-xyz/anchor'
-import { Keypair, LAMPORTS_PER_SOL } from '@solana/web3.js'
-import { Depo } from '../target/types/depo'
-import { v4 as uuidv4 } from 'uuid'
-import { strict as assert } from 'assert'
+import {Program} from '@coral-xyz/anchor'
+import {Keypair, LAMPORTS_PER_SOL} from '@solana/web3.js'
+import {Depo} from '../target/types/depo'
+import {v4 as uuidv4} from 'uuid'
+import {strict as assert} from 'assert'
 import {before} from "node:test";
+import {BN} from "bn.js";
 
 describe('Test- Intruction: start_escrow', () => {
   const provider = anchor.AnchorProvider.env()
@@ -64,6 +65,25 @@ describe('Test- Intruction: start_escrow', () => {
 
     const escrowAccount = await program.account.escrow.fetch(escrowKey)
     expect(escrowAccount.status).toEqual({draft: {}});
+
+    let recipientWallet = Keypair.generate()
+    const [recipientPDA, _recipientBump] = anchor.web3.PublicKey.findProgramAddressSync(
+        [Buffer.from('recipient'), escrowKey.toBuffer(), recipientWallet.publicKey.toBuffer()],
+        program.programId
+    )
+    await program.methods.addRecipient(
+        Array.from(escrowId),
+        recipientWallet.publicKey,
+        new BN(100 * 100)
+    )
+    .accounts({
+      escrow: escrowKey,
+      recipient: recipientPDA,
+      initializer: initializer.publicKey,
+      systemProgram: anchor.web3.SystemProgram.programId,
+    })
+    .signers([initializer])
+    .rpc()
   })
 
   it('starts escrow', async () => {
