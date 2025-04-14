@@ -919,8 +919,28 @@ export type Depo = {
   "errors": [
     {
       "code": 6000,
-      "name": "alwaysFails",
-      "msg": "Always fails for testing"
+      "name": "invalidNumberOfAccounts",
+      "msg": "Invalid number of accounts."
+    },
+    {
+      "code": 6001,
+      "name": "moduleNotFound",
+      "msg": "This module is not found."
+    },
+    {
+      "code": 6002,
+      "name": "moduleAlreadyAdded",
+      "msg": "You cannot add the same module twice."
+    },
+    {
+      "code": 6003,
+      "name": "unsupportedModule",
+      "msg": "You passed an unsupported module type."
+    },
+    {
+      "code": 6004,
+      "name": "validationFailed",
+      "msg": "Validation failed. The escrow is not released."
     }
   ],
   "types": [

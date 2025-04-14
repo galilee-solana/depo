@@ -49,7 +49,7 @@ where
         condition_modules.push(module_condition);
     }
 
-    if let Err(_) = validate_module_conditions(escrow, &condition_modules) {
+    if validate_module_conditions(escrow, &condition_modules).is_err() {
         return err!(ReleaseErrors::ValidationFailed);
     }
     
