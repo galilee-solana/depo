@@ -19,7 +19,7 @@ impl EscrowContext for Account<'_, Escrow> {
 ///  
 /// # Arguments
 /// * `escrow` - The escrow account
-/// * `modules` - a slice of ModuleCondition to validate
+/// * `modules` - a slice of ConditionModule to validate
 ///
 /// # Returns
 /// * `Result<()>` - Result indicating conditions validation success or failure
