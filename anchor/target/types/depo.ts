@@ -864,6 +864,94 @@ export type Depo = {
           }
         }
       ]
+    },
+    {
+      "name": "withdrawEscrow",
+      "discriminator": [
+        81,
+        84,
+        226,
+        128,
+        245,
+        47,
+        96,
+        104
+      ],
+      "accounts": [
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "escrowId"
+              }
+            ]
+          }
+        },
+        {
+          "name": "recipient",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  99,
+                  105,
+                  112,
+                  105,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              },
+              {
+                "kind": "account",
+                "path": "signer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "escrowId",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        }
+      ]
     }
   ],
   "accounts": [
@@ -923,78 +1011,8 @@ export type Depo = {
   "errors": [
     {
       "code": 6000,
-      "name": "nameTooLong",
-      "msg": "Escrow name is too long. Max length: 100 bytes."
-    },
-    {
-      "code": 6001,
-      "name": "descriptionTooLong",
-      "msg": "Escrow description is too long. Max length: 200 bytes."
-    },
-    {
-      "code": 6002,
-      "name": "unauthorizedRecipientModifier",
-      "msg": "Unauthorized to add or remove recipient"
-    },
-    {
-      "code": 6003,
-      "name": "unauthorizedDepositorModifier",
-      "msg": "Unauthorized to add or remove depositor"
-    },
-    {
-      "code": 6004,
-      "name": "escrowNotDraft",
-      "msg": "Escrow must be in Draft status to modify it"
-    },
-    {
-      "code": 6005,
-      "name": "escrowNotStarted",
-      "msg": "Escrow must be in Draft status to modify it"
-    },
-    {
-      "code": 6006,
-      "name": "noRecipients",
-      "msg": "No recipients in escrow"
-    },
-    {
-      "code": 6007,
-      "name": "noDepositors",
-      "msg": "No depositors in escrow"
-    },
-    {
-      "code": 6008,
-      "name": "moduleAlreadyExists",
-      "msg": "This module type already exists."
-    },
-    {
-      "code": 6009,
-      "name": "moduleDoesntExist",
-      "msg": "This module type doesn't exist."
-    },
-    {
-      "code": 6010,
-      "name": "invalidDepositAmount",
-      "msg": "Invalid deposit amount."
-    },
-    {
-      "code": 6011,
-      "name": "unauthorizedDepositor",
-      "msg": "Unauthorized depositor."
-    },
-    {
-      "code": 6012,
-      "name": "maxPercentage",
-      "msg": "Max percentage is 10 000 (represents 100%)"
-    },
-    {
-      "code": 6013,
-      "name": "escrowPercentageFull",
-      "msg": "Insufficient remaining percentage in the escrow"
-    },
-    {
-      "code": 6014,
-      "name": "percentageDistribution",
-      "msg": "Percentage distribution should be equal to 10 000 (100%)"
+      "name": "invalidVectorLength",
+      "msg": "Vector length exceeds allowed size."
     }
   ],
   "types": [
