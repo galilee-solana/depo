@@ -5,6 +5,8 @@ A modular escrow solution on Solana, composed of a smart contract, a demo interf
 
 This project is developed as part of an academic proof of concept and focuses on creating a functional prototype showcasing the fundamental use cases of a decentralized escrow using an Anchor Program (Smart Contract) and a demo interface
 
+Refer to the <a href="https://drive.google.com/file/d/18jwoIrec4qrFLI6j1985witqQdLbbu4s/view?usp=sharing">Product Requirements Document</a> for all the details
+
 ## Project Participants
 - Romain Ecorchard
 - Guillaume Debavelaere
