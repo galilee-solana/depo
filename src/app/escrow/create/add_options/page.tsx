@@ -25,7 +25,7 @@ export default function Add_options() {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
             />
-            <div>///</div>
+            <div>{"///"}</div>
             <h2>Add a single address for approval of your DEPO.</h2>
             <h2>If not selected : the actual public address will be used by default.</h2>
             <ToogleInputFieldSolAddress
@@ -36,7 +36,7 @@ export default function Add_options() {
             value={SingleApprovalSolAddress}
             setValue={setSingleApprovalSolAddress}
             />
-                        <div>///</div>
+                        <div>{"///"}</div>
             <h2>Add multig addresses recipient to your DEPO.</h2>
             <ToogleInputLink
                 question="Would you like to set a multisig approval ?"
