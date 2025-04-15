@@ -1,11 +1,26 @@
 # DEPO
+### Dynamic Escrow Platform Operations
+
+A modular escrow solution on Solana, composed of a smart contract, a demo interface, and a JavaScript library, designed for quick integration into both Web2 and Web3 applications.
+
+This project is developed as part of an academic proof of concept and focuses on creating a functional prototype showcasing the fundamental use cases of a decentralized escrow using an Anchor Program (Smart Contract) and a demo interface
+
+## Project Participants
+- Romain Ecorchard
+- Guillaume Debavelaere
+- Maxime Normandin
+
+## Links
+// TODO Add link when deployed
+- <a href="">Front-End Dapp</a>
+- <a href="">Program in Explorer</a>
+- <a href="https://drive.google.com/file/d/1qZeGC1D3vjMIq4LU3KjnCU2bJ84Nxcpo/view?usp=sharing">Product Requirements Document (PDF)</a>
 
 ## Getting Started
 
 ### Prerequisites
 
 - Node v18.18.0 or higher
-
 - Rust v1.77.2 or higher
 - Anchor CLI 0.30.1 or higher
 - Solana CLI 1.18.17 or higher
@@ -78,6 +93,12 @@ pnpm anchor-test
 
 ```shell
 pnpm anchor deploy --provider.cluster devnet
+```
+
+#### Run Rust Linter (Clippy)
+
+```shell
+pnpm rust-clippy
 ```
 
 ### web
