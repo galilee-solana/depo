@@ -1,7 +1,6 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-<<<<<<< HEAD
 import React from 'react'
 
 export default function CreateButton() {
@@ -14,15 +13,6 @@ export default function CreateButton() {
   return (
     <button
       onClick={handleClick}
-      className="px-6 py-3 border-2 border-black text-black bg-white rounded-lg hover:bg-gray-100 transition"
-    >
-      Create DEPO
-=======
-
-export default function CreateButton({ onStartCreating }: { onStartCreating: () => void }) {
-  return (
-    <button
-      onClick={onStartCreating}
       className="px-6 py-3 border-2 border-black text-black bg-white rounded-lg hover:bg-gray-100 transition"
     >
       Create DEPO
