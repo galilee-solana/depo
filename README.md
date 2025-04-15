@@ -14,7 +14,7 @@ This project is developed as part of an academic proof of concept and focuses on
 // TODO Add link when deployed
 - <a href="">Front-End Dapp</a>
 - <a href="">Program in Explorer</a>
-- <a href="https://drive.google.com/file/d/1qZeGC1D3vjMIq4LU3KjnCU2bJ84Nxcpo/view?usp=sharing">Product Requirements Document (PDF)</a>
+- <a href="https://drive.google.com/file/d/18jwoIrec4qrFLI6j1985witqQdLbbu4s/view?usp=sharing">Product Requirements Document (PDF)</a>
 
 ## Getting Started
 
