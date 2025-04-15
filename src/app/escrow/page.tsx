@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -28,4 +29,10 @@ export default function EscrowPage() {
         <EscrowList list={escrows}/>
     </div>
   )
+=======
+import EscrowPage from '@/components/escrow/EscrowForm'
+
+export default function Page() {
+  return <EscrowPage />
+>>>>>>> ff839cc (ui-layout.tsx = update EscrowCard visible if wallet connected | layout.tsx = update layout general to delete unusefull links)
 }
