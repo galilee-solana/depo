@@ -30,6 +30,7 @@ export function UiLayout({ children }: { children: ReactNode }) {
       <ClusterChecker>
         <AccountChecker />
       </ClusterChecker>
+<<<<<<< HEAD
       {/* Main Menu */}
       <div className="flex-grow w-full bg-white text-black overflow-y-auto">
         <div className="h-full px-4 md:px-12">
@@ -37,6 +38,11 @@ export function UiLayout({ children }: { children: ReactNode }) {
         </div>
         <div>
           <Toaster position="bottom-right" />
+=======
+      <div className="flex-grow w-full">
+        <div className="min-h-screen bg-white text-black px-4 md:px-12">
+          <DepoCard PubkeyDepoList={PubkeyDepoList} />
+>>>>>>> bd88937 (ui-layout.tsx = update DepoCard width)
         </div>
       </div>
     </div>
