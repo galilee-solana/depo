@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 use crate::errors::MinimumAmountErrors;
-use crate::states::modules::condition::ConditionModule;
+use crate::states::modules::ConditionModuleTrait;
 use crate::states::EscrowContext;
 
 #[account]
@@ -9,7 +9,7 @@ pub struct MinimumAmount {
   pub min_amount: u64   
 }
 
-impl ConditionModule for MinimumAmount {
+impl ConditionModuleTrait for MinimumAmount {
   fn is_satisfied(&self, escrow_account: &dyn EscrowContext) -> Result<()>{
     let escrow_balance = escrow_account.lamports();
 

@@ -105,10 +105,12 @@ describe('add_minimum_amount instruction test', () => {
     let escrowAccount = await program.account.escrow.fetch(escrowKey);
 
     expect(escrowAccount.modules).toHaveLength(1);
-    expect(
-        escrowAccount.modules.some(mod => 'minimumAmount' in mod)
-    ).toBeTruthy();
 
+    const minimumAmountModule = escrowAccount.modules.find(mod => {
+      return mod.moduleType.minimumAmount !== undefined;
+    });
+    expect(minimumAmountModule).toBeTruthy();
+    expect(minimumAmountModule?.key.toBase58()).toBe(minimumAmountKey.toBase58());
   })
 
   it('fails to add a second MinimumAmount module', async () => {

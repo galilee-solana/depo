@@ -4,7 +4,6 @@ import {Keypair, LAMPORTS_PER_SOL} from '@solana/web3.js'
 import {Depo} from '../target/types/depo'
 import {v4 as uuidv4} from 'uuid'
 import {strict as assert} from 'assert'
-import {BN} from "bn.js";
 
 
 describe('Test - Instruction: add_recipient', () => {
@@ -93,7 +92,7 @@ describe('Test - Instruction: add_recipient', () => {
     await program.methods.addRecipient(
         Array.from(escrowId),
         recipientWallet.publicKey,
-        new BN(5 * 100)
+        5 * 100
     )
     .accounts({
       escrow: escrowKey,
@@ -119,7 +118,7 @@ describe('Test - Instruction: add_recipient', () => {
       await program.methods.addRecipient(
           Array.from(escrowId),
           recipientWallet.publicKey,
-          new BN(101 * 100)
+          101 * 100
       )
       .accounts({
         escrow: escrowKey,
@@ -141,7 +140,7 @@ describe('Test - Instruction: add_recipient', () => {
     await program.methods.addRecipient(
         Array.from(escrowId),
         recipientWallet.publicKey,
-        new BN(99 * 100)
+        99 * 100
     )
     .accounts({
       escrow: escrowKey,
@@ -163,7 +162,7 @@ describe('Test - Instruction: add_recipient', () => {
       await program.methods.addRecipient(
           Array.from(escrowId),
           otherRecipientWallet.publicKey,
-          new BN(2 * 100)
+          2 * 100
       )
       .accounts({
         escrow: escrowKey,
@@ -187,7 +186,7 @@ describe('Test - Instruction: add_recipient', () => {
       await program.methods.addRecipient(
           Array.from(escrowId),
           recipientWallet.publicKey,
-          new BN(5 * 100)
+          5 * 100
       ).accounts({
         escrow: escrowKey,
         recipient: recipientKey,
@@ -207,7 +206,7 @@ describe('Test - Instruction: add_recipient', () => {
     await program.methods.addRecipient(
         Array.from(escrowId),
         recipientWallet.publicKey,
-        new BN(5 * 100)
+        5 * 100
     )
     .accounts({
       escrow: escrowKey,
@@ -225,7 +224,7 @@ describe('Test - Instruction: add_recipient', () => {
       await program.methods.addRecipient(
           Array.from(escrowId),
           recipientWallet.publicKey,
-          new BN(5 * 100)
+          5 * 100
       )
       .accounts({
         escrow: escrowKey,
