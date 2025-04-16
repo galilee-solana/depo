@@ -29,11 +29,7 @@ export function UiLayout({ children }: { children: ReactNode }) {
       <ClusterChecker>
         <AccountChecker />
       </ClusterChecker>
-<<<<<<< HEAD
-      {/* Main Menu*/}
-=======
       {/* Main Menu */}
->>>>>>> 1c6f098 (ui-layout.tsx = correct children import | layout.tsx = correct children import | /escrow/page.tsx = test logs+correct name variable in return EscrowList)
       <div className="flex-grow w-full bg-white text-black overflow-y-auto">
         <div className="h-full px-4 md:px-12">
           {children}

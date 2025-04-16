@@ -1,14 +1,14 @@
 'use client'
 
-console.log('ESCROW PAGE LOADED')
-
 import { useWallet } from '@solana/wallet-adapter-react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import EscrowCard from '@/components/escrowcard/EscrowCard'
+import ToogleInputFieldNumber from '@/components/create/ToogleInputFieldNumber'
+import ToogleInputFieldDateTime from '@/components/create/ToogleInputFieldDateTime'
+import ToogleInputLink from '@/components/create/ToogleInputLink'
 
-export default function EscrowPage() {
-  const { connected } = useWallet()
+export default function CreateEscrow() {
+  const { publicKey } = useWallet()
   const router = useRouter()
 
   const [name, setName] = useState('')
@@ -25,8 +25,8 @@ export default function EscrowPage() {
   const [RecipientEnabled, setRecipientEnabled] = useState(false)
 
   useEffect(() => {
-    if (!connected) {
-      router.push('/')
+    if (publicKey) {
+      console.log("Connected pubKey is :", publicKey.toBase58())
     }
   }, [publicKey])
 
