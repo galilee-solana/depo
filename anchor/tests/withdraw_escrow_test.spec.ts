@@ -109,7 +109,7 @@ describe('Test - Instruction: withdraw_escrow', () => {
     await program.methods.addRecipient(
         Array.from(escrowId),
         recipientWallet.publicKey,
-        new BN(95 * 100)
+        95 * 100
     )
     .accounts({
       escrow: escrowKey,
@@ -129,7 +129,7 @@ describe('Test - Instruction: withdraw_escrow', () => {
     await program.methods.addRecipient(
         Array.from(escrowId),
         otherRecipientWallet.publicKey,
-        new BN(5 * 100)
+        5 * 100
     )
     .accounts({
       escrow: escrowKey,

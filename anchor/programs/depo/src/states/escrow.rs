@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-use crate::states::modules::ModuleType;
+use crate::states::modules::ModuleReference;
 use crate::states::status::Status;
 use crate::constants::MAX_MODULES;
 
@@ -17,7 +17,7 @@ pub struct Escrow {
   pub depositors_count: u32,
   pub recipients_count: u32,
   #[max_len(MAX_MODULES)]
-  pub modules: Vec<ModuleType>,
+  pub modules: Vec<ModuleReference>,
   pub status: Status,
   pub created_at: i64
 }

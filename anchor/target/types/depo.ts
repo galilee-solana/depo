@@ -1011,8 +1011,8 @@ export type Depo = {
   "errors": [
     {
       "code": 6000,
-      "name": "invalidVectorLength",
-      "msg": "Vector length exceeds allowed size."
+      "name": "alwaysFails",
+      "msg": "Always fails for testing"
     }
   ],
   "types": [
@@ -1109,7 +1109,7 @@ export type Depo = {
             "type": {
               "vec": {
                 "defined": {
-                  "name": "moduleType"
+                  "name": "moduleReference"
                 }
               }
             }
@@ -1137,6 +1137,26 @@ export type Depo = {
           {
             "name": "minAmount",
             "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "moduleReference",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "moduleType",
+            "type": {
+              "defined": {
+                "name": "moduleType"
+              }
+            }
+          },
+          {
+            "name": "key",
+            "type": "pubkey"
           }
         ]
       }

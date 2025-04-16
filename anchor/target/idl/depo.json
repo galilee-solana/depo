@@ -1005,8 +1005,8 @@
   "errors": [
     {
       "code": 6000,
-      "name": "InvalidVectorLength",
-      "msg": "Vector length exceeds allowed size."
+      "name": "AlwaysFails",
+      "msg": "Always fails for testing"
     }
   ],
   "types": [
@@ -1103,7 +1103,7 @@
             "type": {
               "vec": {
                 "defined": {
-                  "name": "ModuleType"
+                  "name": "ModuleReference"
                 }
               }
             }
@@ -1131,6 +1131,26 @@
           {
             "name": "min_amount",
             "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ModuleReference",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "module_type",
+            "type": {
+              "defined": {
+                "name": "ModuleType"
+              }
+            }
+          },
+          {
+            "name": "key",
+            "type": "pubkey"
           }
         ]
       }
