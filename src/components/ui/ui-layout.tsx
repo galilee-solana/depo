@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+//import { usePathname } from 'next/navigation'
 import * as React from 'react'
 import { ReactNode, useEffect, useRef } from 'react'
 import toast, { Toaster } from 'react-hot-toast'
@@ -8,13 +9,12 @@ import toast, { Toaster } from 'react-hot-toast'
 import { AccountChecker } from '../account/account-ui'
 import { ClusterChecker, ClusterUiSelect, ExplorerLink } from '../cluster/cluster-ui'
 import { WalletButton } from '../solana/solana-provider'
+//import EscrowCard from '../escrowcard/EscrowCard'
+//import { useWallet } from '@solana/wallet-adapter-react'
 
 export function UiLayout({ children }: { children: ReactNode }) {
-<<<<<<< HEAD
-=======
-  const pathname = usePathname()
-  const wallet = useWallet()
->>>>>>> 1c6f098 (ui-layout.tsx = correct children import | layout.tsx = correct children import | /escrow/page.tsx = test logs+correct name variable in return EscrowList)
+  //const pathname = usePathname()
+  //const wallet = useWallet()
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">
