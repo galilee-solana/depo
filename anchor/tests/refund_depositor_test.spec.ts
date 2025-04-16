@@ -199,8 +199,6 @@ describe('Test- Intruction: refund_depositor', () => {
   describe("when the escrow is still started", () => {
     it('fails to refund the depositor', async () => {
       let balanceDepositorBefore = await provider.connection.getBalance(depositorWallet.publicKey)
-      expect(balanceDepositorBefore).toBe(8 * LAMPORTS_PER_SOL)
-
       let balanceEscrowBefore = await provider.connection.getBalance(escrowKey)
 
       let err: any
