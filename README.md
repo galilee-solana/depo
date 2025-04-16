@@ -14,9 +14,10 @@ Refer to the <a href="https://drive.google.com/drive/folders/14HRC7c7Hqz0cto9BRx
 
 ## Links
 // TODO Add link when deployed
-- <a href="">Front-End Dapp</a>
+- <a href="https://depo-tau.vercel.app/">Front-End Dapp</a>
 - <a href="">Program in Explorer</a>
 - <a href="https://drive.google.com/drive/folders/14HRC7c7Hqz0cto9BRxC9p3FstWeAc_1n?usp=sharing">Product Requirements Document</a>
+- <a href="https://excalidraw.com/#json=tSkZHuFGEfzd1i5n750T4,WuOR1v8TvPtiurGzndmHWQ">Excalidraw Document</a>
 
 ## Getting Started
 
