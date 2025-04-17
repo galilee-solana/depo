@@ -43,10 +43,16 @@ jobs:
       - name: Check solana config
         run: solana config get
 
-      - run: pnpm run anchor build
+      - name: anchor build
+        env:
+          RUSTUP_TOOLCHAIN: nightly-2025-04-14
+        run: pnpm run anchor build
         shell: bash
 
-      - run: pnpm run anchor test
+      - name: anchor test
+        env:
+          RUSTUP_TOOLCHAIN: nightly-2025-04-14
+        run: pnpm run anchor test
         shell: bash
 
       - name: Run Rust unit tests
