@@ -304,6 +304,101 @@ export type Depo = {
       ]
     },
     {
+      "name": "addTargetAmount",
+      "discriminator": [
+        94,
+        47,
+        225,
+        57,
+        86,
+        81,
+        98,
+        70
+      ],
+      "accounts": [
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "escrowId"
+              }
+            ]
+          }
+        },
+        {
+          "name": "targetAmount",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  97,
+                  114,
+                  103,
+                  101,
+                  116,
+                  95,
+                  97,
+                  109,
+                  111,
+                  117,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              }
+            ]
+          }
+        },
+        {
+          "name": "initializer",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "escrow"
+          ]
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "escrowId",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
       "name": "cancelEscrow",
       "discriminator": [
         156,
@@ -1155,6 +1250,19 @@ export type Depo = {
         21,
         148
       ]
+    },
+    {
+      "name": "targetAmount",
+      "discriminator": [
+        51,
+        188,
+        17,
+        87,
+        139,
+        73,
+        151,
+        245
+      ]
     }
   ],
   "errors": [
@@ -1403,6 +1511,18 @@ export type Depo = {
           },
           {
             "name": "expired"
+          }
+        ]
+      }
+    },
+    {
+      "name": "targetAmount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "targetAmount",
+            "type": "u64"
           }
         ]
       }

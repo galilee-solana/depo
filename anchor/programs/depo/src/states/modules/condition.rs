@@ -1,20 +1,18 @@
-use crate::states::{EscrowContext, MinimumAmount};
+use crate::states::{Escrow, MinimumAmount};
 use anchor_lang::prelude::*;
+use crate::states::modules::target_amount::TargetAmount;
 
-
-pub trait ConditionModuleTrait {
-    fn is_satisfied(&self, escrow_account: &dyn EscrowContext) -> Result<()>;
-}
-
-pub enum ConditionModule<'info> {
-    MinimumAmount(Account<'info, MinimumAmount>),
+pub enum ConditionModule {
+    MinimumAmount(MinimumAmount),
+    TargetAmount(TargetAmount),
     // Add other module types as they are implemented
 }
 
-impl<'info> ConditionModule<'info> {
-    pub fn is_satisfied(&self, escrow_account: &dyn EscrowContext) -> Result<()> {
+impl ConditionModule {
+    pub fn is_satisfied(&self, escrow: &Escrow) -> Result<()> {
         match self {
-            ConditionModule::MinimumAmount(module) => module.is_satisfied(escrow_account),
+            ConditionModule::MinimumAmount(module) => module.is_satisfied(escrow),
+            ConditionModule::TargetAmount(module) => module.is_satisfied(escrow),
             // Add other module types as they are implemented
         }
     }

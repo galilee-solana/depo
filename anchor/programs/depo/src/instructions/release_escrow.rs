@@ -26,7 +26,7 @@ where
         ReleaseErrors::InvalidNumberOfAccounts
     );
 
-    let mut condition_modules: Vec<ConditionModule<'info>> = Vec::new();
+    let mut condition_modules: Vec<ConditionModule> = Vec::new();
     let mut processed_modules: Vec<bool> = vec![false; escrow.modules.len()];
 
     for i in 0..ctx.remaining_accounts.len() {
