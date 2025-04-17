@@ -39,65 +39,6 @@ export default function CreateEscrow() {
     )
   }
 
-  const depositData = {
-    id: crypto.randomUUID(), // To change to an iterative add
-    name,
-    description,
-    //start_time: startTimeEnabled ? startTime : null,
-    timelock: timelockEnabled ? timelock : null,
-    minimum_amount: minimumAmountEnabled ? minimumAmount : null,
-    target_amount: targetAmountEnabled ? targetAmount : null,
-    walletPublicKey: publicKey.toBase58(),
-  }
-
-    // ACTIVATE WHEN READY
-
-    //if (startTimeEnabled) {
-    //  const now = new Date()
-    //  const selectedStartTime = new Date(startTime)
-    //  if (selectedStartTime <= now) {
-    //    errors.push("Start time must be in the future.")
-    //  }
-    //}
-
-    if (minimumAmountEnabled) {
-      const min = parseFloat(minimumAmount)
-      if (isNaN(min) || min < 0) {
-        errors.push("Minimum amount must be a number greater than or equal to 0.")
-      }
-    }
-
-    if (minimumAmountEnabled && targetAmountEnabled) {
-      const min = parseFloat(minimumAmount)
-      const target = parseFloat(targetAmount)
-      if (!isNaN(min) && !isNaN(target) && target <= min) {
-        errors.push("Target amount must be greater than minimum amount.")
-      }
-    }
-
-    if (errors.length > 0) {
-      alert(errors.join("\n"))
-      return
-    }
-
-    const depositData = {
-      id: crypto.randomUUID(),
-      name,
-      description,
-      //start_time: startTimeEnabled ? startTime : null,
-      timelock: timelockEnabled ? timelock : null,
-      minimum_amount: minimumAmountEnabled ? minimumAmount : null,
-      target_amount: targetAmountEnabled ? targetAmount : null,
-      walletPublicKey: publicKey.toBase58(),
-  }
-
-  // Pass depositData to confirm page (via state or storage)
-  router.push(`/escrow/confirm?data=${encodeURIComponent(JSON.stringify(depositData))}`)
-}
-    // router.push('/confirm') // Route to page = src/app/escrow/confirm/page.tsx
-    // TO DO : Set confirm page
-
-
   return (
     <div className="p-6 space-y-4">
       <h1 className="text-2xl font-bold">Create your new DEPO.</h1>
@@ -187,5 +128,6 @@ export default function CreateEscrow() {
         targetAmount={targetAmount}
         walletPublicKey={publicKey.toBase58()}
       />
+    </div>
   )
 }

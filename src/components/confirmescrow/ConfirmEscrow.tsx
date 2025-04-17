@@ -2,7 +2,6 @@
 
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-hot-toast'
-import { useEffect }from 'react'
 
 type ConfirmButtonProps = {
     name : string
@@ -29,14 +28,23 @@ export default function ConfirmEscrow({
 }: ConfirmButtonProps) {
   const router = useRouter()
 
-  const handleConfirm = () => {
-    const errors: strings[] = []
+  const validateFields = () => {
+    const errors: string[] = []
 
     // Check if name and description are not empty
     if(!name.trim()) errors.push("Name is required.")
     if(!description.trim()) errors.push("Description is required")
 
-    // Set minimum timelock time set 5min ahead
+    // START TIME ACTIVATE WHEN READY
+    //if (startTimeEnabled) {
+    //  const now = new Date()
+    //  const selectedStartTime = new Date(startTime)
+    //  if (selectedStartTime <= now) {
+    //    errors.push("Start time must be in the future.")
+    //  }
+    //}
+    
+    // Set minimum timelock -> 5min ahead : We can discuss about that.
     if (timelockEnabled) {
         const now = new Date()
         const lockTime = new Date(timelock)
