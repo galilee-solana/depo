@@ -13,24 +13,33 @@ class DepoClient {
   private wallet: WalletContextState;
 
   constructor(provider: AnchorProvider, wallet: WalletContextState) {
-    this.program = new Program(
-      { ...idl, address: idl.address } as any, 
-      provider
-    );
+    this.program = new Program(idl, provider);
     this.wallet = wallet;
-
-    console.log("Escrow program ID:", this.program.programId.toBase58())
-    console.log("Wallet public key:", this.wallet?.publicKey?.toBase58())
   }
 
+  /**
+   * Get the PDA key for the escrow
+   * @param uuid - The UUID of the escrow
+   * @returns Key of the PDA
+   */
+  getPdaKey(uuid: string) {
+    const escrowId = Uint8Array.from(Buffer.from(uuid, 'hex'))
+    return PublicKey.findProgramAddressSync(
+      [Buffer.from('escrow'), escrowId],
+      this.program.programId
+    )[0]
+  }
+
+  /**
+   * Create a new escrow
+   * @param name - The name of the escrow
+   * @param description - The description of the escrow
+   * @returns The Escrow object
+   */
   async createEscrow(name: string, description: string) {
     const uuid = uuidv4().replace(/-/g, '')
     const escrowId = Uint8Array.from(Buffer.from(uuid, 'hex'))
-
-    const [escrowKey, _bump] = PublicKey.findProgramAddressSync(
-      [Buffer.from('escrow'), escrowId],
-      this.program.programId
-    )
+    const escrowKey = this.getPdaKey(uuid)
 
     // Escrow Name (100 bytes) - will be truncated if too long
     const nameBuffer = Buffer.alloc(100)
@@ -50,7 +59,7 @@ class DepoClient {
           escrow: escrowKey,
           signer: this.wallet.publicKey!,
           systemProgram: SystemProgram.programId,
-        })
+        } as any)
         .rpc()
   
         const escrowAccount = await this.program.account.escrow.fetch(escrowKey);
@@ -64,6 +73,22 @@ class DepoClient {
       console.error("Error creating escrow:", error);
       throw error;
     }
+  }
+
+  /**
+   * Get an escrow by its UUID
+   * @param uuid - The UUID of the escrow
+   * @returns The Escrow object
+   */
+  async getEscrow(uuid: string) {
+    const escrowKey = this.getPdaKey(uuid)
+    const escrowAccount = await this.program.account.escrow.fetch(escrowKey);
+    const escrow = new Escrow(escrowAccount);
+
+    // TODO: Fetch Recipients & Depositors
+    // TODO: Fetch Conditions modules
+
+    return escrow;
   }
 }
 
