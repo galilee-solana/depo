@@ -1,16 +1,20 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, useRef, useMemo } from "react";
+import React, { createContext, useContext, useMemo } from "react";
 import { useAnchorProvider } from "@/components/solana/solana-provider";
 import { useWallet } from "@solana/wallet-adapter-react";
 import DepoClient from "@/utils/depo_client";
-
+import Escrow from "@/utils/models/escrow";
 type DepoClientContextType = {
   client: DepoClient | null;
+  getEscrows: () => Promise<Escrow[]>;
+  getEscrow: (uuid: string) => Promise<Escrow | null>;
 };
 
 const DepoClientContext = createContext<DepoClientContextType>({
   client: null,
+  getEscrows: async () => Promise.resolve([]),
+  getEscrow: async () => Promise.resolve(null),
 });
 
 /**
@@ -29,8 +33,26 @@ const DepoClientProvider = ({ children }: { children: React.ReactNode }) => {
     return null;
   }, [provider, wallet]);
 
+  const getEscrows = useMemo(() => {
+    return async () => {
+      if (depoClient) {
+        return await depoClient.getEscrows();
+      }
+      return [];
+    };
+  }, [depoClient]);
+
+  const getEscrow = (uuid: string): Promise<Escrow | null> => {
+    if (depoClient) {
+      return depoClient.getEscrow(uuid);
+    }
+    return Promise.resolve(null);
+  };
+
   const exposed: DepoClientContextType = {
     client: depoClient,
+    getEscrows,
+    getEscrow,
   };
 
   return (

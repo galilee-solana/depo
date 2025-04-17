@@ -1,3 +1,8 @@
+import { stringify as uuidStringify } from 'uuid';
+import { PublicKey } from '@solana/web3.js';
+import { BN } from '@coral-xyz/anchor';
+import { EscrowStatus, parseAnchorEnum } from '../anchor-enums';
+
 /**
  * Escrow model
  * 
@@ -14,10 +19,6 @@
  * @param withdrawnAmount - The amount withdrawn
  * @param status - The status of the escrow
  */
-
-import { PublicKey } from '@solana/web3.js';
-import { BN } from '@coral-xyz/anchor';
-
 class Escrow {
   uuid: string;
   name: string;
@@ -32,12 +33,12 @@ class Escrow {
   depositorsCount: number;
   recipientsCount: number;
   remainingPercentage: number;
-  status: string;
+  status: EscrowStatus;
   modules: any[];
 
   constructor(escrow: any) {
     // Convert id (byte array) to uuid string
-    this.uuid = this.byteArrayToUuid(escrow.id);
+    this.uuid = uuidStringify(escrow.id);
     
     // Convert name and description from byte arrays to strings
     this.name = this.byteArrayToString(escrow.name);
@@ -56,7 +57,10 @@ class Escrow {
     this.depositorsCount = escrow.depositorsCount;
     this.recipientsCount = escrow.recipientsCount;
     this.remainingPercentage = escrow.remainingPercentage;
-    this.status = escrow.status.toString();
+    
+    // Parse the status enum using our utility function
+    this.status = parseAnchorEnum(escrow.status, EscrowStatus, EscrowStatus.DRAFT) as EscrowStatus;
+    
     this.modules = escrow.modules || [];
   }
 
@@ -75,24 +79,24 @@ class Escrow {
   }
 
   /**
-   * Convert a byte array to a UUID string
+   * Check if escrow is in draft status
    */
-  private byteArrayToUuid(bytes: number[]): string {
-    if (!bytes || bytes.length !== 16) return '';
-    
-    // Convert the bytes to hex strings
-    const hex = Array.from(bytes).map(b => 
-      b.toString(16).padStart(2, '0')
-    );
-    
-    // Format as UUID
-    return [
-      hex.slice(0, 4).join(''),
-      hex.slice(4, 6).join(''),
-      hex.slice(6, 8).join(''),
-      hex.slice(8, 10).join(''),
-      hex.slice(10, 16).join('')
-    ].join('-');
+  isDraft(): boolean {
+    return this.status === EscrowStatus.DRAFT;
+  }
+  
+  /**
+   * Check if escrow is in started status
+   */
+  isStarted(): boolean {
+    return this.status === EscrowStatus.STARTED;
+  }
+  
+  /**
+   * Check if escrow is in released status
+   */
+  isReleased(): boolean {
+    return this.status === EscrowStatus.RELEASED;
   }
 }
 

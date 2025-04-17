@@ -5,10 +5,10 @@ import React from 'react'
 import { useAnchorProvider } from '../solana/solana-provider'
 import { useWallet } from '@solana/wallet-adapter-react'
 import DepoClient from '@/utils/depo_client'
-
+import { useDepoClient } from '@/contexts/useDepoClientCtx'
 export default function CreateButton() {
   const router = useRouter()
-
+  const { client } = useDepoClient()
   
   const provider = useAnchorProvider()
   const wallet = useWallet()
@@ -16,8 +16,10 @@ export default function CreateButton() {
 
   const handleClick = async () => {
     //router.push('/escrow/create') // Route to page = src/app/escrow/create/page.tsx
-    const uuid = await depoClient.createEscrow("Test", "Test")
-    console.log("Escrow created", uuid)
+    if (client) {
+      const uuid = await client.createEscrow("Test", "Test")
+      console.log("Escrow created", uuid)
+    }
   }
 
   return (

@@ -5,17 +5,13 @@ import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import CreateButton from '../create/CreateButton'
 import FindButton from '../find/FindButton'
-
-type Escrow = {
-  id: number // u32
-  name: string
-}
+import Escrow from '@/utils/models/escrow'
 
 export default function EscrowCard({ EscrowList }: { EscrowList: Escrow[] }) {
   const router = useRouter()
 
-  // Sorted by ID number
-  const sortedEscrowList = [...EscrowList].sort((a, b) => a.id - b.id)
+  // Sorted by create timestamp
+  const sortedEscrowList = [...EscrowList].sort((a, b) => a.createdAt.cmp(b.createdAt))
 
   // Set const State to scroll DepoCard
   const [startIndex, setStartIndex] = useState(0)
@@ -48,9 +44,9 @@ export default function EscrowCard({ EscrowList }: { EscrowList: Escrow[] }) {
           isScrolling ? 'opacity-50 translate-y-2' : 'opacity-100 translate-y-0'} min-h-[300px]`}>
           {visibleEscrow.map((item) => (
             <div
-              key={item.id}
+              key={item.uuid}
               className="flex items-center justify-between bg-black text-white rounded-2xl px-4 py-3 cursor-pointer shadow-md hover:bg-gray-900 transition"
-              onClick={() => router.push(`/escrow/${item.id}`)} // Redirect ID to update page still to be done
+              onClick={() => router.push(`/escrow/${item.uuid}`)} // Redirect ID to update page still to be done
             >
               <div className="flex items-center space-x-4">
                 <Image
