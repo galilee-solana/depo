@@ -20,6 +20,7 @@ pub fn start_escrow(
     require!(escrow.status == Status::Draft, EscrowErrors::EscrowNotDraft);
 
     escrow.status = Status::Started;
+    escrow.started_at = Clock::get()?.unix_timestamp;
 
     Ok(())
 }
