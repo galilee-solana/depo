@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/depo.json`.
  */
 export type Depo = {
-  "address": "coUnmi3oBUtwtd9fjeAvSsJssXh5A5xyPbhpewyzRVF",
+  "address": "Dsq9mG9PRPUNve4eMNToJ37KobXfUqeYLKAA6w4LsbA3",
   "metadata": {
     "name": "depo",
     "version": "0.1.0",

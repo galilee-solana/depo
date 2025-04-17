@@ -40,4 +40,5 @@ tmp
 .idea
 *.iml
 
+# test ledger
 /test-ledger
