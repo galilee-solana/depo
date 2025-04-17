@@ -1,6 +1,12 @@
 import EscrowItemPage from "@/pages/EscrowItemPage";
 
-export default function EscrowItem({ params }: { params: { id: string } }) {
+interface PageProps {
+  params: {
+    id: string
+  }
+}
+
+export default function EscrowItem({ params }: PageProps) {
   return (
     <EscrowItemPage uuid={params.id} />
   )

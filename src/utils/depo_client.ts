@@ -110,7 +110,6 @@ class DepoClient {
   async getAllEscrows() {
     try {
       const escrows = await this.program.account.escrow.all();
-      console.log("Escrows:", escrows);
       return escrows.map(escrow => new Escrow(escrow.account));
     } catch (error: any) {
       console.error("Error fetching escrows:", error);
