@@ -107,7 +107,7 @@ class DepoClient {
    * Get all escrows
    * @returns The list of Escrow objects
    */
-  async getEscrows() {
+  async getAllEscrows() {
     try {
       const escrows = await this.program.account.escrow.all();
       console.log("Escrows:", escrows);

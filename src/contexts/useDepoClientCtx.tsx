@@ -7,13 +7,13 @@ import DepoClient from "@/utils/depo_client";
 import Escrow from "@/utils/models/escrow";
 type DepoClientContextType = {
   client: DepoClient | null;
-  getEscrows: () => Promise<Escrow[]>;
+  getAllEscrows: () => Promise<Escrow[]>;
   getEscrow: (uuid: string) => Promise<Escrow | null>;
 };
 
 const DepoClientContext = createContext<DepoClientContextType>({
   client: null,
-  getEscrows: async () => Promise.resolve([]),
+  getAllEscrows: async () => Promise.resolve([]),
   getEscrow: async () => Promise.resolve(null),
 });
 
@@ -33,10 +33,10 @@ const DepoClientProvider = ({ children }: { children: React.ReactNode }) => {
     return null;
   }, [provider, wallet]);
 
-  const getEscrows = useMemo(() => {
+  const getAllEscrows = useMemo(() => {
     return async () => {
       if (depoClient) {
-        return await depoClient.getEscrows();
+        return await depoClient.getAllEscrows();
       }
       return [];
     };
@@ -51,7 +51,7 @@ const DepoClientProvider = ({ children }: { children: React.ReactNode }) => {
 
   const exposed: DepoClientContextType = {
     client: depoClient,
-    getEscrows,
+    getAllEscrows,
     getEscrow,
   };
 

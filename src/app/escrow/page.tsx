@@ -8,11 +8,11 @@ import { useDepoClient } from '@/contexts/useDepoClientCtx'
 import Escrow from '@/utils/models/escrow'
 
 export default function EscrowPage() {
-  const { getEscrows } = useDepoClient()
+  const { getAllEscrows } = useDepoClient()
   const [escrows, setEscrows] = useState<Escrow[]>([])
 
   useEffect(() => {
-    getEscrows().then(setEscrows)
+    getAllEscrows().then(setEscrows)
   }, [])
 
   return (
