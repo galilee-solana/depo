@@ -1,9 +1,7 @@
 'use client'
 
-console.log('ESCROW PAGE LOADED')
-
 import { useState, useEffect } from 'react'
-import EscrowCard from '@/components/escrowcard/EscrowCard'
+import EscrowCard from '@/components/escrow_list/EscrowList'
 import { useDepoClient } from '@/contexts/useDepoClientCtx'
 import Escrow from '@/utils/models/escrow'
 
