@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import ToogleInputFieldNumber from '@/components/create/ToogleInputFieldNumber'
 import ToogleInputFieldDateTime from '@/components/create/ToogleInputFieldDateTime'
 import ToogleInputLink from '@/components/create/ToogleInputLink'
+import ConfirmEscrow from '@/components/confirmescrow/ConfirmEscrow'
 
 export default function CreateEscrow() {
   const { publicKey } = useWallet()
@@ -13,8 +14,8 @@ export default function CreateEscrow() {
 
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
-  const [startTimeEnabled, setStartTimeEnabled] = useState(false)
-  const [startTime, setStartTime] = useState('')
+  //const [startTimeEnabled, setStartTimeEnabled] = useState(false)
+  //const [startTime, setStartTime] = useState('')
   const [timelockEnabled, setTimelockEnabled] = useState(false)
   const [timelock, setTimelock] = useState('')
   const [minimumAmountEnabled, setMinimumAmountEnabled] = useState(false)
@@ -41,17 +42,61 @@ export default function CreateEscrow() {
   const depositData = {
     id: crypto.randomUUID(), // To change to an iterative add
     name,
-    start_time: startTimeEnabled ? startTime : null,
+    description,
+    //start_time: startTimeEnabled ? startTime : null,
     timelock: timelockEnabled ? timelock : null,
     minimum_amount: minimumAmountEnabled ? minimumAmount : null,
     target_amount: targetAmountEnabled ? targetAmount : null,
     walletPublicKey: publicKey.toBase58(),
   }
 
-  const handleConfirm = () => {
-    router.push('/confirm') // Route to page = src/app/escrow/confirm/page.tsx
-    // TO DO : Set confirm page
+    // ACTIVATE WHEN READY
+
+    //if (startTimeEnabled) {
+    //  const now = new Date()
+    //  const selectedStartTime = new Date(startTime)
+    //  if (selectedStartTime <= now) {
+    //    errors.push("Start time must be in the future.")
+    //  }
+    //}
+
+    if (minimumAmountEnabled) {
+      const min = parseFloat(minimumAmount)
+      if (isNaN(min) || min < 0) {
+        errors.push("Minimum amount must be a number greater than or equal to 0.")
+      }
+    }
+
+    if (minimumAmountEnabled && targetAmountEnabled) {
+      const min = parseFloat(minimumAmount)
+      const target = parseFloat(targetAmount)
+      if (!isNaN(min) && !isNaN(target) && target <= min) {
+        errors.push("Target amount must be greater than minimum amount.")
+      }
+    }
+
+    if (errors.length > 0) {
+      alert(errors.join("\n"))
+      return
+    }
+
+    const depositData = {
+      id: crypto.randomUUID(),
+      name,
+      description,
+      //start_time: startTimeEnabled ? startTime : null,
+      timelock: timelockEnabled ? timelock : null,
+      minimum_amount: minimumAmountEnabled ? minimumAmount : null,
+      target_amount: targetAmountEnabled ? targetAmount : null,
+      walletPublicKey: publicKey.toBase58(),
   }
+
+  // Pass depositData to confirm page (via state or storage)
+  router.push(`/escrow/confirm?data=${encodeURIComponent(JSON.stringify(depositData))}`)
+}
+    // router.push('/confirm') // Route to page = src/app/escrow/confirm/page.tsx
+    // TO DO : Set confirm page
+
 
   return (
     <div className="p-6 space-y-4">
@@ -70,15 +115,15 @@ export default function CreateEscrow() {
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
-
-      <ToogleInputFieldDateTime
+      
+      {/*<ToogleInputFieldDateTime
         label="Start Time"
         placeholder="Deposit start time"
         enabled={startTimeEnabled}
         setEnabled={setStartTimeEnabled}
         value={startTime}
         setValue={setStartTime}
-      />
+      >*/}
 
       <ToogleInputFieldDateTime
         label="Time Lock"
@@ -131,12 +176,16 @@ export default function CreateEscrow() {
         setEnabled={setRecipientEnabled}
       />
 
-      <button
-        onClick={handleConfirm}
-        className="px-6 py-3 border-2 border-black text-black bg-white rounded-lg hover:bg-gray-100 transition"
-      >
-        Confirm Deposit
-      </button>
-    </div>
+      <ConfirmEscrow
+        name={name}
+        description={description}
+        timelockEnabled={timelockEnabled}
+        timelock={timelock}
+        minimumAmountEnabled={minimumAmountEnabled}
+        minimumAmount={minimumAmount}
+        targetAmountEnabled={targetAmountEnabled}
+        targetAmount={targetAmount}
+        walletPublicKey={publicKey.toBase58()}
+      />
   )
 }
