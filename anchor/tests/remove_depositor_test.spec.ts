@@ -117,6 +117,7 @@ describe('Test - Instruction: remove_depositor', () => {
 
     escrowAccount = await program.account.escrow.fetch(escrowKey)
     expect(escrowAccount.depositorsCount).toBe(0)
+    expect(escrowAccount.isPublicDeposit).toBeTruthy()
 
     try {
       await program.account.depositor.fetch(depositorKey)
