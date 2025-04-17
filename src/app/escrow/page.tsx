@@ -13,7 +13,7 @@ export default function EscrowPage() {
 
   useEffect(() => {
     getAllEscrows().then(setEscrows)
-  }, [getAllEscrows])
+  }, [])
 
   return (
     <div>
