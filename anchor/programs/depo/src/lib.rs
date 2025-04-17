@@ -104,4 +104,18 @@ pub mod depo {
     ) -> Result<()> {
         instructions::withdraw_escrow(ctx, escrow_id)
     }
+    
+    pub fn cancel_escrow(
+        ctx: Context<CancelEscrow>,
+        escrow_id: [u8; 16],
+    ) -> Result<()> {
+        instructions::cancel_escrow(ctx, escrow_id)
+    }
+    
+    pub fn refund_depositor(
+        ctx: Context<RefundDepositor>,
+        escrow_id: [u8; 16],
+    ) -> Result<()> {
+        instructions::refund_depositor(ctx, escrow_id)
+    }
 }
