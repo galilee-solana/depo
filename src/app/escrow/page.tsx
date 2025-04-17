@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import EscrowCard from '@/components/escrow_list/EscrowList'
+import EscrowList from '@/components/escrow_list/EscrowList'
 import { useDepoClient } from '@/contexts/useDepoClientCtx'
 import Escrow from '@/utils/models/escrow'
 
@@ -15,7 +15,7 @@ export default function EscrowPage() {
 
   return (
     <div>
-        <EscrowCard EscrowList={escrows}/>
+        <EscrowList list={escrows}/>
     </div>
   )
 }
