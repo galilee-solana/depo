@@ -12,7 +12,7 @@ pub enum EscrowErrors {
     UnauthorizedDepositorModifier,
     #[msg("Escrow must be in Draft status to modify it")]
     EscrowNotDraft,
-    #[msg("Escrow must be in Draft status to modify it")]
+    #[msg("Escrow must be in Started status to modify it")]
     EscrowNotStarted,
     #[msg("No recipients in escrow")]
     NoRecipients,
@@ -39,5 +39,11 @@ pub enum EscrowErrors {
     #[msg("Unauthorized to withdraw escrow")]
     UnauthorizedToWithdraw,
     #[msg("Escrow has insufficient funds")]
-    InsufficientFunds
+    InsufficientFunds,
+    #[msg("Refund is only available when the status is cancelled or expired")]
+    RefundInvalidEscrowStatus,
+    #[msg("Unauthorized depositor to ask for refund")]
+    RefundUnauthorizedDepositor,
+    #[msg("Depositor was already refunded")]
+    AlreadyRefunded        
 }

@@ -150,7 +150,7 @@ describe('Test - Instruction: release_escrow', () => {
       expect(escrowAccount.status).toEqual({started: {}});
     })
 
-    it("Successfully released an escrow with one module: MinimunAmount", async () => {
+    it("Successfully released an escrow with one module: MinimumAmount", async () => {
       await program.methods.depositEscrow(
         Array.from(escrowId),
         new BN(2 * LAMPORTS_PER_SOL)
@@ -290,7 +290,7 @@ describe('Test - Instruction: release_escrow', () => {
       throw new Error('Should fail when escrow is not started')
     } catch (error: any) {
       expect(error.toString()).toContain('Error Code: EscrowNotStarted')
-      expect(error.toString()).toContain('Error Message: Escrow must be in Draft status to modify it')
+      expect(error.toString()).toContain('Error Message: Escrow must be in Started status to modify it')
     }
   })  
 

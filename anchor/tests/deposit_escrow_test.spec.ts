@@ -294,7 +294,7 @@ describe('Test - Instruction: deposit_escrow', () => {
 
         expect(err).toBeDefined()
         expect(err.error.errorCode.code).toBe("EscrowNotStarted")
-        expect(err.error.errorMessage).toBe("Escrow must be in Draft status to modify it")
+        expect(err.error.errorMessage).toBe("Escrow must be in Started status to modify it")
       })
     })
   })
@@ -370,7 +370,7 @@ describe('Test - Instruction: deposit_escrow', () => {
 
         expect(err).toBeDefined()
         expect(err.error.errorCode.code).toBe("EscrowNotStarted")
-        expect(err.error.errorMessage).toBe("Escrow must be in Draft status to modify it")
+        expect(err.error.errorMessage).toBe("Escrow must be in Started status to modify it")
       })
     })
   })
