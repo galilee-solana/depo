@@ -51,7 +51,7 @@ class DepoClient {
 
     try {
       if (this.wallet.publicKey) {
-        await this.program.methods.createEscrow(
+        const tx = await this.program.methods.createEscrow(
           Array.from(escrowId),
           nameBuffer,
           descriptionBuffer
@@ -65,12 +65,14 @@ class DepoClient {
         const escrowAccount = await this.program.account.escrow.fetch(escrowKey);
         const escrow = new Escrow(escrowAccount);
         console.log("Escrow:", escrow);
-        return escrow;
+        return {
+          tx: tx,
+          escrow: escrow
+        };
       } else {
         throw new Error("Wallet is not available");
       }
     } catch (error) {
-      console.error("Error creating escrow:", error);
       throw error;
     }
   }
@@ -113,7 +115,6 @@ class DepoClient {
       const escrows = await this.program.account.escrow.all();
       return escrows.map(escrow => new Escrow(escrow.account));
     } catch (error: any) {
-      console.error("Error fetching escrows:", error);
       throw error;
     }
   }
