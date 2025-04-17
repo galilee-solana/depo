@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation'
 import React from 'react'
 import { useDepoClient } from '@/contexts/useDepoClientCtx'
+import toast from 'react-hot-toast'
 
 export default function CreateButton() {
   const { client } = useDepoClient()
@@ -10,9 +11,15 @@ export default function CreateButton() {
 
   const handleClick = async () => {
     // router.push('/escrow/create') // Route to page = src/app/escrow/create/page.tsx
-    if (client) {
-      const escrow = await client.createEscrow("test", "test")
-      router.push(`/escrow/${escrow.uuid}`)
+    try { 
+      const escrow = await client?.createEscrow("test", "test")
+      if (escrow) {
+        router.push(`/escrow/${escrow.uuid}`)
+      } else {
+        toast.error('Error creating escrow')
+      }
+    } catch (error: any) {
+      toast.error(error.message)
     }
   }
 

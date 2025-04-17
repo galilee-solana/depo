@@ -3,6 +3,7 @@
 import { useDepoClient } from "@/contexts/useDepoClientCtx";
 import Escrow from "@/utils/models/escrow";
 import { useState, useEffect } from "react";
+import toast from 'react-hot-toast';
 
 function EscrowItemPage({ uuid }: { uuid: string }) {
     const { getEscrow } = useDepoClient()
@@ -16,24 +17,26 @@ function EscrowItemPage({ uuid }: { uuid: string }) {
             try {
                 setIsLoading(true)
                 setError(null)
-    
                 const result = await getEscrow(uuid)
+                
                 if (!isMounted) return
-    
                 if (result) {
                     setEscrow(result)
                 } else {
                     setError(`Escrow with ID ${uuid} not found`)
+                    toast.error(`ID: ${uuid} not found`)
                 }
             } catch (err) {
-                if (isMounted) setError('Failed to load escrow')
+                if (isMounted) {
+                    setError('Failed to load escrow')
+                    toast.error('Failed to load escrow')
+                }
             } finally {
                 if (isMounted) setIsLoading(false)
             }
         }
-    
+
         fetchEscrow()
-    
         return () => {
             isMounted = false
         }

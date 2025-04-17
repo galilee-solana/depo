@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import EscrowList from '@/components/escrow_list/EscrowList'
 import { useDepoClient } from '@/contexts/useDepoClientCtx'
 import Escrow from '@/utils/models/escrow'
-
+import toast from 'react-hot-toast'
 export default function EscrowPage() {
   const { getAllEscrows } = useDepoClient()
   const [escrows, setEscrows] = useState<Escrow[]>([])
@@ -16,9 +16,8 @@ export default function EscrowPage() {
         if (escrows) {
           setEscrows(escrows)
         }
-      } catch (error) {
-        console.error('Error fetching escrows:', error)
-        // Implement toast
+      } catch (error: any) {
+        toast.error('Error fetching escrows: ', error)
       }
     }
     fetchEscrows()

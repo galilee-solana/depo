@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useMemo } from "react";
 import { useAnchorProvider } from "@/components/solana/solana-provider";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { toast } from "react-hot-toast";
 import DepoClient from "@/utils/depo_client";
 import Escrow from "@/utils/models/escrow";
 type DepoClientContextType = {
@@ -32,24 +33,26 @@ const DepoClientProvider = ({ children }: { children: React.ReactNode }) => {
     }
     return null;
   }, [provider, wallet]);
+  
 
-  const getAllEscrows = useMemo(() => {
+  const getAllEscrows = useMemo<() => Promise<Escrow[]>>(() => {
     return async () => {
       if (depoClient) {
-        return await depoClient.getAllEscrows();
+          return await depoClient.getAllEscrows();
       }
       return [];
     };
-  }, [depoClient])
+  }, [depoClient]);
 
-  const getEscrow = useMemo(() => {
+  const getEscrow = useMemo<(uuid: string) => Promise<Escrow | null>>(() => {
     return async (uuid: string) => {
       if (depoClient) {
-        return await depoClient.getEscrow(uuid);
+        const result = await depoClient.getEscrow(uuid);
+        return result === undefined ? null : result;
       }
-      return null;  
+      return null;
     };
-  }, [depoClient])
+  }, [depoClient]);
 
   const exposed: DepoClientContextType = {
     client: depoClient,
