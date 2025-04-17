@@ -5,7 +5,7 @@ import Escrow from "@/utils/models/escrow";
 import { useState, useEffect } from "react";
 import toast from 'react-hot-toast';
 
-function EscrowItemPage({ uuid }: { uuid: string }) {
+function EscrowItem({ uuid }: { uuid: string }) {
     const { getEscrow } = useDepoClient()
     const [escrow, setEscrow] = useState<Escrow | null>(null)
     const [isLoading, setIsLoading] = useState(true)
@@ -73,4 +73,4 @@ return (
     )
 }
 
-export default EscrowItemPage;
+export default EscrowItem;

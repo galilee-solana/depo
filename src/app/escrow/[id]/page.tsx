@@ -1,4 +1,4 @@
-import EscrowItemPage from "@/pages/EscrowItemPage";
+import EscrowItem from "@/pages/EscrowItem";
 
 interface PageProps {
   params: Promise<{
@@ -6,9 +6,9 @@ interface PageProps {
   }>
 }
 
-export default async function EscrowItem(props: PageProps) {
+export default async function EscrowItemPage(props: PageProps) {
   const params = await props.params;
   return (
-    <EscrowItemPage uuid={params.id} />
+    <EscrowItem uuid={params.id} />
   )
 }
