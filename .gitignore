@@ -39,3 +39,5 @@ tmp
 #ide
 .idea
 *.iml
+
+/test-ledger
