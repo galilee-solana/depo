@@ -37,6 +37,7 @@ class Escrow {
   withdrawnAmount: BN;
   
   createdAt: BN;
+  createdAtFormatted: string;
   isPublicDeposit: boolean;
   depositorsCount: number;
   recipientsCount: number;
@@ -59,6 +60,9 @@ class Escrow {
     this.depositedAmount = escrow.depositedAmount;
     this.withdrawnAmount = escrow.withdrawnAmount;
     this.createdAt = escrow.createdAt;
+    
+    // Create formatted date string
+    this.createdAtFormatted = this.formatTimestamp(escrow.createdAt);
     
     // Set other properties
     this.isPublicDeposit = escrow.isPublicDeposit;
@@ -100,6 +104,23 @@ class Escrow {
     
     // Default fallback
     return EscrowStatus.DRAFT;
+  }
+  
+  /**
+   * Format a timestamp BN into a readable date and time string
+   */
+  private formatTimestamp(timestamp: BN): string {
+    const date = new Date(timestamp.toNumber() * 1000);
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      timeZoneName: 'short'
+    };
+    return date.toLocaleString(undefined, options);
   }
   
   /**

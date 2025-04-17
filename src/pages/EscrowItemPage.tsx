@@ -40,7 +40,7 @@ function EscrowItemPage({ uuid }: { uuid: string }) {
 
 return (
         <div>
-            <h1 className="text-2xl font-bold">Escrow Item</h1>
+            <h1 className="text-2xl font-bold">Escrow #{escrow?.uuid}</h1>
             {isLoading && <p>Loading escrow data...</p>}
             
             {error && <p className="text-red-500">{error}</p>}
@@ -51,7 +51,7 @@ return (
                     <p>Description: {escrow.description}</p>
                     <p>Deposited Amount: {escrow.depositedAmount.toString()}</p>
                     <p>Withdrawn Amount: {escrow.withdrawnAmount.toString()}</p>
-                    <p>Remaining Percentage: {escrow.remainingPercentage}</p>
+                    <p>Remaining Percentage: {escrow.remainingPercentage / 100} %</p>
                     <p>Status: {escrow.status}</p>
                     <p>Is Public Deposit: {escrow.isPublicDeposit ? "Yes" : "No"}</p>
                     <p>Depositors Count: {escrow.depositorsCount}</p>
@@ -62,8 +62,7 @@ return (
                         "No modules"
                     }</p>
                     <p>Initializer: {escrow.initializer.toString()}</p>
-                    <p>UUID: {escrow.uuid}</p>
-                    <p>Created At: {escrow.createdAt.toString()}</p>
+                    <p>Created At: {escrow.createdAtFormatted}</p>
                 </div>
             )}
         </div>
