@@ -1,7 +1,15 @@
 import { stringify as uuidStringify } from 'uuid';
 import { PublicKey } from '@solana/web3.js';
 import { BN } from '@coral-xyz/anchor';
-import { EscrowStatus, parseAnchorEnum } from '../anchor-enums';
+
+// Define TypeScript enum to match Anchor Status enum
+export enum EscrowStatus {
+  DRAFT = 'draft',
+  STARTED = 'started',
+  RELEASED = 'released',
+  CANCELLED = 'cancelled',
+  EXPIRED = 'expired'
+}
 
 /**
  * Escrow model
@@ -58,8 +66,8 @@ class Escrow {
     this.recipientsCount = escrow.recipientsCount;
     this.remainingPercentage = escrow.remainingPercentage;
     
-    // Parse the status enum using our utility function
-    this.status = parseAnchorEnum(escrow.status, EscrowStatus, EscrowStatus.DRAFT) as EscrowStatus;
+    // Handle the status enum from Anchor properly
+    this.status = this.parseStatusEnum(escrow.status);
     
     this.modules = escrow.modules || [];
   }
@@ -78,6 +86,22 @@ class Escrow {
     return String.fromCharCode(...byteArray.slice(0, length));
   }
 
+  /**
+   * Parse the Anchor enum format into our TypeScript enum
+   */
+  private parseStatusEnum(statusObj: any): EscrowStatus {
+    // Anchor enums come as objects with a single key matching the variant name
+    // e.g., { draft: {} } or { started: {} }
+    if (statusObj?.draft !== undefined) return EscrowStatus.DRAFT;
+    if (statusObj?.started !== undefined) return EscrowStatus.STARTED;
+    if (statusObj?.released !== undefined) return EscrowStatus.RELEASED;
+    if (statusObj?.cancelled !== undefined) return EscrowStatus.CANCELLED;
+    if (statusObj?.expired !== undefined) return EscrowStatus.EXPIRED;
+    
+    // Default fallback
+    return EscrowStatus.DRAFT;
+  }
+  
   /**
    * Check if escrow is in draft status
    */

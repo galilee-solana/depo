@@ -1,7 +1,7 @@
 'use client'
 
 import { useDepoClient } from "@/contexts/useDepoClientCtx";
-import Escrow, { EscrowStatus } from "@/utils/models/escrow";
+import Escrow from "@/utils/models/escrow";
 import { useState, useEffect } from "react";
 
 function EscrowItemPage({ uuid }: { uuid: string }) {
@@ -52,7 +52,7 @@ return (
                     <p>Deposited Amount: {escrow.depositedAmount.toString()}</p>
                     <p>Withdrawn Amount: {escrow.withdrawnAmount.toString()}</p>
                     <p>Remaining Percentage: {escrow.remainingPercentage}</p>
-                    <p>Status: {escrow.status.toUpperCase()}</p>
+                    <p>Status: {escrow.status}</p>
                     <p>Is Public Deposit: {escrow.isPublicDeposit ? "Yes" : "No"}</p>
                     <p>Depositors Count: {escrow.depositorsCount}</p>
                     <p>Recipients Count: {escrow.recipientsCount}</p>
