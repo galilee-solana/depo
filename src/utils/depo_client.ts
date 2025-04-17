@@ -99,7 +99,8 @@ class DepoClient {
 
       return escrow;
     } catch (error: any) {
-      return null;
+      console.error(`Error fetching escrow #${uuid}:`, error);
+      throw error;
     }
   }
 
@@ -113,7 +114,7 @@ class DepoClient {
       return escrows.map(escrow => new Escrow(escrow.account));
     } catch (error: any) {
       console.error("Error fetching escrows:", error);
-      return [];
+      throw error;
     }
   }
 }

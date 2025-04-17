@@ -10,8 +10,19 @@ export default function EscrowPage() {
   const [escrows, setEscrows] = useState<Escrow[]>([])
 
   useEffect(() => {
-    getAllEscrows().then(setEscrows)
-  })
+    const fetchEscrows = async () => {
+      try {
+        const escrows = await getAllEscrows()
+        if (escrows) {
+          setEscrows(escrows)
+        }
+      } catch (error) {
+        console.error('Error fetching escrows:', error)
+        // Implement toast
+      }
+    }
+    fetchEscrows()
+  }, [getAllEscrows])
 
   return (
     <div>

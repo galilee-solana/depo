@@ -12,27 +12,28 @@ function EscrowItemPage({ uuid }: { uuid: string }) {
 
     useEffect(() => {
         let isMounted = true
-        setIsLoading(true)
-        setError(null)
-        
-        getEscrow(uuid)
-            .then(result => {
-                if (isMounted) {
-                    if (result) {
-                        setEscrow(result)
-                    } else {
-                        setError(`Escrow with ID ${uuid} not found`)
-                    }
-                    setIsLoading(false)
+        const fetchEscrow = async () => {
+            try {
+                setIsLoading(true)
+                setError(null)
+    
+                const result = await getEscrow(uuid)
+                if (!isMounted) return
+    
+                if (result) {
+                    setEscrow(result)
+                } else {
+                    setError(`Escrow with ID ${uuid} not found`)
                 }
-            })
-            .catch(err => {
-                if (isMounted) {
-                    setError('Failed to load escrow')
-                    setIsLoading(false)
-                }
-            })
-            
+            } catch (err) {
+                if (isMounted) setError('Failed to load escrow')
+            } finally {
+                if (isMounted) setIsLoading(false)
+            }
+        }
+    
+        fetchEscrow()
+    
         return () => {
             isMounted = false
         }

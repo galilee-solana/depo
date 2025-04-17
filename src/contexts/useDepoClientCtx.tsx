@@ -40,16 +40,16 @@ const DepoClientProvider = ({ children }: { children: React.ReactNode }) => {
       }
       return [];
     };
-  }, [depoClient]);
+  }, [depoClient])
 
   const getEscrow = useMemo(() => {
-    return async (uuid: string): Promise<Escrow | null> => {
+    return async (uuid: string) => {
       if (depoClient) {
         return await depoClient.getEscrow(uuid);
       }
-      return null;
+      return null;  
     };
-  }, [depoClient]);
+  }, [depoClient])
 
   const exposed: DepoClientContextType = {
     client: depoClient,

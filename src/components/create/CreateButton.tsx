@@ -2,12 +2,18 @@
 
 import { useRouter } from 'next/navigation'
 import React from 'react'
+import { useDepoClient } from '@/contexts/useDepoClientCtx'
 
 export default function CreateButton() {
+  const { client } = useDepoClient()
   const router = useRouter()
 
   const handleClick = async () => {
-    router.push('/escrow/create') // Route to page = src/app/escrow/create/page.tsx
+    // router.push('/escrow/create') // Route to page = src/app/escrow/create/page.tsx
+    if (client) {
+      const escrow = await client.createEscrow("test", "test")
+      router.push(`/escrow/${escrow.uuid}`)
+    }
   }
 
   return (
