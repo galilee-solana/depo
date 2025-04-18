@@ -30,7 +30,7 @@ export default function ConfirmEscrow({
   const { client } = useDepoClient()
   const [loading, setLoading] = useState(false)
 
-  const handleConfirmEscrow = () => {
+  const handleConfirmEscrow = async () => {
     // Check if name and description are not empty
     if (!name || description) {
         toast.error('Name and description are required')
