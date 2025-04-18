@@ -81,6 +81,21 @@ pub mod depo {
         instructions::remove_target_amount(ctx, escrow_id)
     }
 
+    pub fn add_timelock(
+        ctx: Context<AddTimelock>,
+        escrow_id: [u8; 16],
+        release_after: u64
+    ) -> Result<()> {
+        instructions::add_timelock(ctx, escrow_id, release_after)
+    }
+    
+    pub fn remove_timelock(
+        ctx: Context<RemoveTimelock>,
+        escrow_id: [u8; 16],
+    ) -> Result<()> {
+        instructions::remove_timelock(ctx, escrow_id)
+    }
+
     pub fn remove_minimum_amount(
         ctx: Context<RemoveMinimumAmount>,
         escrow_id: [u8; 16],
