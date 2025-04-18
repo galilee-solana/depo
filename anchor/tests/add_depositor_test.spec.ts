@@ -106,6 +106,7 @@ describe('Test - Instruction: add_depositor', () => {
     escrowAccount = await program.account.escrow.fetch(escrowKey)
     expect(escrowAccount.depositorsCount).toBe(1)
     expect(escrowAccount.depositedAmount.toNumber()).toBe(0)
+    expect(escrowAccount.isPublicDeposit).toBeFalsy()
 
     const depositorAccount = await program.account.depositor.fetch(depositorKey)
     expect(depositorAccount.escrow.toBase58()).toBe(escrowKey.toBase58())
