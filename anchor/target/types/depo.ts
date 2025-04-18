@@ -1359,28 +1359,13 @@ export type Depo = {
   "errors": [
     {
       "code": 6000,
-      "name": "invalidNumberOfAccounts",
-      "msg": "Invalid number of accounts."
+      "name": "targetAmountGreaterThanZero",
+      "msg": "Target amount must be greater than 0."
     },
     {
       "code": 6001,
-      "name": "moduleNotFound",
-      "msg": "This module is not found."
-    },
-    {
-      "code": 6002,
-      "name": "moduleAlreadyAdded",
-      "msg": "You cannot add the same module twice."
-    },
-    {
-      "code": 6003,
-      "name": "unsupportedModule",
-      "msg": "You passed an unsupported module type."
-    },
-    {
-      "code": 6004,
-      "name": "validationFailed",
-      "msg": "Validation failed. The escrow is not released."
+      "name": "amountNotReached",
+      "msg": "Amount deposited does not match target amount."
     }
   ],
   "types": [

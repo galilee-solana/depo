@@ -48,6 +48,7 @@ mod tests {
             modules: vec![],
             status: Status::Draft,
             created_at: 0,
+            started_at: 0
         };
 
         // Test with all passing modules
@@ -76,6 +77,7 @@ mod tests {
             modules: vec![],
             status: Status::Draft,
             created_at: 0,
+            started_at: 0
         };
 
         let min_amount_pass = ConditionModule::MinimumAmount(MinimumAmount { min_amount: 10 });
