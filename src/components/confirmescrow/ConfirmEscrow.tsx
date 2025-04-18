@@ -1,6 +1,6 @@
 'use client'
 
-import { useDepoClient } from '@/components/context/useDepoClientCtx'
+import { useDepoClientCtx } from '@/components/contexts/useDepoClientCtx'
 import { useState } from 'react'
 import { toast } from 'react-hot-toast'
 
@@ -27,7 +27,7 @@ export default function ConfirmEscrow({
     targetAmount,
     walletPublicKey,
 }: ConfirmButtonProps) {
-  const { client } = useDepoClient()
+  const { client } = useDepoClientCtx()
   const [loading, setLoading] = useState(false)
 
   const handleConfirmEscrow = async () => {
