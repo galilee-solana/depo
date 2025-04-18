@@ -19,5 +19,6 @@ pub struct Escrow {
   #[max_len(MAX_MODULES)]
   pub modules: Vec<ModuleReference>,
   pub status: Status,
-  pub created_at: i64
+  pub created_at: i64,
+  pub started_at: i64
 }

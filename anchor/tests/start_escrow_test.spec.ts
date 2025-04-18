@@ -87,6 +87,7 @@ describe('Test- Intruction: start_escrow', () => {
   })
 
   it('starts escrow', async () => {
+    const nowMinus1s = Math.floor(Date.now() / 1000) - 1
     await program.methods.startEscrow(
         Array.from(escrowId)
     )
@@ -99,6 +100,7 @@ describe('Test- Intruction: start_escrow', () => {
 
     const escrowAccount = await program.account.escrow.fetch(escrowKey)
     expect(escrowAccount.status).toEqual({started: {}});
+    expect(escrowAccount.startedAt.toNumber()).toBeGreaterThanOrEqual(nowMinus1s)
   })
 
   it("fails to start escrow if not in draft status", async () => {
