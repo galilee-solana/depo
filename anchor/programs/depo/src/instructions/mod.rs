@@ -12,6 +12,7 @@ mod withdraw_escrow;
 mod cancel_escrow;
 mod refund_depositor;
 mod add_target_amount;
+mod remove_target_amount;
 
 pub use create_escrow::*;
 pub use add_recipient::*;
@@ -19,8 +20,9 @@ pub use remove_recipient::*;
 pub use add_depositor::*;
 pub use remove_depositor::*;
 pub use add_minimum_amount::*;
-pub use add_target_amount::*;
 pub use remove_minimum_amount::*;
+pub use add_target_amount::*;
+pub use remove_target_amount::*;
 pub use deposit_escrow::*;
 pub use start_escrow::*;
 pub use release_escrow::*;

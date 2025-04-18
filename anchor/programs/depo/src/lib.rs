@@ -74,6 +74,13 @@ pub mod depo {
         instructions::add_target_amount(ctx, escrow_id, amount)
     }
 
+    pub fn remove_target_amount(
+        ctx: Context<RemoveTargetAmount>,
+        escrow_id: [u8; 16],
+    ) -> Result<()> {
+        instructions::remove_target_amount(ctx, escrow_id)
+    }
+
     pub fn remove_minimum_amount(
         ctx: Context<RemoveMinimumAmount>,
         escrow_id: [u8; 16],
