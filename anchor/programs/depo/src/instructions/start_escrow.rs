@@ -16,6 +16,7 @@ pub fn start_escrow(
     _escrow_id: [u8; 16],
 ) -> Result<()> {
     let escrow = &mut ctx.accounts.escrow;
+    require!(escrow.recipients_count > 0, EscrowErrors::NoRecipients);
     require!(escrow.remaining_percentage == 0, EscrowErrors::PercentageDistribution);
     require!(escrow.status == Status::Draft, EscrowErrors::EscrowNotDraft);
 

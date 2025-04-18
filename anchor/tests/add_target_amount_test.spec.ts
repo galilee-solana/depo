@@ -150,7 +150,61 @@ describe('add_target_amount instruction test', () => {
   });
 
   it("fails if the escrow status is not 'draft'", async () => {
-    // TODO: implement this test when it will be possible to change the status of the escrow
+    const recipientWallet = Keypair.generate()
+    const [recipientPDA, _recipientBump] = anchor.web3.PublicKey.findProgramAddressSync(
+        [Buffer.from('recipient'), escrowKey.toBuffer(), recipientWallet.publicKey.toBuffer()],
+        program.programId
+    )
+
+    await program.methods.addRecipient(
+        Array.from(escrowId),
+        recipientWallet.publicKey,
+        100 * 100
+    )
+    .accounts({
+      escrow: escrowKey,
+      recipient: recipientPDA,
+      initializer: initializer.publicKey,
+      systemProgram: anchor.web3.SystemProgram.programId,
+    })
+    .signers([initializer])
+    .rpc()
+
+    await program.methods.startEscrow(
+        Array.from(escrowId)
+    )
+    .accounts({
+      escrow: escrowKey,
+      initializer: initializer.publicKey,
+      systemProgram: anchor.web3.SystemProgram.programId,
+    }).signers([initializer])
+    .rpc()
+
+    const escrowAccount = await program.account.escrow.fetch(escrowKey)
+    expect(escrowAccount.status).toEqual({started: {}});
+
+    let error: any
+    try {
+      await program.methods.addTargetAmount(
+          Array.from(escrowId),
+          new BN(3 * LAMPORTS_PER_SOL),
+      )
+      .accounts({
+        escrow: escrowKey,
+        targetAmount: targetAmountKey,
+        initializer: initializer.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      })
+      .signers([initializer])
+      .rpc()
+    } catch (err) {
+      error = err
+    }
+
+    expect(error).toBeDefined()
+    expect(error.error.errorCode.code).toBe("EscrowNotDraft")
+    expect(error.error.errorMessage).toBe("Escrow must be in Draft status to modify it")
+
   });
 
   it("fails if the signer is not the escrow's initializer", async () => {
