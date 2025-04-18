@@ -1,6 +1,7 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
+import { useDepoClient } from '@/components/context/useDepoClientCtx'
+import { useState } from 'react'
 import { toast } from 'react-hot-toast'
 
 type ConfirmButtonProps = {
@@ -26,14 +27,15 @@ export default function ConfirmEscrow({
     targetAmount,
     walletPublicKey,
 }: ConfirmButtonProps) {
-  const router = useRouter()
+  const { client } = useDepoClient()
+  const [loading, setLoading] = useState(false)
 
-  const validateFields = () => {
-    const errors: string[] = []
-
+  const handleConfirmEscrow = () => {
     // Check if name and description are not empty
-    if(!name.trim()) errors.push("Name is required.")
-    if(!description.trim()) errors.push("Description is required")
+    if (!name || description) {
+        toast.error('Name and description are required')
+        return
+    }
 
     // START TIME ACTIVATE WHEN READY
     //if (startTimeEnabled) {
@@ -49,57 +51,67 @@ export default function ConfirmEscrow({
         const now = new Date()
         const lockTime = new Date(timelock)
         if (isNaN(lockTime.getTime()) || lockTime.getTime() < now.getTime() + 5 * 60 * 1000) {
-            errors.push("Timelock must be at least 5 minutes in the future.")
+            toast.error("Timelock must be at least 5 minutes in the future.")
+            return
         }
     }
 
     // If target_amount only -> must be > 0
-    if (targetAmountEnabled) {
-        const target = parseFloat(targetAmount)
-        if (isNaN(target) || target <= 0) {
-            errors.push("Target must be superior to 0.")
-        }
+    if (targetAmountEnabled && parseFloat(targetAmount) <= 0) {
+        toast.error('Target amount must be greater than 0')
+        return
+    }
+
+    // If minimum_amount only -> must be > 0
+    if (minimumAmountEnabled && parseFloat(minimumAmount) <= 0) {
+        toast.error('Minimum amount must be greater than 0')
+        return
     }
 
     // If both min & target active -> target > min
-    if (minimumAmountEnabled && targetAmountEnabled) {
-        const min = parseFloat(minimumAmount)
-        const target = parseFloat(targetAmount)
-        if (!isNaN(min) && !isNaN(target) && target <= min) {
-            errors.push("Target amount must be greater than minimum amount.")
-        }
-    }
-
-    return errors
-  }
-
-  const handleClick = () => {
-    const errors = validateFields()
-    if (errors.length > 0) {
-        errors.forEach((e) => toast.error(e))
+    if (minimumAmountEnabled && targetAmountEnabled &&
+        parseFloat(minimumAmount) > parseFloat(targetAmount)
+      ) {
+        toast.error('Minimum amount cannot exceed target amount')
         return
     }
-  
 
-    const depositData = {
-        id: crypto.randomUUID(),
-        name,
-        description,
-        timelock: timelockEnabled ? timelock : null,
-        minimumAmount: minimumAmountEnabled ? minimumAmount : null,
-        target_amount: targetAmountEnabled ? targetAmount : null,
-        walletPublicKey,
+    if (!client) {
+        toast.error("DepoClient is not available")
+        return
+    }
+
+    try {
+        setLoading(true)
+        const loadingToastId = toast.loading("Creating your escrow...")
+  
+        // Seuls name & description sont passés pour l’instant :
+        const { tx, escrow } = await client.createEscrow({
+          name,
+          description,
+          // timelock: timelockEnabled ? new Date(timelock) : null,
+          // minimumAmount: minimumAmountEnabled ? parseFloat(minimumAmount) : null,
+          // targetAmount: targetAmountEnabled ? parseFloat(targetAmount) : null,
+        })
+  
+        toast.dismiss(loadingToastId)
+        toast.success(`Escrow created 🎉 TX: ${tx.slice(0, 8)}...`)
+  
+        console.log('Escrow created:', escrow)
+      } catch (err: any) {
+        toast.dismiss()
+        toast.error(`Error: ${err.message}`)
+        console.error(err)
+      } finally {
+        setLoading(false)
+      }
     }
   
-    // I don't like this push but was just for testing front
-    // Need to be changed this with secured component handling Sol transaction with POST
-    // Need to set a component to write transaction using validateFields and pop-up window
-    router.push(`/escrow/confirm?data=${encodeURIComponent(JSON.stringify(depositData))}`)
-}
-
+  
 return (
     <button
-        onClick={handleClick}
+        onClick={handleConfirmEscrow}
+        disabled={loading}
         className="px-6 py-3 border-2 border-black text-black bg-white rounded-lg hover:bg-gray-100 transition"
     >
         Confirm DEPO
