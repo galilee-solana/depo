@@ -15,6 +15,7 @@ const links: { label: string; path: string }[] = [
   { label: 'Account', path: '/account' },
   { label: 'Clusters', path: '/clusters' },
   { label: 'Deposit Program', path: '/deposit' },
+  { label: 'Escrow', path: '/escrow' },
 ]
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -24,6 +25,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ReactQueryProvider>
           <ClusterProvider>
             <SolanaProvider>
+              <DepoClientProvider>
+                <UiLayout>
+                  {children}
+                </UiLayout>
+              </DepoClientProvider>
               <DepoClientProvider>
                 <UiLayout>
                   {children}

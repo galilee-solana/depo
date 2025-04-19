@@ -21,6 +21,9 @@ pub fn remove_depositor(
     require!(escrow.depositors_count > 0, EscrowErrors::NoDepositors);
 
     escrow.depositors_count -= 1;
+    if escrow.depositors_count == 0 {
+        escrow.is_public_deposit = true;
+    }
 
     Ok(())
 }

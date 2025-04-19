@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/depo.json`.
  */
 export type Depo = {
-  "address": "coUnmi3oBUtwtd9fjeAvSsJssXh5A5xyPbhpewyzRVF",
+  "address": "Dsq9mG9PRPUNve4eMNToJ37KobXfUqeYLKAA6w4LsbA3",
   "metadata": {
     "name": "depo",
     "version": "0.1.0",
@@ -300,6 +300,191 @@ export type Depo = {
         {
           "name": "percentage",
           "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "addTargetAmount",
+      "discriminator": [
+        94,
+        47,
+        225,
+        57,
+        86,
+        81,
+        98,
+        70
+      ],
+      "accounts": [
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "escrowId"
+              }
+            ]
+          }
+        },
+        {
+          "name": "targetAmount",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  97,
+                  114,
+                  103,
+                  101,
+                  116,
+                  95,
+                  97,
+                  109,
+                  111,
+                  117,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              }
+            ]
+          }
+        },
+        {
+          "name": "initializer",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "escrow"
+          ]
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "escrowId",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "addTimelock",
+      "discriminator": [
+        146,
+        67,
+        49,
+        67,
+        65,
+        168,
+        63,
+        51
+      ],
+      "accounts": [
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "escrowId"
+              }
+            ]
+          }
+        },
+        {
+          "name": "timelock",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  105,
+                  109,
+                  101,
+                  108,
+                  111,
+                  99,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              }
+            ]
+          }
+        },
+        {
+          "name": "initializer",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "escrow"
+          ]
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "escrowId",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        },
+        {
+          "name": "releaseAfter",
+          "type": "u64"
         }
       ]
     },
@@ -954,6 +1139,183 @@ export type Depo = {
       ]
     },
     {
+      "name": "removeTargetAmount",
+      "discriminator": [
+        103,
+        129,
+        91,
+        60,
+        115,
+        170,
+        44,
+        204
+      ],
+      "accounts": [
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "escrowId"
+              }
+            ]
+          }
+        },
+        {
+          "name": "targetAmount",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  97,
+                  114,
+                  103,
+                  101,
+                  116,
+                  95,
+                  97,
+                  109,
+                  111,
+                  117,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              }
+            ]
+          }
+        },
+        {
+          "name": "initializer",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "escrow"
+          ]
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "escrowId",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "removeTimelock",
+      "discriminator": [
+        226,
+        143,
+        59,
+        152,
+        230,
+        52,
+        25,
+        175
+      ],
+      "accounts": [
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "escrowId"
+              }
+            ]
+          }
+        },
+        {
+          "name": "timelock",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  105,
+                  109,
+                  101,
+                  108,
+                  111,
+                  99,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              }
+            ]
+          }
+        },
+        {
+          "name": "initializer",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "escrow"
+          ]
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "escrowId",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        }
+      ]
+    },
+    {
       "name": "startEscrow",
       "discriminator": [
         46,
@@ -1154,6 +1516,32 @@ export type Depo = {
         251,
         21,
         148
+      ]
+    },
+    {
+      "name": "targetAmount",
+      "discriminator": [
+        51,
+        188,
+        17,
+        87,
+        139,
+        73,
+        151,
+        245
+      ]
+    },
+    {
+      "name": "timelock",
+      "discriminator": [
+        189,
+        33,
+        78,
+        75,
+        205,
+        31,
+        4,
+        177
       ]
     }
   ],
@@ -1379,6 +1767,10 @@ export type Depo = {
           {
             "name": "createdAt",
             "type": "i64"
+          },
+          {
+            "name": "startedAt",
+            "type": "i64"
           }
         ]
       }
@@ -1421,7 +1813,7 @@ export type Depo = {
         "kind": "enum",
         "variants": [
           {
-            "name": "timeLock"
+            "name": "timelock"
           },
           {
             "name": "expiryFallback"
@@ -1484,6 +1876,30 @@ export type Depo = {
           },
           {
             "name": "expired"
+          }
+        ]
+      }
+    },
+    {
+      "name": "targetAmount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "targetAmount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "timelock",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "releaseAfter",
+            "type": "u64"
           }
         ]
       }

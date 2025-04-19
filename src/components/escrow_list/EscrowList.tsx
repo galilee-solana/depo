@@ -5,17 +5,13 @@ import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import CreateButton from '../create/CreateButton'
 import FindButton from '../find/FindButton'
+import Escrow from '@/utils/models/escrow'
 
-type Escrow = {
-  id: number // u32
-  name: string
-}
-
-export default function EscrowCard({ EscrowList }: { EscrowList: Escrow[] }) {
+export default function EscrowList({ list }: { list: Escrow[] }) {
   const router = useRouter()
 
-  // Sorted by ID number
-  const sortedEscrowList = [...EscrowList].sort((a, b) => a.id - b.id)
+  // Sorted by create timestamp
+  const sortedEscrowList = [...list].sort((a, b) => a.createdAt.cmp(b.createdAt))
 
   // Set const State to scroll DepoCard
   const [startIndex, setStartIndex] = useState(0)
@@ -46,11 +42,11 @@ export default function EscrowCard({ EscrowList }: { EscrowList: Escrow[] }) {
       <div className="w-full max-w-3xl mx-auto px-4 rounded-md p-4 bg-white">
         <div className={`relative space-y-4 transition-all duration-300 ease-in-out transform ${
           isScrolling ? 'opacity-50 translate-y-2' : 'opacity-100 translate-y-0'} min-h-[300px]`}>
-          {visibleEscrow.map((item) => (
+          {visibleEscrow.map((escrow) => (
             <div
-              key={item.id}
+              key={escrow.uuid}
               className="flex items-center justify-between bg-black text-white rounded-2xl px-4 py-3 cursor-pointer shadow-md hover:bg-gray-900 transition"
-              onClick={() => router.push(`/escrow/${item.id}`)} // Redirect ID to update page still to be done
+              onClick={() => router.push(`/escrow/${escrow.uuid}`)} // Redirect ID to update page still to be done
             >
               <div className="flex items-center space-x-4">
                 <Image
@@ -61,7 +57,7 @@ export default function EscrowCard({ EscrowList }: { EscrowList: Escrow[] }) {
                   className="h-10 w-auto object-contain"
                 />
                 <span className="truncate max-w-[200px]">
-                  {item.name.length > 24 ? item.name.slice(0, 24) + '…' : item.name}
+                  {escrow.name.length > 24 ? escrow.name.slice(0, 24) + '…' : escrow.name}
                 </span>
               </div>
             </div>

@@ -2,7 +2,7 @@
 
 use anchor_lang::prelude::*;
 
-declare_id!("coUnmi3oBUtwtd9fjeAvSsJssXh5A5xyPbhpewyzRVF");
+declare_id!("Dsq9mG9PRPUNve4eMNToJ37KobXfUqeYLKAA6w4LsbA3");
 
 mod constants;
 mod instructions;
@@ -64,6 +64,36 @@ pub mod depo {
         amount: u64
     ) -> Result<()> {
         instructions::add_minimum_amount(ctx, escrow_id, amount)
+    }
+
+    pub fn add_target_amount(
+        ctx: Context<AddTargetAmount>,
+        escrow_id: [u8; 16],
+        amount: u64
+    ) -> Result<()> {
+        instructions::add_target_amount(ctx, escrow_id, amount)
+    }
+
+    pub fn remove_target_amount(
+        ctx: Context<RemoveTargetAmount>,
+        escrow_id: [u8; 16],
+    ) -> Result<()> {
+        instructions::remove_target_amount(ctx, escrow_id)
+    }
+
+    pub fn add_timelock(
+        ctx: Context<AddTimelock>,
+        escrow_id: [u8; 16],
+        release_after: u64
+    ) -> Result<()> {
+        instructions::add_timelock(ctx, escrow_id, release_after)
+    }
+    
+    pub fn remove_timelock(
+        ctx: Context<RemoveTimelock>,
+        escrow_id: [u8; 16],
+    ) -> Result<()> {
+        instructions::remove_timelock(ctx, escrow_id)
     }
 
     pub fn remove_minimum_amount(

@@ -16,6 +16,8 @@ describe('Test- Intruction: start_escrow', () => {
   const initializer = Keypair.generate()
   let escrowId: Uint8Array
   let escrowKey: anchor.web3.PublicKey
+  let recipientWallet = Keypair.generate()
+  let recipientKey: anchor.web3.PublicKey
 
   beforeEach(async () => {
     const signature = await provider.connection.requestAirdrop(
@@ -66,11 +68,13 @@ describe('Test- Intruction: start_escrow', () => {
     const escrowAccount = await program.account.escrow.fetch(escrowKey)
     expect(escrowAccount.status).toEqual({draft: {}});
 
-    let recipientWallet = Keypair.generate()
     const [recipientPDA, _recipientBump] = anchor.web3.PublicKey.findProgramAddressSync(
         [Buffer.from('recipient'), escrowKey.toBuffer(), recipientWallet.publicKey.toBuffer()],
         program.programId
     )
+
+    recipientKey = recipientPDA
+
     await program.methods.addRecipient(
         Array.from(escrowId),
         recipientWallet.publicKey,
@@ -87,6 +91,7 @@ describe('Test- Intruction: start_escrow', () => {
   })
 
   it('starts escrow', async () => {
+    const nowMinus1s = Math.floor(Date.now() / 1000) - 1
     await program.methods.startEscrow(
         Array.from(escrowId)
     )
@@ -99,6 +104,7 @@ describe('Test- Intruction: start_escrow', () => {
 
     const escrowAccount = await program.account.escrow.fetch(escrowKey)
     expect(escrowAccount.status).toEqual({started: {}});
+    expect(escrowAccount.startedAt.toNumber()).toBeGreaterThanOrEqual(nowMinus1s)
   })
 
   it("fails to start escrow if not in draft status", async () => {
@@ -135,4 +141,40 @@ describe('Test- Intruction: start_escrow', () => {
     expect(err.error.errorMessage).toBe("Escrow must be in Draft status to modify it")
   })
 
+  it("fails to start escrow if there is no recipients", async () => {
+    await program.methods.removeRecipient(
+        Array.from(escrowId),
+        recipientWallet.publicKey
+    )
+    .accounts({
+      escrow: escrowKey,
+      recipient: recipientKey,
+      initializer: initializer.publicKey,
+      systemProgram: anchor.web3.SystemProgram.programId,
+    })
+    .signers([initializer])
+    .rpc()
+
+    let escrowAccount = await program.account.escrow.fetch(escrowKey)
+    expect(escrowAccount.recipientsCount).toBe(0)
+
+    let err: any
+    try {
+      await program.methods.startEscrow(
+          Array.from(escrowId)
+      )
+      .accounts({
+        escrow: escrowKey,
+        initializer: initializer.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      }).signers([initializer])
+      .rpc()
+    } catch (error) {
+      err = error
+    }
+
+    expect(err).toBeDefined()
+    expect(err.error.errorCode.code).toBe("NoRecipients")
+    expect(err.error.errorMessage).toBe("No recipients in escrow")
+  })
 })
