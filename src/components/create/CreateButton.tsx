@@ -17,15 +17,20 @@ export default function CreateButton() {
     try { 
       const result = await client?.createEscrow("test", "test")
       if (result) {
-        router.push(`/escrow/${result.escrow.uuid}`)
-        const explorerUrl = getExplorerUrl(`tx/${result.tx}`)
-        toast.success(
-          <ToastWithLinks
-            message="Escrow created successfully."
+        const result2 = await client?.addRecipient(result?.escrow.uuid, "B2FoCe8QrFmNLvvQmbNA1gUXeBeYbEv5HYdyLX38EYtJ", 100)
+        if (result2) {
+          router.push(`/escrow/${result.escrow.uuid}`)
+          const explorerUrl = getExplorerUrl(`tx/${result.tx}`)
+          toast.success(
+            <ToastWithLinks
+              message="Escrow created successfully."
             linkText="View transaction"
-            url={explorerUrl}
-          />
-        )
+              url={explorerUrl}
+            />
+          )
+        } else {
+          toast.error('Error creating escrow')
+        }
       } else {
         toast.error('Error creating escrow')
       }

@@ -35,7 +35,13 @@ class DepoClient {
     }
   }
 
-
+  getPdaKeyForRecipient(escrowKey: PublicKey, key: PublicKey) {
+    const recipientKey = PublicKey.findProgramAddressSync(
+      [Buffer.from('recipient'), escrowKey.toBuffer(), key.toBuffer()],
+      this.program.programId
+    )[0]
+    return recipientKey
+  }
 
   /**
    * Create a new escrow
@@ -183,6 +189,30 @@ class DepoClient {
         Array.from(escrowId),
       ).accounts({
         escrow: escrowKey,
+        initializer: this.wallet.publicKey!,
+        systemProgram: SystemProgram.programId,
+      }).rpc()
+
+      await this.program.provider.connection.confirmTransaction(tx);
+      return tx
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async addRecipient(uuid: string, key: string, percentage: number) {
+    const cleanUuid = uuid.replace(/-/g, '')
+    const { key: escrowKey, bufferId: escrowId } = this.getPdaKeyAndBufferId(cleanUuid)
+    const recipientWallet = new PublicKey(key)
+    const recipientKey = this.getPdaKeyForRecipient(escrowKey, recipientWallet)
+    try {
+      const tx = await this.program.methods.addRecipient(
+        Array.from(escrowId),
+        recipientWallet,
+        percentage
+      ).accounts({
+        escrow: escrowKey,
+        recipient: recipientKey,
         initializer: this.wallet.publicKey!,
         systemProgram: SystemProgram.programId,
       }).rpc()
