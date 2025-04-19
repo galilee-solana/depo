@@ -147,12 +147,14 @@ function EscrowItem({ uuid }: { uuid: string }) {
                             className={`${isDeleting ? 'bg-gray-400' : 'bg-red-500 hover:bg-red-600'} text-white px-4 py-2 rounded-md transition`}>
                             {isDeleting ? 'Deleting...' : 'Cancel'}
                         </button>
-                        <button 
-                            onClick={() => startEscrow(escrow)}
-                            disabled={isStarting}
+                        {escrow.status === "draft" && (
+                            <button 
+                                onClick={() => startEscrow(escrow)}
+                                disabled={isStarting}
                             className={`${isStarting ? 'bg-gray-400 text-white border-none' : 'hover:bg-gray-100 text-black border border-black'} px-4 py-2 rounded-md transition`}>
                             {isStarting ? 'Starting...' : 'Start'}
                         </button>
+                        )}
                     </div>
                 </>
             )}

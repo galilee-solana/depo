@@ -13,7 +13,7 @@ export default function CreateButton() {
   const { getExplorerUrl } = useCluster()
 
   const handleClick = async () => {
-    // router.push('/escrow/create') // Route to page = src/app/escrow/create/page.tsx
+    router.push('/escrow/create') // Route to page = src/app/escrow/create/page.tsx
     try { 
       const result = await client?.createEscrow("test", "test")
       if (result) {
