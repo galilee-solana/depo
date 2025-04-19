@@ -47,14 +47,14 @@ export default function CreateEscrow() {
         placeholder="Deposit name #1"
         className="w-full px-3 py-2 border-2 border-black rounded-2xl bg-white text-black"
         value={name}
-        onChange={(e) => setDescription(e.target.value)}
+        onChange={(e) => setName(e.target.value)}
       />
 
       <input
         placeholder="Description"
         className="w-full px-3 py-2 border-2 border-black rounded-2xl bg-white text-black"
         value={description}
-        onChange={(e) => setName(e.target.value)}
+        onChange={(e) => setDescription(e.target.value)}
       />
       
       {/*<ToogleInputFieldDateTime

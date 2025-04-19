@@ -66,13 +66,21 @@ export default function ConfirmEscrow({
         return
     }
 
+    if (minimumAmountEnabled && targetAmountEnabled) {
+      const min = parseFloat(minimumAmount)
+      const target = parseFloat(targetAmount)
+      if (!isNaN(min) && !isNaN(target) && target <= min) {
+          toast.error("Target amount must be greater than minimum amount.")
+          return
+      }
+  }
     // If both min & target active -> target > min
-    if (minimumAmountEnabled && targetAmountEnabled &&
-        parseFloat(minimumAmount) > parseFloat(targetAmount)
-      ) {
-        toast.error('Minimum amount cannot exceed target amount')
-        return
-    }
+    //if (minimumAmountEnabled && targetAmountEnabled &&
+    //    parseFloat(minimumAmount) > parseFloat(targetAmount)
+    //  ) {
+    //    toast.error('Minimum amount cannot exceed target amount')
+    //    return
+    //}
 
     if (!client) {
         toast.error("DepoClient is not available")

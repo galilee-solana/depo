@@ -4,6 +4,7 @@ import { SolanaProvider } from '@/components/solana/solana-provider'
 import { UiLayout, AppModal } from '@/components/ui/ui-layout'
 import { ellipsify, useTransactionToast } from '@/utils/utils'
 import { ReactQueryProvider } from './react-query-provider'
+import { DepoClientProvider } from '@/contexts/useDepoClientCtx'
 
 export const metadata = {
   title: 'DEPO',
@@ -23,9 +24,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ReactQueryProvider>
           <ClusterProvider>
             <SolanaProvider>
-              <UiLayout>
-                {children}
-              </UiLayout>
+              <DepoClientProvider>
+                <UiLayout>
+                  {children}
+                </UiLayout>
+              </DepoClientProvider>
             </SolanaProvider>
           </ClusterProvider>
         </ReactQueryProvider>
