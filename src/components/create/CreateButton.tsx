@@ -10,18 +10,18 @@ export default function CreateButton() {
   const router = useRouter()
 
   const handleClick = async () => {
-    // router.push('/escrow/create') // Route to page = src/app/escrow/create/page.tsx
-    try { 
-      const result = await client?.createEscrow("test", "test")
-      if (result) {
-        router.push(`/escrow/${result.escrow.uuid}`)
-        toast.success(`Escrow created successfully. ${result.tx}`)
-      } else {
-        toast.error('Error creating escrow')
-      }
-    } catch (error: any) {
-      toast.error(error.message)
-    }
+    router.push('/escrow/create') // Route to page = src/app/escrow/create/page.tsx
+    //try { 
+    //  const result = await client?.createEscrow("test", "test")
+    //  if (result) {
+    //    router.push(`/escrow/${result.escrow.uuid}`)
+    //    toast.success(`Escrow created successfully. ${result.tx}`)
+    //  } else {
+    //    toast.error('Error creating escrow')
+    //  }
+    //} catch (error: any) {
+    //  toast.error(error.message)
+    //}
   }
 
   return (
