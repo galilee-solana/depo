@@ -13,6 +13,8 @@ mod cancel_escrow;
 mod refund_depositor;
 mod add_target_amount;
 mod remove_target_amount;
+mod add_timelock;
+mod remove_timelock;
 
 pub use create_escrow::*;
 pub use add_recipient::*;
@@ -23,6 +25,8 @@ pub use add_minimum_amount::*;
 pub use remove_minimum_amount::*;
 pub use add_target_amount::*;
 pub use remove_target_amount::*;
+pub use add_timelock::*;
+pub use remove_timelock::*;
 pub use deposit_escrow::*;
 pub use start_escrow::*;
 pub use release_escrow::*;

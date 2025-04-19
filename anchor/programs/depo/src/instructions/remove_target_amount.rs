@@ -12,14 +12,6 @@ use anchor_lang::prelude::*;
 /// * `Result<()>` - Result indicating success or failure
 pub fn remove_target_amount(ctx: Context<RemoveTargetAmount>, _escrow_id: [u8; 16]) -> Result<()> {
     let escrow = &mut ctx.accounts.escrow;
-    require!(
-        escrow
-            .modules
-            .iter()
-            .any(|m| m.module_type == ModuleType::TargetAmount),
-        EscrowErrors::ModuleDoesntExist
-    );
-
     require!(escrow.status == Status::Draft, EscrowErrors::EscrowNotDraft);
 
     if let Some(index) = escrow
@@ -28,6 +20,8 @@ pub fn remove_target_amount(ctx: Context<RemoveTargetAmount>, _escrow_id: [u8; 1
         .position(|m| m.module_type == ModuleType::TargetAmount)
     {
         escrow.modules.remove(index);
+    } else {
+        return Err(error!(EscrowErrors::ModuleDoesntExist));
     }
 
     Ok(())
