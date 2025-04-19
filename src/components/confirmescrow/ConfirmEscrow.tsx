@@ -32,10 +32,8 @@ export default function ConfirmEscrow({
 
   const handleConfirmEscrow = async () => {
     // Check if name and description are not empty
-    if (!name || description) {
-        toast.error('Name and description are required')
-        return
-    }
+    if (!name.trim()) toast.error("Name is required.")
+    if (!description.trim()) toast.error("Description is required.")
 
     // START TIME ACTIVATE WHEN READY
     //if (startTimeEnabled) {
