@@ -5,14 +5,15 @@
   "scripts": {
     "anchor": "cd anchor && anchor",
     "anchor-build": "cd anchor && anchor build",
-    "anchor-localnet": "cd anchor && anchor localnet",
+    "anchor-deploy": "cd anchor && anchor deploy",
+    "anchor-build-deploy": "cd anchor && anchor build && anchor deploy",
     "anchor-test": "cd anchor && anchor test",
     "rust-clippy": "cd anchor && cargo clippy",
     "dev": "next dev",
     "build": "next build",
     "ci": "npm run build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint"  
   },
   "dependencies": {
     "@coral-xyz/anchor": "0.30.1",

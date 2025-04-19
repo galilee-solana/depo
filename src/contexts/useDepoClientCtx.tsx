@@ -34,16 +34,6 @@ const DepoClientProvider = ({ children }: { children: React.ReactNode }) => {
     return null;
   }, [provider, wallet]);
   
-
-  const getAllEscrows = useMemo<() => Promise<Escrow[]>>(() => {
-    return async () => {
-      if (depoClient) {
-          return await depoClient.getAllEscrows();
-      }
-      return [];
-    };
-  }, [depoClient]);
-
   const getEscrow = useMemo<(uuid: string) => Promise<Escrow | null>>(() => {
     return async (uuid: string) => {
       if (depoClient) {
@@ -54,10 +44,24 @@ const DepoClientProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, [depoClient]);
 
+  const getAllEscrows = useMemo<() => Promise<Escrow[]>>(() => {
+    return async () => {
+      if (depoClient && wallet.connected) {
+        try {
+          return await depoClient.getAllEscrows();
+        } catch (error: any) {
+          console.error("Error fetching escrows:", error);
+          throw error;
+        }
+      }
+      return [];
+    };
+  }, [depoClient, wallet.connected]);
+
   const exposed: DepoClientContextType = {
     client: depoClient,
-    getAllEscrows,
     getEscrow,
+    getAllEscrows,
   };
 
   return (

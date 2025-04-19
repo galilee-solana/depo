@@ -4,6 +4,7 @@ import { WalletContextState } from "@solana/wallet-adapter-react";
 import { Depo } from "../../anchor/target/types/depo";
 import { v4 as uuidv4 } from "uuid";
 import Escrow from "./models/escrow";
+import { bs58 } from "@coral-xyz/anchor/dist/cjs/utils/bytes";
 
 // Import the IDL directly with require to avoid TypeScript issues
 const idl = require("../../anchor/target/idl/depo.json");
@@ -112,7 +113,14 @@ class DepoClient {
    */
   async getAllEscrows() {
     try {
-      const escrows = await this.program.account.escrow.all();
+      const escrows = await this.program.account.escrow.all([
+        {
+          memcmp: {
+            offset: 24, // 8 (discriminator) + 16 (id field)
+            bytes: bs58.encode(this.wallet.publicKey!.toBuffer())
+          }
+        }
+      ]);
       return escrows.map(escrow => new Escrow(escrow.account));
     } catch (error: any) {
       throw error;
