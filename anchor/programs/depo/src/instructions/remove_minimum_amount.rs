@@ -16,15 +16,16 @@ pub fn remove_minimum_amount(
     _escrow_id: [u8; 16],
 ) -> Result<()> {
     let escrow = &mut ctx.accounts.escrow;
-    require!(
-        escrow.modules.iter().any(|m| m.module_type == ModuleType::MinimumAmount),
-        EscrowErrors::ModuleDoesntExist
-    );
-
     require!(escrow.status == Status::Draft, EscrowErrors::EscrowNotDraft);
 
-    if let Some(index) = escrow.modules.iter().position(|m| m.module_type == ModuleType::MinimumAmount) {
+    if let Some(index) = escrow
+        .modules
+        .iter()
+        .position(|m| m.module_type == ModuleType::MinimumAmount)
+    {
         escrow.modules.remove(index);
+    } else {
+        return Err(error!(EscrowErrors::ModuleDoesntExist));
     }
 
     Ok(())

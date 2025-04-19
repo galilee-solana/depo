@@ -12,14 +12,6 @@ use anchor_lang::prelude::*;
 /// * `Result<()>` - Result indicating success or failure
 pub fn remove_timelock(ctx: Context<RemoveTimelock>, _escrow_id: [u8; 16]) -> Result<()> {
     let escrow = &mut ctx.accounts.escrow;
-    require!(
-        escrow
-            .modules
-            .iter()
-            .any(|m| m.module_type == ModuleType::Timelock),
-        EscrowErrors::ModuleDoesntExist
-    );
-
     require!(escrow.status == Status::Draft, EscrowErrors::EscrowNotDraft);
 
     if let Some(index) = escrow
@@ -28,6 +20,8 @@ pub fn remove_timelock(ctx: Context<RemoveTimelock>, _escrow_id: [u8; 16]) -> Re
         .position(|m| m.module_type == ModuleType::Timelock)
     {
         escrow.modules.remove(index);
+    } else {
+        return Err(error!(EscrowErrors::ModuleDoesntExist));
     }
 
     Ok(())
