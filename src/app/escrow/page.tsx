@@ -9,16 +9,15 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import { WalletButton } from '@/components/solana/solana-provider'
 
 export default function EscrowPage() {
-  const { getAllEscrows } = useDepoClient()
-  const { connected } = useWallet()
+  const { getAllEscrows, wallet } = useDepoClient()
   const [escrows, setEscrows] = useState<Escrow[]>([])
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     const fetchEscrows = async () => {
-      if (!connected) {
+      if (!wallet?.connected) {
         setEscrows([])
-        return
+        return  
       }
       
       try {
@@ -33,9 +32,9 @@ export default function EscrowPage() {
     }
     
     fetchEscrows()
-  }, [connected, getAllEscrows])
+  }, [wallet?.connected, getAllEscrows])
 
-  if (!connected) {
+  if (!wallet?.connected) {
     return (
       <div className="flex flex-col items-center justify-center h-96 text-center">
         <p className="mb-4 text-gray-600">Please connect your wallet to view escrows.</p>

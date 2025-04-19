@@ -45,5 +45,12 @@ pub enum EscrowErrors {
     #[msg("Unauthorized depositor to ask for refund")]
     RefundUnauthorizedDepositor,
     #[msg("Depositor was already refunded")]
-    AlreadyRefunded        
+    AlreadyRefunded,
+    #[msg("Modules exist in the escrow")]
+    ModulesExist,
+    #[msg("Depositors exist in the escrow")]
+    DepositorsExist,
+    #[msg("Recipients exist in the escrow")]
+    RecipientsExist,
+
 }

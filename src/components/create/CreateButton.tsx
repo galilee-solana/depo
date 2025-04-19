@@ -4,10 +4,13 @@ import { useRouter } from 'next/navigation'
 import React from 'react'
 import { useDepoClient } from '@/contexts/useDepoClientCtx'
 import toast from 'react-hot-toast'
+import ToastWithLinks from '../toasts/ToastWithLinks'
+import { useCluster } from '@/components/cluster/cluster-data-access'
 
 export default function CreateButton() {
   const { client } = useDepoClient()
   const router = useRouter()
+  const { getExplorerUrl } = useCluster()
 
   const handleClick = async () => {
     // router.push('/escrow/create') // Route to page = src/app/escrow/create/page.tsx
@@ -15,7 +18,14 @@ export default function CreateButton() {
       const result = await client?.createEscrow("test", "test")
       if (result) {
         router.push(`/escrow/${result.escrow.uuid}`)
-        toast.success(`Escrow created successfully. ${result.tx}`)
+        const explorerUrl = getExplorerUrl(`tx/${result.tx}`)
+        toast.success(
+          <ToastWithLinks
+            message="Escrow created successfully."
+            linkText="View transaction"
+            url={explorerUrl}
+          />
+        )
       } else {
         toast.error('Error creating escrow')
       }
