@@ -205,11 +205,14 @@ class DepoClient {
     const { key: escrowKey, bufferId: escrowId } = this.getPdaKeyAndBufferId(cleanUuid)
     const recipientWallet = new PublicKey(key)
     const recipientKey = this.getPdaKeyForRecipient(escrowKey, recipientWallet)
+
+    const convertedPercentage = percentage * 100;
+
     try {
       const tx = await this.program.methods.addRecipient(
         Array.from(escrowId),
         recipientWallet,
-        percentage
+        convertedPercentage
       ).accounts({
         escrow: escrowKey,
         recipient: recipientKey,

@@ -104,7 +104,6 @@ function EscrowItem({ uuid }: { uuid: string }) {
                         url={getExplorerUrl(`tx/${tx}`)}
                     />
                 )
-                router.push('/escrow')
             } catch (error: any) {
                 toast.error(`Error starting escrow: ${error.message}`)
             } finally {
@@ -113,7 +112,6 @@ function EscrowItem({ uuid }: { uuid: string }) {
         }
 
     }
-
 
     return (
         <div>
