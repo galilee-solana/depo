@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import Head from 'next/head'
 import * as React from 'react'
 import { ReactNode, useEffect, useRef } from 'react'
 import toast, { Toaster } from 'react-hot-toast'
@@ -12,11 +13,15 @@ import { WalletButton } from '../solana/solana-provider'
 export function UiLayout({ children }: { children: ReactNode }) {
 
   return (
+    <>
+    <Head>
+      <link rel="preload" href="/D-logo-white.svg" as="image" type="image/svg+xml" />
+    </Head>
     <div className="h-screen flex flex-col overflow-hidden">
       {/* Navbar */}
       <div className="navbar bg-white text-black flex-col md:flex-row items-center justify-between px-4 py-4 min-h-[64px] flex-shrink-0">
         <div className="h-full">
-          <Image src="/D-logo-white.svg" alt="Logo" width={0} height={0} className="h-10 w-auto object-contain" priority />
+          <Image src="/D-logo-white.svg" alt="Logo" width={1} height={1} className="h-10 w-auto object-contain" priority />
         </div>
         {/* Wallet & Cluster buttons */}
         <div className="flex-none space-x-2">
@@ -37,6 +42,7 @@ export function UiLayout({ children }: { children: ReactNode }) {
         </div>
       </div>
     </div>
+  </>
   )
 }
 

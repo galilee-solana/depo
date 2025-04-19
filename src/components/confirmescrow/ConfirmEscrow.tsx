@@ -1,6 +1,6 @@
 'use client'
 
-import { useDepoClientCtx } from '@/components/contexts/useDepoClientCtx'
+import { useDepoClient } from '@/contexts/useDepoClientCtx'
 import { useState } from 'react'
 import { toast } from 'react-hot-toast'
 
@@ -27,7 +27,7 @@ export default function ConfirmEscrow({
     targetAmount,
     walletPublicKey,
 }: ConfirmButtonProps) {
-  const { client } = useDepoClientCtx()
+  const { client } = useDepoClient()
   const [loading, setLoading] = useState(false)
 
   const handleConfirmEscrow = async () => {
@@ -86,14 +86,12 @@ export default function ConfirmEscrow({
         const loadingToastId = toast.loading("Creating your escrow...")
   
         // Seuls name & description sont passés pour l’instant :
-        const { tx, escrow } = await client.createEscrow({
-          name,
-          description,
-          // timelock: timelockEnabled ? new Date(timelock) : null,
-          // minimumAmount: minimumAmountEnabled ? parseFloat(minimumAmount) : null,
-          // targetAmount: targetAmountEnabled ? parseFloat(targetAmount) : null,
-        })
-  
+        const { tx, escrow } = await client.createEscrow(name, description);
+          // To add to method when ready :
+          // timelock
+          // minimumAmount
+          // targetAmount
+        
         toast.dismiss(loadingToastId)
         toast.success(`Escrow created 🎉 TX: ${tx.slice(0, 8)}...`)
   
