@@ -2,12 +2,11 @@ use anchor_lang::prelude::*;
 use crate::states::{Escrow, Status};
 use crate::errors::EscrowErrors;
 
-/// Removes a recipient from the escrow
+/// Deletes a draft escrow
 ///
 /// # Arguments
 /// * `ctx` - The context containing the account and signer
 /// * `_escrow_id` - The unique identifier (UUID) for the escrow
-/// * `_wallet` - The wallet address of the recipient
 ///
 /// # Returns
 /// * `Result<()>` - Result indicating success or failure
