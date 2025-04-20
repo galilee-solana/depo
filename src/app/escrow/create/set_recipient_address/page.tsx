@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import ToogleInputFieldSolAddress from '@/components/create/ToogleInputFieldSolAddress';
-import { EscrowProvider } from '@/contexts/useEscrowCtx';
+import { useEscrow } from '@/contexts/useEscrowCtx';
 
 export default function SetRecipientAddressPage() {
   const router = useRouter();
@@ -33,11 +33,10 @@ export default function SetRecipientAddressPage() {
       .map(({ id, address }) => ({ id, address }));
 
     setRecipients(activeRecipients);
-    router.push('/escrow/create/next_step');
+    router.push('/escrow/create');
   };
 
   return (
-    <EscrowProvider>
     <div className="p-6 space-y-4">
       <h1 className="text-2xl font-bold">Please add recipient address(es)</h1>
 
@@ -64,7 +63,7 @@ export default function SetRecipientAddressPage() {
           {recipientFields.length > 1 && (
             <button
               onClick={() => removeRecipientField(field.id)}
-              className="text-red-500 hover:text-red-700 font-bold text-xl"
+              className="text-black-500 hover:text-grey-100 font-bold text-xl"
               title="Supprimer ce champ"
             >
               ✕
@@ -75,18 +74,17 @@ export default function SetRecipientAddressPage() {
 
       <button
         onClick={addRecipientField}
-        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        className="mpx-6 py-3 border-2 border-black text-black bg-white rounded-lg hover:bg-gray-100 transition"
       >
-        + Ajouter un destinataire
+        + Add Recipient
       </button>
 
       <button
         onClick={handleNext}
-        className="ml-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+        className="mpx-6 py-3 border-2 text-white bg-black rounded-lg hover:bg-gray-30 transition"
       >
-        Continuer
+        Confirm Address(es)
       </button>
     </div>
-    </EscrowProvider>
   );
 }

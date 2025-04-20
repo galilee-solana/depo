@@ -1,3 +1,5 @@
+"use client";
+
 import { createContext, useContext, useState } from 'react';
 import { PublicKey, SystemProgram, Transaction } from '@solana/web3.js';
 import { v4 as uuidv4 } from 'uuid';
@@ -11,6 +13,14 @@ export function EscrowProvider({ children }) {
   const [description, setDescription] = useState('');
   const [recipients, setRecipients] = useState([]); // [{ id, address }]
   const [modules, setModules] = useState([]);
+
+  const reset = () => {
+    console.log("Resetting escrow context values");
+    setName('');
+    setDescription('');
+    setRecipients([]);
+    setModules([]);
+  };
 
   const create = async () => {
     if (!client || !name || !description) return;
@@ -112,6 +122,9 @@ export function EscrowProvider({ children }) {
       const txid = await client.program.provider.sendAndConfirm(transaction);
       console.log("Transaction confirmed:", txid);
 
+      // Reset context if transaction success
+      reset();
+
       return { escrowKey, txid, uuid };
     } catch (error) {
       console.error("Error creating escrow:", error);
@@ -119,8 +132,18 @@ export function EscrowProvider({ children }) {
     }
   };
 
+  const value = {
+    client, setClient,
+    name, setName,
+    description, setDescription,
+    recipients, setRecipients,
+    module, setModules,
+    create,
+    reset,
+  };
+
   return (
-    <EscrowContext.Provider value={{ client, setClient, name, setName, description, setDescription, recipients, setRecipients, modules, setModules, create }}>
+    <EscrowContext.Provider value={value}>
       {children}
     </EscrowContext.Provider>
   );

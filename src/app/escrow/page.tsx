@@ -5,6 +5,8 @@ import EscrowList from '@/components/escrow_list/EscrowList'
 import { useDepoClient } from '@/contexts/useDepoClientCtx'
 import Escrow from '@/utils/models/escrow'
 import toast from 'react-hot-toast'
+
+
 export default function EscrowPage() {
   const { getAllEscrows } = useDepoClient()
   const [escrows, setEscrows] = useState<Escrow[]>([])
@@ -25,7 +27,7 @@ export default function EscrowPage() {
 
   return (
     <div>
-        <EscrowList list={escrows}/>
+      <EscrowList list={escrows}/>
     </div>
   )
 }

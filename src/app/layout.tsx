@@ -5,6 +5,8 @@ import { UiLayout, AppModal } from '@/components/ui/ui-layout'
 import { ellipsify, useTransactionToast } from '@/utils/utils'
 import { ReactQueryProvider } from './react-query-provider'
 import { DepoClientProvider } from '@/contexts/useDepoClientCtx'
+import { EscrowProvider } from '@/contexts/useEscrowCtx';
+import { LogEscrowValuesOnRouteChange } from '@/components/LogEscrowValuesOnRouteChange';
 
 export const metadata = {
   title: 'DEPO',
@@ -22,22 +24,26 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        <ReactQueryProvider>
-          <ClusterProvider>
-            <SolanaProvider>
-              <DepoClientProvider>
-                <UiLayout>
-                  {children}
-                </UiLayout>
-              </DepoClientProvider>
-              <DepoClientProvider>
-                <UiLayout>
-                  {children}
-                </UiLayout>
-              </DepoClientProvider>
-            </SolanaProvider>
-          </ClusterProvider>
-        </ReactQueryProvider>
+        <EscrowProvider>
+          <LogEscrowValuesOnRouteChange />
+            <ReactQueryProvider>
+              <ClusterProvider>
+                <SolanaProvider>
+                  <DepoClientProvider>
+                    <UiLayout>
+                      {children}
+                    </UiLayout>
+                  </DepoClientProvider>
+                  <DepoClientProvider>
+                    <UiLayout>
+                      {children}
+                    </UiLayout>
+                  </DepoClientProvider>
+                </SolanaProvider>
+              </ClusterProvider>
+            </ReactQueryProvider>
+          <LogEscrowValuesOnRouteChange /> 
+        </EscrowProvider>
       </body>
     </html>
   )
