@@ -11,6 +11,7 @@ pub use modules::{
     ConditionModule,
     MinimumAmount,
     TargetAmount,
+    Timelock,
     parse_module
 };
 pub use status::Status;

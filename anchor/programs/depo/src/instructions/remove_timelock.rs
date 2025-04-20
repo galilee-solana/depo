@@ -1,27 +1,23 @@
+use crate::errors::EscrowErrors;
+use crate::states::{Escrow, ModuleType, Status, Timelock};
 use anchor_lang::prelude::*;
-use crate::states::{Escrow, MinimumAmount, ModuleType, Status};
-use crate::errors::{EscrowErrors};
 
-
-/// Remove minimum amount condition from the escrow
+/// Remove timelock condition from the escrow
 ///
 /// # Arguments
-/// * `ctx` - The context containing the escrow account, minimum amount account
+/// * `ctx` - The context containing the escrow account, timelock  account
 /// and signer (the initializer of the escrow)
 ///
 /// # Returns
 /// * `Result<()>` - Result indicating success or failure
-pub fn remove_minimum_amount(
-    ctx: Context<RemoveMinimumAmount>,
-    _escrow_id: [u8; 16],
-) -> Result<()> {
+pub fn remove_timelock(ctx: Context<RemoveTimelock>, _escrow_id: [u8; 16]) -> Result<()> {
     let escrow = &mut ctx.accounts.escrow;
     require!(escrow.status == Status::Draft, EscrowErrors::EscrowNotDraft);
 
     if let Some(index) = escrow
         .modules
         .iter()
-        .position(|m| m.module_type == ModuleType::MinimumAmount)
+        .position(|m| m.module_type == ModuleType::Timelock)
     {
         escrow.modules.remove(index);
     } else {
@@ -33,7 +29,7 @@ pub fn remove_minimum_amount(
 
 #[derive(Accounts)]
 #[instruction(escrow_id: [u8; 16])]
-pub struct RemoveMinimumAmount<'info> {
+pub struct RemoveTimelock<'info> {
     #[account(
         mut,
         seeds = [b"escrow", escrow_id.as_ref()],
@@ -44,11 +40,11 @@ pub struct RemoveMinimumAmount<'info> {
 
     #[account(
       mut,
-      seeds = [b"minimum_amount", escrow.key().as_ref()],
+      seeds = [b"timelock", escrow.key().as_ref()],
       bump,
       close = initializer
     )]
-    pub minimum_amount: Account<'info, MinimumAmount>,
+    pub timelock: Account<'info, Timelock>,
 
     #[account(mut)]
     pub initializer: Signer<'info>,

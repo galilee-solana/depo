@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import Head from 'next/head'
 import * as React from 'react'
 import { ReactNode, useEffect, useRef } from 'react'
 import toast, { Toaster } from 'react-hot-toast'
@@ -14,6 +15,10 @@ import DepositButton from '../deposit/depositButton'
 export function UiLayout({ children }: { children: ReactNode }) {
 
   return (
+    <>
+    <Head>
+      <link rel="preload" href="/D-logo-white.svg" as="image" type="image/svg+xml" />
+    </Head>
     <div className="h-screen flex flex-col overflow-hidden">
       {/* Navbar */}
       <div className="navbar bg-white text-black flex-col md:flex-row items-center justify-between px-4 py-4 min-h-[64px] flex-shrink-0">
@@ -45,6 +50,7 @@ export function UiLayout({ children }: { children: ReactNode }) {
         </div>
       </div>
     </div>
+  </>
   )
 }
 
@@ -96,22 +102,4 @@ export function AppModal({
       </div>
     </dialog>
   )
-}
-
-export function ellipsify(str = '', len = 4) {
-  if (str.length > 30) {
-    return str.substring(0, len) + '..' + str.substring(str.length - len, str.length)
-  }
-  return str
-}
-
-export function useTransactionToast() {
-  return (signature: string) => {
-    toast.success(
-      <div className={'text-center'}>
-        <div className="text-lg">Transaction sent</div>
-        <ExplorerLink path={`tx/${signature}`} label={'View Transaction'} className="btn btn-xs btn-primary" />
-      </div>,
-    )
-  }
 }

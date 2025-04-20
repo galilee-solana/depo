@@ -399,6 +399,96 @@ export type Depo = {
       ]
     },
     {
+      "name": "addTimelock",
+      "discriminator": [
+        146,
+        67,
+        49,
+        67,
+        65,
+        168,
+        63,
+        51
+      ],
+      "accounts": [
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "escrowId"
+              }
+            ]
+          }
+        },
+        {
+          "name": "timelock",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  105,
+                  109,
+                  101,
+                  108,
+                  111,
+                  99,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              }
+            ]
+          }
+        },
+        {
+          "name": "initializer",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "escrow"
+          ]
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "escrowId",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        },
+        {
+          "name": "releaseAfter",
+          "type": "u64"
+        }
+      ]
+    },
+    {
       "name": "cancelEscrow",
       "discriminator": [
         156,
@@ -1201,6 +1291,92 @@ export type Depo = {
       ]
     },
     {
+      "name": "removeTimelock",
+      "discriminator": [
+        226,
+        143,
+        59,
+        152,
+        230,
+        52,
+        25,
+        175
+      ],
+      "accounts": [
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "escrowId"
+              }
+            ]
+          }
+        },
+        {
+          "name": "timelock",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  105,
+                  109,
+                  101,
+                  108,
+                  111,
+                  99,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              }
+            ]
+          }
+        },
+        {
+          "name": "initializer",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "escrow"
+          ]
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "escrowId",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        }
+      ]
+    },
+    {
       "name": "startEscrow",
       "discriminator": [
         46,
@@ -1415,18 +1591,131 @@ export type Depo = {
         151,
         245
       ]
+    },
+    {
+      "name": "timelock",
+      "discriminator": [
+        189,
+        33,
+        78,
+        75,
+        205,
+        31,
+        4,
+        177
+      ]
     }
   ],
   "errors": [
     {
       "code": 6000,
-      "name": "targetAmountGreaterThanZero",
-      "msg": "Target amount must be greater than 0."
+      "name": "nameTooLong",
+      "msg": "Escrow name is too long. Max length: 100 bytes."
     },
     {
       "code": 6001,
-      "name": "amountNotReached",
-      "msg": "Amount deposited does not match target amount."
+      "name": "descriptionTooLong",
+      "msg": "Escrow description is too long. Max length: 200 bytes."
+    },
+    {
+      "code": 6002,
+      "name": "unauthorizedRecipientModifier",
+      "msg": "Unauthorized to add or remove recipient"
+    },
+    {
+      "code": 6003,
+      "name": "unauthorizedDepositorModifier",
+      "msg": "Unauthorized to add or remove depositor"
+    },
+    {
+      "code": 6004,
+      "name": "escrowNotDraft",
+      "msg": "Escrow must be in Draft status to modify it"
+    },
+    {
+      "code": 6005,
+      "name": "escrowNotStarted",
+      "msg": "Escrow must be in Started status to modify it"
+    },
+    {
+      "code": 6006,
+      "name": "noRecipients",
+      "msg": "No recipients in escrow"
+    },
+    {
+      "code": 6007,
+      "name": "noDepositors",
+      "msg": "No depositors in escrow"
+    },
+    {
+      "code": 6008,
+      "name": "moduleAlreadyExists",
+      "msg": "This module type already exists."
+    },
+    {
+      "code": 6009,
+      "name": "moduleDoesntExist",
+      "msg": "This module type doesn't exist."
+    },
+    {
+      "code": 6010,
+      "name": "invalidDepositAmount",
+      "msg": "Invalid deposit amount."
+    },
+    {
+      "code": 6011,
+      "name": "unauthorizedDepositor",
+      "msg": "Unauthorized depositor."
+    },
+    {
+      "code": 6012,
+      "name": "maxPercentage",
+      "msg": "Max percentage is 10 000 (represents 100%)"
+    },
+    {
+      "code": 6013,
+      "name": "escrowPercentageFull",
+      "msg": "Insufficient remaining percentage in the escrow"
+    },
+    {
+      "code": 6014,
+      "name": "percentageDistribution",
+      "msg": "Percentage distribution should be equal to 10 000 (100%)"
+    },
+    {
+      "code": 6015,
+      "name": "alreadyWithdrawn",
+      "msg": "Recipient has already withdrawn"
+    },
+    {
+      "code": 6016,
+      "name": "withdrawInvalidEscrowStatus",
+      "msg": "Withdraw is only available when the escrow is released"
+    },
+    {
+      "code": 6017,
+      "name": "unauthorizedToWithdraw",
+      "msg": "Unauthorized to withdraw escrow"
+    },
+    {
+      "code": 6018,
+      "name": "insufficientFunds",
+      "msg": "Escrow has insufficient funds"
+    },
+    {
+      "code": 6019,
+      "name": "refundInvalidEscrowStatus",
+      "msg": "Refund is only available when the status is cancelled or expired"
+    },
+    {
+      "code": 6020,
+      "name": "refundUnauthorizedDepositor",
+      "msg": "Unauthorized depositor to ask for refund"
+    },
+    {
+      "code": 6021,
+      "name": "alreadyRefunded",
+      "msg": "Depositor was already refunded"
     }
   ],
   "types": [
@@ -1585,7 +1874,7 @@ export type Depo = {
         "kind": "enum",
         "variants": [
           {
-            "name": "timeLock"
+            "name": "timelock"
           },
           {
             "name": "expiryFallback"
@@ -1659,6 +1948,18 @@ export type Depo = {
         "fields": [
           {
             "name": "targetAmount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "timelock",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "releaseAfter",
             "type": "u64"
           }
         ]

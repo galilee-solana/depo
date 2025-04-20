@@ -14,6 +14,7 @@ export default function CreateButton() {
 
   const handleClick = async () => {
     router.push('/escrow/create') // Route to page = src/app/escrow/create/page.tsx
+    /**
     try { 
       const result = await client?.createEscrow("test", "test")
       if (result) {
@@ -37,6 +38,7 @@ export default function CreateButton() {
     } catch (error: any) {
       toast.error(error.message)
     }
+    */
   }
 
   return (

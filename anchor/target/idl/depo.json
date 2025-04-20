@@ -393,6 +393,96 @@
       ]
     },
     {
+      "name": "add_timelock",
+      "discriminator": [
+        146,
+        67,
+        49,
+        67,
+        65,
+        168,
+        63,
+        51
+      ],
+      "accounts": [
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "escrow_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "timelock",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  105,
+                  109,
+                  101,
+                  108,
+                  111,
+                  99,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              }
+            ]
+          }
+        },
+        {
+          "name": "initializer",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "escrow"
+          ]
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "escrow_id",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        },
+        {
+          "name": "release_after",
+          "type": "u64"
+        }
+      ]
+    },
+    {
       "name": "cancel_escrow",
       "discriminator": [
         156,
@@ -1195,6 +1285,92 @@
       ]
     },
     {
+      "name": "remove_timelock",
+      "discriminator": [
+        226,
+        143,
+        59,
+        152,
+        230,
+        52,
+        25,
+        175
+      ],
+      "accounts": [
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "escrow_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "timelock",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  105,
+                  109,
+                  101,
+                  108,
+                  111,
+                  99,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              }
+            ]
+          }
+        },
+        {
+          "name": "initializer",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "escrow"
+          ]
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "escrow_id",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        }
+      ]
+    },
+    {
       "name": "start_escrow",
       "discriminator": [
         46,
@@ -1409,18 +1585,131 @@
         151,
         245
       ]
+    },
+    {
+      "name": "Timelock",
+      "discriminator": [
+        189,
+        33,
+        78,
+        75,
+        205,
+        31,
+        4,
+        177
+      ]
     }
   ],
   "errors": [
     {
       "code": 6000,
-      "name": "TargetAmountGreaterThanZero",
-      "msg": "Target amount must be greater than 0."
+      "name": "NameTooLong",
+      "msg": "Escrow name is too long. Max length: 100 bytes."
     },
     {
       "code": 6001,
-      "name": "AmountNotReached",
-      "msg": "Amount deposited does not match target amount."
+      "name": "DescriptionTooLong",
+      "msg": "Escrow description is too long. Max length: 200 bytes."
+    },
+    {
+      "code": 6002,
+      "name": "UnauthorizedRecipientModifier",
+      "msg": "Unauthorized to add or remove recipient"
+    },
+    {
+      "code": 6003,
+      "name": "UnauthorizedDepositorModifier",
+      "msg": "Unauthorized to add or remove depositor"
+    },
+    {
+      "code": 6004,
+      "name": "EscrowNotDraft",
+      "msg": "Escrow must be in Draft status to modify it"
+    },
+    {
+      "code": 6005,
+      "name": "EscrowNotStarted",
+      "msg": "Escrow must be in Started status to modify it"
+    },
+    {
+      "code": 6006,
+      "name": "NoRecipients",
+      "msg": "No recipients in escrow"
+    },
+    {
+      "code": 6007,
+      "name": "NoDepositors",
+      "msg": "No depositors in escrow"
+    },
+    {
+      "code": 6008,
+      "name": "ModuleAlreadyExists",
+      "msg": "This module type already exists."
+    },
+    {
+      "code": 6009,
+      "name": "ModuleDoesntExist",
+      "msg": "This module type doesn't exist."
+    },
+    {
+      "code": 6010,
+      "name": "InvalidDepositAmount",
+      "msg": "Invalid deposit amount."
+    },
+    {
+      "code": 6011,
+      "name": "UnauthorizedDepositor",
+      "msg": "Unauthorized depositor."
+    },
+    {
+      "code": 6012,
+      "name": "MaxPercentage",
+      "msg": "Max percentage is 10 000 (represents 100%)"
+    },
+    {
+      "code": 6013,
+      "name": "EscrowPercentageFull",
+      "msg": "Insufficient remaining percentage in the escrow"
+    },
+    {
+      "code": 6014,
+      "name": "PercentageDistribution",
+      "msg": "Percentage distribution should be equal to 10 000 (100%)"
+    },
+    {
+      "code": 6015,
+      "name": "AlreadyWithdrawn",
+      "msg": "Recipient has already withdrawn"
+    },
+    {
+      "code": 6016,
+      "name": "WithdrawInvalidEscrowStatus",
+      "msg": "Withdraw is only available when the escrow is released"
+    },
+    {
+      "code": 6017,
+      "name": "UnauthorizedToWithdraw",
+      "msg": "Unauthorized to withdraw escrow"
+    },
+    {
+      "code": 6018,
+      "name": "InsufficientFunds",
+      "msg": "Escrow has insufficient funds"
+    },
+    {
+      "code": 6019,
+      "name": "RefundInvalidEscrowStatus",
+      "msg": "Refund is only available when the status is cancelled or expired"
+    },
+    {
+      "code": 6020,
+      "name": "RefundUnauthorizedDepositor",
+      "msg": "Unauthorized depositor to ask for refund"
+    },
+    {
+      "code": 6021,
+      "name": "AlreadyRefunded",
+      "msg": "Depositor was already refunded"
     }
   ],
   "types": [
@@ -1579,7 +1868,7 @@
         "kind": "enum",
         "variants": [
           {
-            "name": "TimeLock"
+            "name": "Timelock"
           },
           {
             "name": "ExpiryFallback"
@@ -1653,6 +1942,18 @@
         "fields": [
           {
             "name": "target_amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Timelock",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "release_after",
             "type": "u64"
           }
         ]

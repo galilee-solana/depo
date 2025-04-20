@@ -1,9 +1,11 @@
 import './globals.css'
 import { ClusterProvider } from '@/components/cluster/cluster-data-access'
 import { SolanaProvider } from '@/components/solana/solana-provider'
-import { UiLayout } from '@/components/ui/ui-layout'
+import { UiLayout, AppModal } from '@/components/ui/ui-layout'
+import { ellipsify, useTransactionToast } from '@/utils/utils'
 import { ReactQueryProvider } from './react-query-provider'
 import { DepoClientProvider } from '@/contexts/useDepoClientCtx'
+
 export const metadata = {
   title: 'DEPO',
   description: 'Dynamic Escrow Platform Operation',
@@ -23,6 +25,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ReactQueryProvider>
           <ClusterProvider>
             <SolanaProvider>
+              <DepoClientProvider>
+                <UiLayout>
+                  {children}
+                </UiLayout>
+              </DepoClientProvider>
               <DepoClientProvider>
                 <UiLayout>
                   {children}
