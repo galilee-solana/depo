@@ -6,7 +6,7 @@ import { ellipsify, useTransactionToast } from '@/utils/utils'
 import { ReactQueryProvider } from './react-query-provider'
 import { DepoClientProvider } from '@/contexts/useDepoClientCtx'
 import { EscrowProvider } from '@/contexts/useEscrowCtx';
-import { LogEscrowValuesOnRouteChange } from '@/components/LogEscrowValuesOnRouteChange';
+import { LogEscrowValuesOnRouteChange } from '@/components/create/LogEscrowValuesOnRouteChange';
 
 export const metadata = {
   title: 'DEPO',

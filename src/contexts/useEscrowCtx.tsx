@@ -5,22 +5,16 @@ import { PublicKey, SystemProgram, Transaction } from '@solana/web3.js';
 import { v4 as uuidv4 } from 'uuid';
 import BN from 'bn.js';
 
+// Create context with initial value to avoid undefined
 const EscrowContext = createContext(null);
 
 export function EscrowProvider({ children }) {
   const [client, setClient] = useState(null);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [recipients, setRecipients] = useState([]); // [{ id, address }]
+  const [recipients, setRecipients] = useState([]); // [{ id, address, active }]
+  const [depositors, setDepositors] = useState([]); // idem for depositors
   const [modules, setModules] = useState([]);
-
-  const reset = () => {
-    console.log("Resetting escrow context values");
-    setName('');
-    setDescription('');
-    setRecipients([]);
-    setModules([]);
-  };
 
   const create = async () => {
     if (!client || !name || !description) return;
@@ -53,6 +47,8 @@ export function EscrowProvider({ children }) {
 
       if (recipients && recipients.length > 0) {
         for (const recipient of recipients) {
+          if (!recipient.active) continue;
+
           const addRecipientIx = await client.program.methods
             .addRecipient(
               Array.from(escrowId),
@@ -122,9 +118,6 @@ export function EscrowProvider({ children }) {
       const txid = await client.program.provider.sendAndConfirm(transaction);
       console.log("Transaction confirmed:", txid);
 
-      // Reset context if transaction success
-      reset();
-
       return { escrowKey, txid, uuid };
     } catch (error) {
       console.error("Error creating escrow:", error);
@@ -132,18 +125,16 @@ export function EscrowProvider({ children }) {
     }
   };
 
-  const value = {
-    client, setClient,
-    name, setName,
-    description, setDescription,
-    recipients, setRecipients,
-    module, setModules,
-    create,
-    reset,
-  };
-
   return (
-    <EscrowContext.Provider value={value}>
+    <EscrowContext.Provider value={{
+      client, setClient,
+      name, setName,
+      description, setDescription,
+      recipients, setRecipients,
+      depositors, setDepositors,
+      modules, setModules,
+      create
+    }}>
       {children}
     </EscrowContext.Provider>
   );

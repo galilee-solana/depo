@@ -2,7 +2,7 @@ import { useId } from 'react';
 import { PublicKey } from '@solana/web3.js';
 
 interface ToogleInputFieldSolAddressProps {
-  label: string;
+  label?: string;
   placeholder: string;
   enabled: boolean;
   setEnabled: (v: boolean) => void;
@@ -55,11 +55,9 @@ export default function ToogleInputFieldSolAddress({
           className="peer hidden"
         />
         <div
-          className={`
-            w-5 h-5 flex items-center justify-center rounded-md border-2 
+          className={`w-5 h-5 flex items-center justify-center rounded-md border-2 
             transition-all duration-150
-            ${enabled ? 'bg-white border-black' : 'bg-gray-200 border-gray-400'}
-          `}
+            ${enabled ? 'bg-white border-black' : 'bg-gray-200 border-gray-400'}`}
         >
           {enabled && (
             <svg
@@ -86,14 +84,12 @@ export default function ToogleInputFieldSolAddress({
         <input
           type="text"
           placeholder={placeholder}
-          className={`
-            w-full px-3 py-2 border-2 rounded-2xl transition 
+          className={`w-full px-3 py-2 border-2 rounded-2xl transition 
             ${enabled
               ? 'bg-white text-black border-black'
               : 'bg-gray-100 text-gray-400 border-gray-300 cursor-not-allowed'}
-            ${!isValid && 'border-red-500'}
-          `}
-          value={value}
+            ${!isValid && 'border-red-500'}`}
+          value={value ?? ''}
           onChange={handleChange}
           disabled={!enabled}
         />

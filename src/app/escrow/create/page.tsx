@@ -7,10 +7,17 @@ import ToogleInputFieldNumber from '@/components/create/ToogleInputFieldNumber'
 import ToogleInputFieldDateTime from '@/components/create/ToogleInputFieldDateTime'
 import ToogleInputLink from '@/components/create/ToogleInputLink'
 import ConfirmEscrow from '@/components/confirmescrow/ConfirmEscrow'
+import { useEscrow } from 'src/contexts/useEscrowCtx'
 
 export default function CreateEscrow() {
   const { publicKey } = useWallet()
   const router = useRouter()
+
+  // Read context to see if there is recipients or depositors
+  const {
+    recipients,
+    depositors
+  } = useEscrow()
 
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
@@ -24,6 +31,12 @@ export default function CreateEscrow() {
   const [targetAmount, setTargetAmount] = useState('')
   const [DepositorEnabled, setDepositorEnabled] = useState(false)
   const [RecipientEnabled, setRecipientEnabled] = useState(false)
+  
+  //Activate links to recipients or depositors if detected active
+  useEffect(() => {
+    setRecipientEnabled(recipients.some(r => r.active))
+    setDepositorEnabled(depositors.some(d => d.active))
+  }, [recipients, depositors])
 
   useEffect(() => {
     if (publicKey) {
