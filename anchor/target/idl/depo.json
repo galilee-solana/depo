@@ -1,5 +1,5 @@
 {
-  "address": "Dsq9mG9PRPUNve4eMNToJ37KobXfUqeYLKAA6w4LsbA3",
+  "address": "BU47AaSR3arjBdJjMbLad7X9N185dWp269kiKC8VWaHA",
   "metadata": {
     "name": "depo",
     "version": "0.1.0",
@@ -1542,113 +1542,28 @@
   "errors": [
     {
       "code": 6000,
-      "name": "NameTooLong",
-      "msg": "Escrow name is too long. Max length: 100 bytes."
+      "name": "InvalidNumberOfAccounts",
+      "msg": "Invalid number of accounts."
     },
     {
       "code": 6001,
-      "name": "DescriptionTooLong",
-      "msg": "Escrow description is too long. Max length: 200 bytes."
+      "name": "ModuleNotFound",
+      "msg": "This module is not found."
     },
     {
       "code": 6002,
-      "name": "UnauthorizedRecipientModifier",
-      "msg": "Unauthorized to add or remove recipient"
+      "name": "ModuleAlreadyAdded",
+      "msg": "You cannot add the same module twice."
     },
     {
       "code": 6003,
-      "name": "UnauthorizedDepositorModifier",
-      "msg": "Unauthorized to add or remove depositor"
+      "name": "UnsupportedModule",
+      "msg": "You passed an unsupported module type."
     },
     {
       "code": 6004,
-      "name": "EscrowNotDraft",
-      "msg": "Escrow must be in Draft status to modify it"
-    },
-    {
-      "code": 6005,
-      "name": "EscrowNotStarted",
-      "msg": "Escrow must be in Started status to modify it"
-    },
-    {
-      "code": 6006,
-      "name": "NoRecipients",
-      "msg": "No recipients in escrow"
-    },
-    {
-      "code": 6007,
-      "name": "NoDepositors",
-      "msg": "No depositors in escrow"
-    },
-    {
-      "code": 6008,
-      "name": "ModuleAlreadyExists",
-      "msg": "This module type already exists."
-    },
-    {
-      "code": 6009,
-      "name": "ModuleDoesntExist",
-      "msg": "This module type doesn't exist."
-    },
-    {
-      "code": 6010,
-      "name": "InvalidDepositAmount",
-      "msg": "Invalid deposit amount."
-    },
-    {
-      "code": 6011,
-      "name": "UnauthorizedDepositor",
-      "msg": "Unauthorized depositor."
-    },
-    {
-      "code": 6012,
-      "name": "MaxPercentage",
-      "msg": "Max percentage is 10 000 (represents 100%)"
-    },
-    {
-      "code": 6013,
-      "name": "EscrowPercentageFull",
-      "msg": "Insufficient remaining percentage in the escrow"
-    },
-    {
-      "code": 6014,
-      "name": "PercentageDistribution",
-      "msg": "Percentage distribution should be equal to 10 000 (100%)"
-    },
-    {
-      "code": 6015,
-      "name": "AlreadyWithdrawn",
-      "msg": "Recipient has already withdrawn"
-    },
-    {
-      "code": 6016,
-      "name": "WithdrawInvalidEscrowStatus",
-      "msg": "Withdraw is only available when the escrow is released"
-    },
-    {
-      "code": 6017,
-      "name": "UnauthorizedToWithdraw",
-      "msg": "Unauthorized to withdraw escrow"
-    },
-    {
-      "code": 6018,
-      "name": "InsufficientFunds",
-      "msg": "Escrow has insufficient funds"
-    },
-    {
-      "code": 6019,
-      "name": "RefundInvalidEscrowStatus",
-      "msg": "Refund is only available when the status is cancelled or expired"
-    },
-    {
-      "code": 6020,
-      "name": "RefundUnauthorizedDepositor",
-      "msg": "Unauthorized depositor to ask for refund"
-    },
-    {
-      "code": 6021,
-      "name": "AlreadyRefunded",
-      "msg": "Depositor was already refunded"
+      "name": "ValidationFailed",
+      "msg": "Validation failed. The escrow is not released."
     }
   ],
   "types": [

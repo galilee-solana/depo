@@ -1,51 +1,48 @@
-import { useId } from 'react'
-import { PublicKey } from '@solana/web3.js'
+import { useId } from 'react';
+import { PublicKey } from '@solana/web3.js';
 
 interface ToogleInputFieldSolAddressProps {
-  label: string
-  placeholder: string
-  enabled: boolean
-  setEnabled: (v: boolean) => void
-  value: string
-  setValue: (v: string) => void
+  label: string;
+  placeholder: string;
+  enabled: boolean;
+  setEnabled: (v: boolean) => void;
+  value: string;
+  setValue: (v: string) => void;
+  onValidationChange?: (isValid: boolean) => void;
+  onRemove?: () => void;
+  showRemove?: boolean;
 }
 
-export default function ToggleInputFieldSolAddress({
+export default function ToogleInputFieldSolAddress({
   label,
   placeholder,
   enabled,
   setEnabled,
   value,
   setValue,
+  onValidationChange,
+  onRemove,
+  showRemove = false,
 }: ToogleInputFieldSolAddressProps) {
-  const id = useId()
+  const id = useId();
 
-  const isValid = value === '' || isValidSolanaAddress(value)
-  // const isValid = isValidSolanaAddress(value)
-
-  //function isValidSolanaAddress(address: string): boolean {
-  //  try {
-  //    const pubkey = new PublicKey(address)
-  //    return PublicKey.isOnCurve(pubkey)
-  //  } catch {
-  //    return false
-  //  }
-  //}
+  const isValid = value === '' || isValidSolanaAddress(value);
 
   function isValidSolanaAddress(address: string): boolean {
-    if (!address) return true; // Consider empty as valid
+    if (!address) return true;
     try {
-      new PublicKey(address)
-      return true
+      const pubkey = new PublicKey(address);
+      return PublicKey.isOnCurve(pubkey);
     } catch {
-      return false
+      return false;
     }
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value.trim()
-    setValue(newValue)
-  }
+    const newValue = e.target.value.trim();
+    setValue(newValue);
+    if (onValidationChange) onValidationChange(isValidSolanaAddress(newValue));
+  };
 
   return (
     <div className="flex items-center space-x-3 relative">
@@ -97,11 +94,20 @@ export default function ToggleInputFieldSolAddress({
             ${!isValid && 'border-red-500'}
           `}
           value={value}
-          // onChange={(e) => setValue(e.target.value.trim())}
           onChange={handleChange}
           disabled={!enabled}
         />
       </div>
+
+      {showRemove && (
+        <button
+          type="button"
+          onClick={onRemove}
+          className="text-sm text-red-600 hover:underline ml-2"
+        >
+          Supprimer
+        </button>
+      )}
     </div>
-  )
+  );
 }

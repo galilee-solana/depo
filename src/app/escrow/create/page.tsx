@@ -7,6 +7,7 @@ import ToogleInputFieldNumber from '@/components/create/ToogleInputFieldNumber'
 import ToogleInputFieldDateTime from '@/components/create/ToogleInputFieldDateTime'
 import ToogleInputLink from '@/components/create/ToogleInputLink'
 import ConfirmEscrow from '@/components/confirmescrow/ConfirmEscrow'
+import { EscrowProvider } from '@/contexts/useEscrowCtx';
 
 export default function CreateEscrow() {
   const { publicKey } = useWallet()
@@ -40,6 +41,7 @@ export default function CreateEscrow() {
   }
 
   return (
+    <EscrowProvider>
     <div className="p-6 space-y-4">
       <h1 className="text-2xl font-bold">Create your new DEPO.</h1>
 
@@ -129,5 +131,6 @@ export default function CreateEscrow() {
         walletPublicKey={publicKey.toBase58()}
       />
     </div>
+    </EscrowProvider>
   )
 }
