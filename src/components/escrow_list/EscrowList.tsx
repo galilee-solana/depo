@@ -86,7 +86,7 @@ export default function EscrowList({ list }: { list: Escrow[] }) {
         </div>
       )}
       {/* Nav buttons */}
-      <div className="flex flex-col items-center space-y-4 mt-8 mb-4">
+      <div className="flex flex-col items-center space-y-4 mt-8 mb-4 sm:hidden">
         <CreateButton></CreateButton>
         <FindButton onStartFinding={function():void {
                   throw new Error('Function not implemented.')

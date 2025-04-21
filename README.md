@@ -67,7 +67,7 @@ command with `pnpm`, eg: `pnpm anchor`.
 Running this command will create a new keypair in the `anchor/target/deploy` directory and save the address to the
 Anchor config file and update the `declare_id!` macro in the `./src/lib.rs` file of the program.
 
-You will manually need to update the constant in `anchor/lib/counter-exports.ts` to match the new program id.
+You will manually need to update the constant in `anchor/src/depo-exports.ts` to match the new program id.
 
 ```shell
 pnpm anchor keys sync
@@ -79,10 +79,10 @@ pnpm anchor keys sync
 pnpm anchor-build
 ```
 
-#### Start the test validator with the program deployed:
+#### Build the program and deployed it to configured machine cluster
 
 ```shell
-pnpm anchor-localnet
+pnpm anchor-build-deploy
 ```
 
 #### Run the tests
@@ -102,6 +102,19 @@ pnpm anchor deploy --provider.cluster devnet
 ```shell
 pnpm rust-clippy
 ```
+
+#### Start local test validator
+Open a separate terminal to run the validator
+
+```shell
+solana-test-validator
+```
+
+Start the validator with a clean slate
+```shell
+solana-test-validator --reset
+```
+
 
 ### web
 

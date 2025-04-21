@@ -148,4 +148,11 @@ pub mod depo {
     ) -> Result<()> {
         instructions::refund_depositor(ctx, escrow_id)
     }
+
+    pub fn delete_draft_escrow(
+        ctx: Context<DeleteDraftEscrow>,
+        escrow_id: [u8; 16],
+    ) -> Result<()> {
+        instructions::delete_draft_escrow(ctx, escrow_id)
+    }
 }

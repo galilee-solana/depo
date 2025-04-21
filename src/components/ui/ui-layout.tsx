@@ -9,6 +9,8 @@ import toast, { Toaster } from 'react-hot-toast'
 import { AccountChecker } from '../account/account-ui'
 import { ClusterChecker, ClusterUiSelect, ExplorerLink } from '../cluster/cluster-ui'
 import { WalletButton } from '../solana/solana-provider'
+import CreateButton from '../create/CreateButton'
+import DepositButton from '../deposit/depositButton'
 
 export function UiLayout({ children }: { children: ReactNode }) {
 
@@ -27,6 +29,10 @@ export function UiLayout({ children }: { children: ReactNode }) {
         </div>
         {/* Wallet & Cluster buttons */}
         <div className="flex-none space-x-2">
+          <div className="hidden sm:block space-x-2">
+            <CreateButton />
+            <DepositButton />
+          </div>
           <WalletButton />
           <ClusterUiSelect />
         </div>

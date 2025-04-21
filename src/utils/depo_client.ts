@@ -4,6 +4,7 @@ import { WalletContextState } from "@solana/wallet-adapter-react";
 import { Depo } from "../../anchor/target/types/depo";
 import { v4 as uuidv4 } from "uuid";
 import Escrow from "./models/escrow";
+import { bs58 } from "@coral-xyz/anchor/dist/cjs/utils/bytes";
 
 // Import the IDL directly with require to avoid TypeScript issues
 const idl = require("../../anchor/target/idl/depo.json");
@@ -22,12 +23,24 @@ class DepoClient {
    * @param uuid - The UUID of the escrow
    * @returns Key of the PDA
    */
-  getPdaKey(uuid: string) {
+  getPdaKeyAndBufferId(uuid: string) {
     const escrowId = Uint8Array.from(Buffer.from(uuid, 'hex'))
-    return PublicKey.findProgramAddressSync(
+    const key = PublicKey.findProgramAddressSync(
       [Buffer.from('escrow'), escrowId],
       this.program.programId
     )[0]
+    return {
+      key: key,
+      bufferId: escrowId
+    }
+  }
+
+  getPdaKeyForRecipient(escrowKey: PublicKey, key: PublicKey) {
+    const recipientKey = PublicKey.findProgramAddressSync(
+      [Buffer.from('recipient'), escrowKey.toBuffer(), key.toBuffer()],
+      this.program.programId
+    )[0]
+    return recipientKey
   }
 
   /**
@@ -36,10 +49,11 @@ class DepoClient {
    * @param description - The description of the escrow
    * @returns The Escrow object
    */
-  async createEscrow(name: string, description: string) {
+  async createEscrow(name: string, description: string, ) {
     const uuid = uuidv4().replace(/-/g, '')
-    const escrowId = Uint8Array.from(Buffer.from(uuid, 'hex'))
-    const escrowKey = this.getPdaKey(uuid)
+    const { key: escrowKey, bufferId: escrowId } = this.getPdaKeyAndBufferId(uuid)
+    console.log("Creating escrow with UUID:", uuid);
+    console.log("Escrow PDA Key:", escrowKey.toString());
 
     // Escrow Name (100 bytes) - will be truncated if too long
     const nameBuffer = Buffer.alloc(100)
@@ -62,9 +76,21 @@ class DepoClient {
         } as any)
         .rpc()
   
+        // Wait for confirmation
+        await this.program.provider.connection.confirmTransaction(tx);
+        console.log("Transaction confirmed:", tx);
+        
+        // Verify account was created
+        const accountInfo = await this.program.provider.connection.getAccountInfo(escrowKey);
+        console.log("Account created:", !!accountInfo);
+        
+        if (!accountInfo) {
+          throw new Error("Failed to create escrow account");
+        }
+        
         const escrowAccount = await this.program.account.escrow.fetch(escrowKey);
         const escrow = new Escrow(escrowAccount);
-        console.log("Escrow:", escrow);
+        console.log("Escrow created successfully:", escrow);
         return {
           tx: tx,
           escrow: escrow
@@ -73,6 +99,7 @@ class DepoClient {
         throw new Error("Wallet is not available");
       }
     } catch (error) {
+      console.error("Error creating escrow:", error);
       throw error;
     }
   }
@@ -85,7 +112,7 @@ class DepoClient {
   async getEscrow(uuid: string) {
     try {
       const id = uuid.replace(/-/g, '')
-      const escrowKey = this.getPdaKey(id)
+      const { key: escrowKey } = this.getPdaKeyAndBufferId(id)
     
       // First check if account exists to avoid the error
       const accountInfo = await this.program.provider.connection.getAccountInfo(escrowKey);
@@ -112,9 +139,90 @@ class DepoClient {
    */
   async getAllEscrows() {
     try {
-      const escrows = await this.program.account.escrow.all();
+      const escrows = await this.program.account.escrow.all([
+        {
+          memcmp: {
+            offset: 24, // 8 (discriminator) + 16 (id field)
+            bytes: bs58.encode(this.wallet.publicKey!.toBuffer())
+          }
+        }
+      ]);
+    
       return escrows.map(escrow => new Escrow(escrow.account));
     } catch (error: any) {
+      throw error;
+    }
+  }
+
+  async deleteDraftEscrow(uuid: string) {
+    const cleanUuid = uuid.replace(/-/g, '')
+    try {
+      const { key: escrowKey, bufferId: escrowId } = this.getPdaKeyAndBufferId(cleanUuid)
+      
+      const accountInfo = await this.program.provider.connection.getAccountInfo(escrowKey);
+      
+      if (!accountInfo) {
+        throw new Error("Escrow account doesn't exist or has already been deleted");
+      }
+      
+      const tx = await this.program.methods.deleteDraftEscrow(
+        Array.from(escrowId),
+      ).accounts({
+        escrow: escrowKey,
+        initializer: this.wallet.publicKey!,
+        systemProgram: SystemProgram.programId,
+      }).rpc()
+      
+      await this.program.provider.connection.confirmTransaction(tx);
+      return tx
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async startEscrow(uuid: string) {
+    const cleanUuid = uuid.replace(/-/g, '')
+    try {
+      const { key: escrowKey, bufferId: escrowId } = this.getPdaKeyAndBufferId(cleanUuid)
+
+      const tx = await this.program.methods.startEscrow(
+        Array.from(escrowId),
+      ).accounts({
+        escrow: escrowKey,
+        initializer: this.wallet.publicKey!,
+        systemProgram: SystemProgram.programId,
+      }).rpc()
+
+      await this.program.provider.connection.confirmTransaction(tx);
+      return tx
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async addRecipient(uuid: string, key: string, percentage: number) {
+    const cleanUuid = uuid.replace(/-/g, '')
+    const { key: escrowKey, bufferId: escrowId } = this.getPdaKeyAndBufferId(cleanUuid)
+    const recipientWallet = new PublicKey(key)
+    const recipientKey = this.getPdaKeyForRecipient(escrowKey, recipientWallet)
+
+    const convertedPercentage = percentage * 100;
+
+    try {
+      const tx = await this.program.methods.addRecipient(
+        Array.from(escrowId),
+        recipientWallet,
+        convertedPercentage
+      ).accounts({
+        escrow: escrowKey,
+        recipient: recipientKey,
+        initializer: this.wallet.publicKey!,
+        systemProgram: SystemProgram.programId,
+      }).rpc()
+
+      await this.program.provider.connection.confirmTransaction(tx);
+      return tx
+    } catch (error) {
       throw error;
     }
   }
