@@ -13,6 +13,7 @@ function CreatorButtonSet({ escrow, refreshEscrow }: { escrow: Escrow, refreshEs
   const [isDeleting, setIsDeleting] = useState(false)
   const [isStarting, setIsStarting] = useState(false)
   const [isCancelling, setIsCancelling] = useState(false)
+  const [isReleasing, setIsReleasing] = useState(false)
   const { getExplorerUrl } = useCluster()
   const router = useRouter()
 
@@ -93,9 +94,29 @@ function CreatorButtonSet({ escrow, refreshEscrow }: { escrow: Escrow, refreshEs
         setIsCancelling(false)
       }
     }
+  }
+
+  const releaseEscrow = async (escrow: Escrow) => {
+    if (wallet?.connected && !isReleasing) {
+      try {
+        setIsReleasing(true)
+        const tx = await client?.releaseEscrow(escrow.uuid)
+        toast.success(
+          <ToastWithLinks
+            message={`Escrow released: ${escrow.uuid}`}
+            linkText="View transaction"
+            url={getExplorerUrl(`tx/${tx}`)}
+          />
+        ) 
+        refreshEscrow()
+      } catch (error: any) {
+        toast.error(`Error releasing escrow: ${error.message}`)
+      } finally {
+        setIsReleasing(false)
+      }
+    }
   } 
   
-
   return (
     <>  
       {escrow.status === "draft" && (
@@ -123,7 +144,7 @@ function CreatorButtonSet({ escrow, refreshEscrow }: { escrow: Escrow, refreshEs
             Cancel
           </SmallButtonDanger>
           <SmallButton
-            onClick={() => {console.log("release")}}
+            onClick={() => releaseEscrow(escrow)}
             disabled={false}
           >
             Release
