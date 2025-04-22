@@ -2,13 +2,11 @@
 
 import { useDepoClient } from "@/contexts/useDepoClientCtx";
 import Escrow from "@/utils/sdk/models/escrow";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import toast from 'react-hot-toast';
-import { useRouter } from "next/navigation";
-import ToastWithLinks from "@/components/toasts/ToastWithLinks";
-import { useCluster } from "@/components/cluster/cluster-data-access";
 import ReadOnlyInput from "@/components/ui/inputs/ReadOnlyInput";
 import CreatorButtonSet from "@/components/escrow_item/CreatorButtonSet";
+import DepositorButtonSet from "@/components/escrow_item/DepositorButtonSet";
 
 /**
  * A page that displays an escrow item.
@@ -16,15 +14,23 @@ import CreatorButtonSet from "@/components/escrow_item/CreatorButtonSet";
  * @returns A page that displays an escrow item.
  */
 function EscrowItem({ uuid }: { uuid: string }) {
-    const router = useRouter()
-    const { getEscrow, client, wallet } = useDepoClient()
+    const { getEscrow, wallet } = useDepoClient()
     const [escrow, setEscrow] = useState<Escrow | null>(null)
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
-    const [isDeleting, setIsDeleting] = useState(false)
-    const [isStarting, setIsStarting] = useState(false)
-    const { getExplorerUrl } = useCluster()
+    const [isDepositor, setIsDepositor] = useState(false)
+    const [isCreator, setIsCreator] = useState(false)
+    const [isRecipient, setIsRecipient] = useState(false)
+    const [depositor, setDepositor] = useState<{}>({})
+    const [recipient, setRecipient] = useState<{}>({})
 
+    const [refreshTrigger, setRefreshTrigger] = useState(0)
+    
+    const refreshEscrow = useCallback(() => {
+      setRefreshTrigger(prev => prev + 1)
+    }, [])
+
+    
     useEffect(() => {
         let isMounted = true
         const fetchEscrow = async () => {
@@ -34,8 +40,36 @@ function EscrowItem({ uuid }: { uuid: string }) {
                 const result = await getEscrow(uuid)
                 
                 if (!isMounted) return
+                
                 if (result) {
                     setEscrow(result)
+
+                    if (wallet?.publicKey && result.initializer.equals(wallet.publicKey)) {
+                        setIsCreator(true)
+                    }
+                    if (result.isPublicDeposit || (
+                        wallet?.publicKey && 
+                        Array.isArray(result.depositors) && 
+                        result.depositors.some(d => wallet.publicKey?.equals(d.account?.wallet))
+                    )) {
+                        setIsDepositor(true)
+                        
+                        if (wallet?.publicKey && Array.isArray(result.depositors)) {
+                            const dep = result.depositors.find(d => 
+                                d.account?.wallet && wallet.publicKey?.equals(d.account.wallet)
+                            )
+                            if (dep) {
+                                setDepositor(dep)
+                            }
+                        }
+                    }
+                    if (wallet?.publicKey && result.recipients.includes(wallet.publicKey)) {
+                        setIsRecipient(true)
+                        const recipient = result.recipients.find(rec => wallet?.publicKey?.equals(rec))
+                        if (recipient) {
+                            setRecipient(recipient)
+                        }
+                    }   
                 } else {
                     setError(`Escrow with ID ${uuid} not found`)
                     toast.error(`ID: ${uuid} not found`)
@@ -54,66 +88,8 @@ function EscrowItem({ uuid }: { uuid: string }) {
         return () => {
             isMounted = false
         }
-    }, [getEscrow, uuid])
-
-
-    const deleteEscrow = async (escrow: Escrow) => {
-        if (wallet?.connected && !isDeleting) {
-            try {
-                setIsDeleting(true)
-
-                const tx = await client?.deleteDraftEscrow(escrow.uuid)
-                
-                toast.success(
-                    <ToastWithLinks
-                        message={`Escrow deleted: ${escrow.uuid}`}
-                        linkText="View transaction"
-                        url={getExplorerUrl(`tx/${tx}`)}
-                    />
-                )
-                router.push('/escrow')
-            } catch (error: any) {
-                const errorMessage = error.message || JSON.stringify(error)
-                if (errorMessage.includes("doesn't exist")) {
-                    toast.success("Escrow already deleted")
-                    router.push('/escrow')
-                } else if (errorMessage.includes("EscrowNotDraft")) {
-                    toast.error("Cannot delete: Escrow is not in draft status")
-                } else if (errorMessage.includes("DepositorsExist")) {
-                    toast.error("Cannot delete: Escrow has depositors")
-                } else if (errorMessage.includes("RecipientsExist")) {
-                    toast.error("Cannot delete: Escrow has recipients")
-                } else if (errorMessage.includes("ModulesExist")) {
-                    toast.error("Cannot delete: Escrow has modules")
-                } else {
-                    toast.error(`Error deleting escrow: ${errorMessage}`)
-                }
-            } finally {
-                setIsDeleting(false)
-            }
-        }
-    }
-
-    const startEscrow = async (escrow: Escrow) => {
-        if (wallet?.connected && !isStarting) {
-            try {
-                setIsStarting(true)
-                const tx = await client?.startEscrow(escrow.uuid)
-                toast.success(
-                    <ToastWithLinks
-                        message={`Escrow started: ${escrow.uuid}`}
-                        linkText="View transaction"
-                        url={getExplorerUrl(`tx/${tx}`)}
-                    />
-                )
-            } catch (error: any) {
-                toast.error(`Error starting escrow: ${error.message}`)
-            } finally {
-                setIsStarting(false)
-            }
-        }
-
-    }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [getEscrow, uuid, refreshTrigger])
 
     return (
         <div>
@@ -140,16 +116,21 @@ function EscrowItem({ uuid }: { uuid: string }) {
                       {escrow.modules.length > 0 && (
                         <div className="py-4 space-y-2">
                           <h2 className="text-lg font-bold">Release conditions:</h2>
-                        {escrow.modules.map((module) => (
-                          <div key={module.id}>
-                            <p>{module.moduleType.toString()}</p>
+                        {escrow.modules.map((module, index) => (
+                          <div key={index}>
+                            <p>{Object.keys(module.moduleType)[0]}</p>
                           </div>
                         ))}
                         </div>
                       )}
 
                       <div className="flex flex-row gap-2">
-                        <CreatorButtonSet escrow={escrow} />
+                        {isCreator && (
+                          <CreatorButtonSet escrow={escrow} refreshEscrow={refreshEscrow} />
+                        )}
+                        {isDepositor && (
+                          <DepositorButtonSet escrow={escrow} depositor={depositor} refreshEscrow={refreshEscrow} />
+                        )}
                       </div>
                     </div>
                     <div className="space-y-2"> 

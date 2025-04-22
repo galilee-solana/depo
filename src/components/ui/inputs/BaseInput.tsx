@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react'
-
+import { KeyboardEvent } from 'react'
 
 interface BaseInputProps {
     label?: string
@@ -11,9 +11,10 @@ interface BaseInputProps {
     setValue: (value: string) => void
     pattern?: string
     inputMode?: 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search'
+    onKeyDown?: (e: KeyboardEvent<HTMLInputElement>) => void
 }
 
-function BaseInput({label, type, id, enabled, placeholder, value, setValue, pattern, inputMode}: BaseInputProps ) {
+function BaseInput({label, type, id, enabled, placeholder, value, setValue, pattern, inputMode, onKeyDown}: BaseInputProps ) {
   const [showFakePlaceholder, setShowFakePlaceholder] = useState(true)
 
   useEffect(() => {
@@ -50,6 +51,7 @@ function BaseInput({label, type, id, enabled, placeholder, value, setValue, patt
           disabled={!enabled}
           {...(pattern && { pattern })}
           {...(inputMode && { inputMode })}
+          {...(onKeyDown && { onKeyDown })}
         />
       </div>
       </>

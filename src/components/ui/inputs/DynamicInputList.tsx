@@ -1,7 +1,7 @@
 import usePagination from "@/hooks/usePagination"
 import PaginationControls from "@/components/ui/pagination/PaginationControls"
 import useDynamicInputList from "@/hooks/useDynamicInputList"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 
 type DynamicInputListProps = {
   label: string
@@ -16,6 +16,7 @@ function DynamicInputList({ label, description, itemsPerPage = 3, placeholder, i
   const { count, inputFields, addInputField, handleInputChange, removeInputField } = useDynamicInputList(itemsPerPage, { initialValues, onChange }  )
   
   const [pendingNavigation, setPendingNavigation] = useState(false)
+  const isFirstRender = useRef(true)
 
   const {
     currentItems: visibleInputFields,
@@ -55,7 +56,21 @@ function DynamicInputList({ label, description, itemsPerPage = 3, placeholder, i
       setPendingNavigation(false)
       goToNextPage()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pendingNavigation, isScrolling, goToNextPage])
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+        isFirstRender.current = false
+        return
+    }
+
+    if (onChange) {
+        const values = inputFields.map(field => field.value)
+        onChange(values)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inputFields])
 
   return (
     <div className="px-6 space-y-2">

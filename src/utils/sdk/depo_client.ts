@@ -116,7 +116,6 @@ class DepoClient {
         systemProgram: SystemProgram.programId,
       } as any).rpc();
       
-      console.log('Escrow created with tx:', createTx);
       await this.program.provider.connection.confirmTransaction(createTx, 'confirmed');
 
       let escrowAccount = await this.program.account.escrow.fetch(escrowKey);
@@ -141,7 +140,6 @@ class DepoClient {
               systemProgram: SystemProgram.programId,
             } as any).rpc();
             
-            console.log(`Added recipient with tx: ${recipientTx}`);
             await this.program.provider.connection.confirmTransaction(recipientTx, 'confirmed');
           } catch (e) {
             console.error(`Error adding recipient ${recipient}:`, e);
@@ -169,7 +167,6 @@ class DepoClient {
                 systemProgram: SystemProgram.programId,
               } as any).rpc();
             
-              console.log(`Added depositor with tx: ${depositorTx}`);
               await this.program.provider.connection.confirmTransaction(depositorTx, 'confirmed');
             } catch (e) {
               console.error(`Error adding depositor ${depositor}:`, e);
@@ -193,7 +190,6 @@ class DepoClient {
           } as any).rpc();  
 
           await this.program.provider.connection.confirmTransaction(timelockTx, 'confirmed');
-          console.log(`Added timelock with tx: ${timelockTx}`);
         }
 
         // Add minimum amount if needed
@@ -213,7 +209,6 @@ class DepoClient {
           } as any).rpc();
 
           await this.program.provider.connection.confirmTransaction(minimumAmountTx, 'confirmed');
-          console.log(`Added minimum amount with tx: ${minimumAmountTx}`);
         }
 
         // Add target amount if needed
@@ -233,7 +228,6 @@ class DepoClient {
           } as any).rpc();
 
           await this.program.provider.connection.confirmTransaction(targetAmountTx, 'confirmed');
-          console.log(`Added target amount with tx: ${targetAmountTx}`);
         }
 
         // Refresh escrow data
@@ -279,8 +273,6 @@ class DepoClient {
           }
         }
       ]);
-
-      console.log(recipients)
 
       const depositors = await this.program.account.depositor.all([
         {
@@ -423,6 +415,71 @@ class DepoClient {
       return tx
     } catch (error) {
       console.error("Error depositing escrow:", error);
+      throw error;
+    }
+  }
+
+  async cancelEscrow(uuid: string) {
+    const cleanUuid = uuid.replace(/-/g, '')
+    const { key: escrowKey, bufferId: escrowId } = this.getPdaKeyAndBufferId(cleanUuid)
+
+    try {
+      const tx = await this.program.methods.cancelEscrow(
+        Array.from(escrowId),
+      ).accounts({
+        escrow: escrowKey,
+        initializer: this.wallet.publicKey!,
+        systemProgram: SystemProgram.programId,
+      }).rpc()
+
+      await this.program.provider.connection.confirmTransaction(tx);
+      return tx
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async releaseEscrow(uuid: string) {
+    const cleanUuid = uuid.replace(/-/g, '')
+    const { key: escrowKey, bufferId: escrowId } = this.getPdaKeyAndBufferId(cleanUuid)
+
+    try {
+      const tx = await this.program.methods.releaseEscrow(
+        Array.from(escrowId),
+      ).accounts({
+        escrow: escrowKey,
+        initializer: this.wallet.publicKey!,
+        systemProgram: SystemProgram.programId,
+      })
+      .remainingAccounts([])
+      .rpc()
+
+      await this.program.provider.connection.confirmTransaction(tx);
+      return tx
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async claimRefund(uuid: string) {
+    const cleanUuid = uuid.replace(/-/g, '')
+    const { key: escrowKey, bufferId: escrowId } = this.getPdaKeyAndBufferId(cleanUuid)
+
+    const depositorKey = this.getPdaKeyForDepositor(escrowKey, this.wallet.publicKey!)
+
+    try {
+      const tx = await this.program.methods.refundDepositor(
+        Array.from(escrowId),
+      ).accounts({
+        escrow: escrowKey,
+        depositor: depositorKey,
+        signer: this.wallet.publicKey!,
+        systemProgram: SystemProgram.programId,
+      } as any).rpc()
+
+      await this.program.provider.connection.confirmTransaction(tx);
+      return tx
+    } catch (error) {
       throw error;
     }
   }
