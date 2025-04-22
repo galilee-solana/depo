@@ -1,15 +1,7 @@
 import { stringify as uuidStringify } from 'uuid';
 import { PublicKey } from '@solana/web3.js';
 import { BN } from '@coral-xyz/anchor';
-
-// Define TypeScript enum to match Anchor Status enum
-export enum EscrowStatus {
-  DRAFT = 'draft',
-  STARTED = 'started',
-  RELEASED = 'released',
-  CANCELLED = 'cancelled',
-  EXPIRED = 'expired'
-}
+import { EscrowStatus } from './escrowStatus';
 
 /**
  * Escrow model

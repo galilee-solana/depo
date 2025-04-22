@@ -1,15 +1,12 @@
 'use client'
 
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import CreateButton from '../create/CreateButton'
 import FindButton from '../find/FindButton'
 import Escrow from '@/utils/sdk/models/escrow'
+import EscrowCard from './EscrowCard'
 
 export default function EscrowList({ list }: { list: Escrow[] }) {
-  const router = useRouter()
-
   // Sorted by create timestamp
   const sortedEscrowList = [...list].sort((a, b) => a.createdAt.cmp(b.createdAt))
 
@@ -43,24 +40,7 @@ export default function EscrowList({ list }: { list: Escrow[] }) {
         <div className={`relative space-y-4 transition-all duration-300 ease-in-out transform ${
           isScrolling ? 'opacity-50 translate-y-2' : 'opacity-100 translate-y-0'} min-h-[300px]`}>
           {visibleEscrow.map((escrow) => (
-            <div
-              key={escrow.uuid}
-              className="flex items-center justify-between bg-black text-white rounded-2xl px-4 py-3 cursor-pointer shadow-md hover:bg-gray-900 transition"
-              onClick={() => router.push(`/escrow/${escrow.uuid}`)} // Redirect ID to update page still to be done
-            >
-              <div className="flex items-center space-x-4">
-                <Image
-                  src="/D-logo-black.svg"
-                  alt="Logo DEPO"
-                  width={0}
-                  height={0}
-                  className="h-10 w-auto object-contain"
-                />
-                <span className="truncate max-w-[200px]">
-                  {escrow.name.length > 24 ? escrow.name.slice(0, 24) + '…' : escrow.name}
-                </span>
-              </div>
-            </div>
+            <EscrowCard key={escrow.uuid} escrow={escrow} />
           ))}
         </div>
       </div>
