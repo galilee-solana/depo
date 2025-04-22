@@ -4,7 +4,7 @@ function SmallButton({ children, onClick, disabled }: { children: React.ReactNod
     <button 
         onClick={onClick}
         disabled={disabled}
-        className={`${disabled ? 'bg-gray-400 text-white border-none' : 'hover:bg-gray-100 text-black border border-black'} px-4 py-2 rounded-md transition`}>
+        className={`${disabled ? 'bg-white text-white border-none' : 'hover:bg-gray-100 text-black border border-black'} px-4 py-2 rounded-md transition`}>
         {children}
     </button>
   )
