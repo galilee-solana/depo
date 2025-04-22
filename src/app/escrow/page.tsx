@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import EscrowList from '@/components/escrow_list/EscrowList'
 import { useDepoClient } from '@/contexts/useDepoClientCtx'
-import Escrow from '@/utils/models/escrow'
+import Escrow from '@/utils/sdk/models/escrow'
 import toast from 'react-hot-toast'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { WalletButton } from '@/components/solana/solana-provider'

@@ -1,133 +1,107 @@
 'use client'
 
-import { useWallet } from '@solana/wallet-adapter-react'
-import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import ToogleInputFieldNumber from '@/components/create/ToogleInputFieldNumber'
-import ToogleInputFieldDateTime from '@/components/create/ToogleInputFieldDateTime'
-import ToogleInputLink from '@/components/create/ToogleInputLink'
+import ToogleInputFieldNumber from '@/components/ui/inputs/ToogleInputFieldNumber'
+import ToogleInputFieldDateTime from '@/components/ui/inputs/ToogleInputFieldDateTime'
 import ConfirmEscrow from '@/components/confirmescrow/ConfirmEscrow'
+import { useEscrow } from '@/contexts/useEscrowCtx'
+import DynamicInputList from '@/components/ui/inputs/DynamicInputList'
+import SmallButtonDanger from '@/components/ui/buttons/SmallButtonDanger'
 
 export default function CreateEscrow() {
-  const { publicKey } = useWallet()
   const router = useRouter()
 
-  const [name, setName] = useState('')
-  const [description, setDescription] = useState('')
-  //const [startTimeEnabled, setStartTimeEnabled] = useState(false)
-  //const [startTime, setStartTime] = useState('')
-  const [timelockEnabled, setTimelockEnabled] = useState(false)
-  const [timelock, setTimelock] = useState('')
-  const [minimumAmountEnabled, setMinimumAmountEnabled] = useState(false)
-  const [minimumAmount, setMinimumAmount] = useState('')
-  const [targetAmountEnabled, setTargetAmountEnabled] = useState(false)
-  const [targetAmount, setTargetAmount] = useState('')
-  const [DepositorEnabled, setDepositorEnabled] = useState(false)
-  const [RecipientEnabled, setRecipientEnabled] = useState(false)
-
-  useEffect(() => {
-    if (publicKey) {
-      console.log("Connected pubKey is :", publicKey.toBase58())
-    }
-  }, [publicKey])
-
-  if (!publicKey) {
-    return (
-      <div className="p-6">
-        <p>Please connect your wallet to create a new DEPO.</p>
-      </div>
-    )
-  }
+  const { 
+    name, setName, 
+    description, setDescription, 
+    timelock, setTimelock, 
+    minimumAmount, setMinimumAmount, 
+    targetAmount, setTargetAmount, 
+    recipients, setRecipients, 
+    depositors, setDepositors 
+  } = useEscrow()
 
   return (
     <div className="p-6 space-y-4">
-      <h1 className="text-2xl font-bold">Create your new DEPO.</h1>
+      <h1 className="text-2xl font-bold">Create your new DEPO</h1>
 
-      <input
-        placeholder="Deposit name #1"
-        className="w-full px-3 py-2 border-2 border-black rounded-2xl bg-white text-black"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2"> 
+          <input
+            placeholder="Deposit name #1"
+            className="w-full px-3 py-2 border-2 border-black rounded-2xl bg-white text-black"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
 
-      <input
-        placeholder="Description"
-        className="w-full px-3 py-2 border-2 border-black rounded-2xl bg-white text-black"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-      />
-      
-      {/*<ToogleInputFieldDateTime
-        label="Start Time"
-        placeholder="Deposit start time"
-        enabled={startTimeEnabled}
-        setEnabled={setStartTimeEnabled}
-        value={startTime}
-        setValue={setStartTime}
-      >*/}
+          <input
+            placeholder="Description"
+            className="w-full px-3 py-2 border-2 border-black rounded-2xl bg-white text-black"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
 
-      <ToogleInputFieldDateTime
-        label="Time Lock"
-        placeholder="Time Lock"
-        enabled={timelockEnabled}
-        setEnabled={setTimelockEnabled}
-        value={timelock}
-        setValue={setTimelock}
-      />
+          <div className="py-4 space-y-2">
+            <h2 className="text-lg font-bold">Release conditions:</h2>
+            <ToogleInputFieldDateTime
+              label="Timelock"
+              placeholder="Timelock"
+              value={timelock}
+              setValue={setTimelock}
+            />
 
-      <ToogleInputFieldNumber
-        label="Minimum Amount"
-        placeholder="Minimum Amount"
-        enabled={minimumAmountEnabled}
-        setEnabled={setMinimumAmountEnabled}
-        value={minimumAmount}
-        setValue={setMinimumAmount}
-      />
+            <ToogleInputFieldNumber
+              label="Minimum Amount"
+              placeholder="Minimum Amount"
+              value={minimumAmount}
+              setValue={setMinimumAmount}
+            />
 
-      <ToogleInputFieldNumber
-        label="Target Amount"
-        placeholder="Target Amount"
-        enabled={targetAmountEnabled}
-        setEnabled={setTargetAmountEnabled}
-        value={targetAmount}
-        setValue={setTargetAmount}
-      />
+            <ToogleInputFieldNumber
+              label="Target Amount"
+              placeholder="Target Amount"
+              value={targetAmount}
+              setValue={setTargetAmount}
+            />
+          </div>
 
-      <button
-        onClick={() => router.push('/escrow/create/add_options')}
-        className="text-left text-black flex items-center space-x-2"
-        >
-        <span>➕</span>
-        <span>Add options</span>
-      </button>
-
-      <ToogleInputLink
-        question="Is this a private or public DEPO ?"
-        linkLabel="List of depositor address"
-        href="create/set_depositor_address"
-        enabled={DepositorEnabled}
-        setEnabled={setDepositorEnabled}
-      />
-
-      <ToogleInputLink
-        question="Is there multiple recipients ?"
-        linkLabel="List of recipient address"
-        href="create/set_recipient_address"
-        enabled={RecipientEnabled}
-        setEnabled={setRecipientEnabled}
-      />
-
-      <ConfirmEscrow
-        name={name}
-        description={description}
-        timelockEnabled={timelockEnabled}
-        timelock={timelock}
-        minimumAmountEnabled={minimumAmountEnabled}
-        minimumAmount={minimumAmount}
-        targetAmountEnabled={targetAmountEnabled}
-        targetAmount={targetAmount}
-        walletPublicKey={publicKey.toBase58()}
-      />
+          <div className="flex flex-row gap-2">
+            <SmallButtonDanger
+              onClick={() => {
+                router.push('/escrow')
+              }}
+              disabled={false}
+            >
+              Cancel
+            </SmallButtonDanger>
+            <ConfirmEscrow
+              name={name}
+              description={description}
+              timelock={timelock}
+              minimumAmount={minimumAmount}
+              targetAmount={targetAmount}
+            />
+          </div>
+        </div>
+        <div className="space-y-4">
+          <DynamicInputList 
+            label="Recipients"
+            description="Add recipients keys to receive the funds. The funds will be split equally among the recipients."
+            placeholder="Public Key"
+            itemsPerPage={3}
+            initialValues={recipients}
+            onChange={(value) => setRecipients(value)}
+          />
+          <DynamicInputList 
+            label="Depositors" 
+            description="For private deposits, add the depositors keys of the funds"  
+            placeholder="Public Key"
+            itemsPerPage={3} 
+            initialValues={depositors}
+            onChange={(value) => setDepositors(value)}
+          />
+        </div>
+      </div>
     </div>
   )
 }

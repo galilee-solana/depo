@@ -30,11 +30,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   {children}
                 </UiLayout>
               </DepoClientProvider>
-              <DepoClientProvider>
-                <UiLayout>
-                  {children}
-                </UiLayout>
-              </DepoClientProvider>
             </SolanaProvider>
           </ClusterProvider>
         </ReactQueryProvider>

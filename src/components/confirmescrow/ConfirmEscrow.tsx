@@ -3,122 +3,49 @@
 import { useDepoClient } from '@/contexts/useDepoClientCtx'
 import { useState } from 'react'
 import { toast } from 'react-hot-toast'
+import { useEscrow } from '@/contexts/useEscrowCtx'
+import { useRouter } from 'next/navigation'
+import SmallButton from '../ui/buttons/SmallButton'
 
 type ConfirmButtonProps = {
     name : string
     description : string
-    timelockEnabled : boolean
     timelock : string
-    minimumAmountEnabled : boolean
     minimumAmount : string
-    targetAmountEnabled : boolean
     targetAmount : string
-    walletPublicKey : string
 }
 
 export default function ConfirmEscrow({
     name,
     description,
-    timelockEnabled,
     timelock,
-    minimumAmountEnabled,
     minimumAmount,
-    targetAmountEnabled,
-    targetAmount,
-    walletPublicKey,
+    targetAmount
 }: ConfirmButtonProps) {
-  const { client } = useDepoClient()
+  const { create } = useEscrow()
+  const router = useRouter()
   const [loading, setLoading] = useState(false)
 
-  const handleConfirmEscrow = async () => {
-    // Check if name and description are not empty
-    if (!name.trim()) toast.error("Name is required.")
-    if (!description.trim()) toast.error("Description is required.")
-
-    // START TIME ACTIVATE WHEN READY
-    //if (startTimeEnabled) {
-    //  const now = new Date()
-    //  const selectedStartTime = new Date(startTime)
-    //  if (selectedStartTime <= now) {
-    //    errors.push("Start time must be in the future.")
-    //  }
-    //}
-    
-    // Set minimum timelock -> 5min ahead : We can discuss about that.
-    if (timelockEnabled) {
-        const now = new Date()
-        const lockTime = new Date(timelock)
-        if (isNaN(lockTime.getTime()) || lockTime.getTime() < now.getTime() + 5 * 60 * 1000) {
-            toast.error("Timelock must be at least 5 minutes in the future.")
-            return
-        }
-    }
-
-    // If target_amount only -> must be > 0
-    if (targetAmountEnabled && parseFloat(targetAmount) <= 0) {
-        toast.error('Target amount must be greater than 0')
-        return
-    }
-
-    // If minimum_amount only -> must be > 0
-    if (minimumAmountEnabled && parseFloat(minimumAmount) <= 0) {
-        toast.error('Minimum amount must be greater than 0')
-        return
-    }
-
-    if (minimumAmountEnabled && targetAmountEnabled) {
-      const min = parseFloat(minimumAmount)
-      const target = parseFloat(targetAmount)
-      if (!isNaN(min) && !isNaN(target) && target <= min) {
-          toast.error("Target amount must be greater than minimum amount.")
-          return
+  const handleCreate = async () => {
+    setLoading(true)
+    try { 
+      const result = await create()
+      setLoading(false)
+      if (result) {
+        router.push(`/escrow/${result.escrow.uuid}`)
       }
+    } catch (error: any) {
+      setLoading(false)
+      toast.error('Error: ' + error.message)
+    }
   }
-    // If both min & target active -> target > min
-    //if (minimumAmountEnabled && targetAmountEnabled &&
-    //    parseFloat(minimumAmount) > parseFloat(targetAmount)
-    //  ) {
-    //    toast.error('Minimum amount cannot exceed target amount')
-    //    return
-    //}
-
-    if (!client) {
-        toast.error("DepoClient is not available")
-        return
-    }
-
-    try {
-        setLoading(true)
-        const loadingToastId = toast.loading("Creating your escrow...")
-  
-        // Seuls name & description sont passés pour l’instant :
-        const { tx, escrow } = await client.createEscrow(name, description);
-          // To add to method when ready :
-          // timelock
-          // minimumAmount
-          // targetAmount
-        
-        toast.dismiss(loadingToastId)
-        toast.success(`Escrow created 🎉 TX: ${tx.slice(0, 8)}...`)
-  
-        console.log('Escrow created:', escrow)
-      } catch (err: any) {
-        toast.dismiss()
-        toast.error(`Error: ${err.message}`)
-        console.error(err)
-      } finally {
-        setLoading(false)
-      }
-    }
-  
   
 return (
-    <button
-        onClick={handleConfirmEscrow}
+    <SmallButton
+        onClick={handleCreate}
         disabled={loading}
-        className="px-6 py-3 border-2 border-black text-black bg-white rounded-lg hover:bg-gray-100 transition"
     >
-        Confirm DEPO
-    </button>
+        {loading ? 'Creating...' : 'Create'}
+    </SmallButton>
   )
 }

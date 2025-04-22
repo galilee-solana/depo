@@ -21,7 +21,7 @@ export function UiLayout({ children }: { children: ReactNode }) {
     </Head>
     <div className="h-screen flex flex-col overflow-hidden">
       {/* Navbar */}
-      <div className="navbar bg-white text-black flex-col md:flex-row items-center justify-between px-4 py-4 min-h-[64px] flex-shrink-0">
+      <div className="navbar bg-cream text-black flex-col md:flex-row items-center justify-between px-4 py-4 min-h-[64px] flex-shrink-0">
         <div className="h-full">
           <a href="/escrow">
             <Image src="/D-logo-white.svg" alt="Logo" width={0} height={0} className="h-10 w-auto object-contain" priority />
@@ -41,7 +41,7 @@ export function UiLayout({ children }: { children: ReactNode }) {
         <AccountChecker />
       </ClusterChecker>
       {/* Main Menu */}
-      <div className="flex-grow w-full bg-white text-black overflow-y-auto">
+      <div className="flex-grow w-full bg-cream text-black overflow-y-auto">
         <div className="h-full px-4 md:px-12">
           {children}
         </div>

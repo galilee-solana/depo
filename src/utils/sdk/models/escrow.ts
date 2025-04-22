@@ -1,16 +1,8 @@
 import { stringify as uuidStringify } from 'uuid';
 import { PublicKey } from '@solana/web3.js';
 import { BN } from '@coral-xyz/anchor';
-
-// Define TypeScript enum to match Anchor Status enum
-export enum EscrowStatus {
-  DRAFT = 'draft',
-  STARTED = 'started',
-  RELEASED = 'released',
-  CANCELLED = 'cancelled',
-  EXPIRED = 'expired'
-}
-
+import { EscrowStatus } from './escrowStatus';
+import { lamportsToSol } from '@/utils/number-formatter';
 /**
  * Escrow model
  * 
@@ -26,6 +18,8 @@ export enum EscrowStatus {
  * @param remainingPercentage - The remaining percentage
  * @param withdrawnAmount - The amount withdrawn
  * @param status - The status of the escrow
+ * @param recipients - The recipients of the escrow
+ * @param depositors - The depositors of the escrow
  */
 class Escrow {
   uuid: string;
@@ -33,8 +27,8 @@ class Escrow {
   description: string;
   initializer: PublicKey;
   
-  depositedAmount: BN;
-  withdrawnAmount: BN;
+  depositedAmount: string;
+  withdrawnAmount: string;
   
   createdAt: BN;
   createdAtFormatted: string;
@@ -44,6 +38,8 @@ class Escrow {
   remainingPercentage: number;
   status: EscrowStatus;
   modules: any[];
+  recipients: any[];
+  depositors: any[];
 
   constructor(escrow: any) {
     // Convert id (byte array) to uuid string
@@ -57,8 +53,9 @@ class Escrow {
     this.initializer = escrow.initializer;
     
     // Set BN values
-    this.depositedAmount = escrow.depositedAmount;
-    this.withdrawnAmount = escrow.withdrawnAmount;
+    this.depositedAmount = lamportsToSol(escrow.depositedAmount);
+
+    this.withdrawnAmount = lamportsToSol(escrow.withdrawnAmount);
     this.createdAt = escrow.createdAt;
     
     // Create formatted date string
@@ -69,6 +66,9 @@ class Escrow {
     this.depositorsCount = escrow.depositorsCount;
     this.recipientsCount = escrow.recipientsCount;
     this.remainingPercentage = escrow.remainingPercentage;
+
+    this.recipients = escrow.recipients;
+    this.depositors = escrow.depositors;
     
     // Handle the status enum from Anchor properly
     this.status = this.parseStatusEnum(escrow.status);

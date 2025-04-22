@@ -1,90 +1,57 @@
 'use client'
 
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import React from 'react'
 import CreateButton from '../create/CreateButton'
 import FindButton from '../find/FindButton'
-import Escrow from '@/utils/models/escrow'
+import Escrow from '@/utils/sdk/models/escrow'
+import EscrowCard from './EscrowCard'
+import usePagination from '@/hooks/usePagination'
+import PaginationControls from '@/components/ui/pagination/PaginationControls'
 
 export default function EscrowList({ list }: { list: Escrow[] }) {
-  const router = useRouter()
-
   // Sorted by create timestamp
   const sortedEscrowList = [...list].sort((a, b) => a.createdAt.cmp(b.createdAt))
-
-  // Set const State to scroll DepoCard
-  const [startIndex, setStartIndex] = useState(0)
-  const [isScrolling, setIsScrolling] = useState(false)
-  const maxVisible = 5
-  const hasOverflow = EscrowList.length > maxVisible
-  const visibleEscrow = sortedEscrowList.slice(startIndex, startIndex + maxVisible)
-
-  const scrollUp = () => {
-    if (startIndex > 0) {
-      setIsScrolling(true)
-      setStartIndex(startIndex - 1)
-      setTimeout(() => setIsScrolling(false), 300) // Same duration as transition
-    }
-  }
   
-  const scrollDown = () => {
-    if (startIndex + maxVisible < sortedEscrowList.length) {
-      setIsScrolling(true)
-      setStartIndex(startIndex + 1)
-      setTimeout(() => setIsScrolling(false), 300)
-    }
-  }  
+  const maxVisible = 5
+  
+  // Use our custom pagination hook
+  const {
+    currentItems: visibleEscrow,
+    currentPage,
+    totalPages,
+    isScrolling,
+    goToNextPage,
+    goToPrevPage
+  } = usePagination(sortedEscrowList, {
+    totalItems: sortedEscrowList.length,
+    itemsPerPage: maxVisible
+  })
 
   return (
-    <div className="flex flex-col justify-between min-h-full bg-white px-4 py-6">
-      {/* EscrowCard window | scroll conditions */}
-      <div className="w-full max-w-3xl mx-auto px-4 rounded-md p-4 bg-white">
+    <div className="flex flex-col justify-between min-h-full px-4 py-6">
+      {/* EscrowCard window with transition animation */}
+      <div className="w-full max-w-3xl mx-auto px-4 rounded-md p-4">
         <div className={`relative space-y-4 transition-all duration-300 ease-in-out transform ${
           isScrolling ? 'opacity-50 translate-y-2' : 'opacity-100 translate-y-0'} min-h-[300px]`}>
           {visibleEscrow.map((escrow) => (
-            <div
-              key={escrow.uuid}
-              className="flex items-center justify-between bg-black text-white rounded-2xl px-4 py-3 cursor-pointer shadow-md hover:bg-gray-900 transition"
-              onClick={() => router.push(`/escrow/${escrow.uuid}`)} // Redirect ID to update page still to be done
-            >
-              <div className="flex items-center space-x-4">
-                <Image
-                  src="/D-logo-black.svg"
-                  alt="Logo DEPO"
-                  width={0}
-                  height={0}
-                  className="h-10 w-auto object-contain"
-                />
-                <span className="truncate max-w-[200px]">
-                  {escrow.name.length > 24 ? escrow.name.slice(0, 24) + '…' : escrow.name}
-                </span>
-              </div>
-            </div>
+            <EscrowCard key={escrow.uuid} escrow={escrow} />
           ))}
         </div>
       </div>
-      {/* Scroll arrows */}
-      {hasOverflow && (
-        <div className="flex justify-center mt-1 mr-[3px]">
-          <div className="flex space-x-3">
-            <button
-              onClick={scrollUp}
-              disabled={startIndex === 0}
-              className="text-black rounded-full px-3 py-1 hover:bg-gray-100 disabled:opacity-30 transition"
-            >
-              ↑
-            </button>
-            <button
-              onClick={scrollDown}
-              disabled={startIndex + maxVisible >= sortedEscrowList.length}
-              className="text-black rounded-full px-3 py-1 hover:bg-gray-100 disabled:opacity-30 transition"
-            >
-              ↓
-            </button>
-          </div>
-        </div>
+      
+      {/* Pagination controls */}
+      {sortedEscrowList.length > maxVisible && (
+        <PaginationControls
+          currentPage={currentPage}
+          totalPages={totalPages}
+          itemsPerPage={maxVisible}
+          totalItems={sortedEscrowList.length}
+          onNextPage={goToNextPage}
+          onPrevPage={goToPrevPage}
+          disabled={isScrolling}
+        />
       )}
+      
       {/* Nav buttons */}
       <div className="flex flex-col items-center space-y-4 mt-8 mb-4 sm:hidden">
         <CreateButton></CreateButton>

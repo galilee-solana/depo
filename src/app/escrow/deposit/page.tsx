@@ -1,9 +1,7 @@
-
+import DepositUI from "@/components/deposit/deposit-ui"
 
 export default function DepositPage() {
   return (
-    <div>
-      <h1>Deposit</h1>
-    </div>
+    <DepositUI />
   )
 }

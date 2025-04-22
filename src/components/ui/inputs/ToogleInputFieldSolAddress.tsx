@@ -1,11 +1,11 @@
 import { useId } from 'react'
 import { PublicKey } from '@solana/web3.js'
+import useToggle from '@/hooks/useToggle'
+import BaseInput from './BaseInput'
 
-interface ToogleInputFieldSolAddressProps {
+interface ToggleInputFieldSolAddressProps {
   label: string
   placeholder: string
-  enabled: boolean
-  setEnabled: (v: boolean) => void
   value: string
   setValue: (v: string) => void
 }
@@ -13,24 +13,13 @@ interface ToogleInputFieldSolAddressProps {
 export default function ToggleInputFieldSolAddress({
   label,
   placeholder,
-  enabled,
-  setEnabled,
   value,
   setValue,
-}: ToogleInputFieldSolAddressProps) {
+}: ToggleInputFieldSolAddressProps) {
   const id = useId()
+  const [enabled, toggle] = useToggle(false)
 
   const isValid = value === '' || isValidSolanaAddress(value)
-  // const isValid = isValidSolanaAddress(value)
-
-  //function isValidSolanaAddress(address: string): boolean {
-  //  try {
-  //    const pubkey = new PublicKey(address)
-  //    return PublicKey.isOnCurve(pubkey)
-  //  } catch {
-  //    return false
-  //  }
-  //}
 
   function isValidSolanaAddress(address: string): boolean {
     if (!address) return true; // Consider empty as valid
@@ -42,11 +31,6 @@ export default function ToggleInputFieldSolAddress({
     }
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value.trim()
-    setValue(newValue)
-  }
-
   return (
     <div className="flex items-center space-x-3 relative">
       <label htmlFor={id} className="relative">
@@ -54,7 +38,7 @@ export default function ToggleInputFieldSolAddress({
           id={id}
           type="checkbox"
           checked={enabled}
-          onChange={() => setEnabled(!enabled)}
+          onChange={toggle}
           className="peer hidden"
         />
         <div
@@ -80,28 +64,15 @@ export default function ToggleInputFieldSolAddress({
         </div>
       </label>
 
-      <div className="relative flex-1">
-        {value && (
-          <span className="absolute -top-3 left-2 text-xs text-gray-500 bg-white px-1 rounded pointer-events-none">
-            {placeholder}
-          </span>
-        )}
-        <input
-          type="text"
-          placeholder={placeholder}
-          className={`
-            w-full px-3 py-2 border-2 rounded-2xl transition 
-            ${enabled
-              ? 'bg-white text-black border-black'
-              : 'bg-gray-100 text-gray-400 border-gray-300 cursor-not-allowed'}
-            ${!isValid && 'border-red-500'}
-          `}
-          value={value}
-          // onChange={(e) => setValue(e.target.value.trim())}
-          onChange={handleChange}
-          disabled={!enabled}
-        />
-      </div>
+      <BaseInput
+        type="text"
+        id={`${id}-input`}
+        enabled={enabled}
+        placeholder={placeholder}
+        value={value}
+        setValue={setValue}
+        label={label}
+      />
     </div>
   )
 }
