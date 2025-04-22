@@ -7,8 +7,9 @@ import toast from 'react-hot-toast';
 import { useRouter } from "next/navigation";
 import ToastWithLinks from "@/components/toasts/ToastWithLinks";
 import { useCluster } from "@/components/cluster/cluster-data-access";
-import SmallButton from "@/components/ui/buttons/SmallButton";
-import SmallButtonDanger from "@/components/ui/buttons/SmallButtonDanger";
+import ReadOnlyInput from "@/components/ui/inputs/ReadOnlyInput";
+import CreatorButtonSet from "@/components/escrow_item/CreatorButtonSet";
+
 /**
  * A page that displays an escrow item.
  * @param uuid - The UUID of the escrow.
@@ -123,43 +124,41 @@ function EscrowItem({ uuid }: { uuid: string }) {
             
             {!isLoading && escrow && (
                 <>
-                    <div>
-                        <h2>Name: {escrow.name}</h2>
-                        <p>Description: {escrow.description}</p>
-                        <p>Deposited Amount: {escrow.depositedAmount.toString()}</p>
-                        <p>Withdrawn Amount: {escrow.withdrawnAmount.toString()}</p>
-                        <p>Remaining Percentage: {escrow.remainingPercentage / 100} %</p>
+                  <div className="grid grid-cols-2 gap-4 space-y-2">
+                    <div className="space-y-2 pt-4"> 
+                      <ReadOnlyInput
+                        label="Name"
+                        id="name"
+                        value={escrow.name}
+                      />
+
+                      <ReadOnlyInput
+                        label="Description"
+                        id="description"
+                        value={escrow.description}
+                      />
+                      {escrow.modules.length > 0 && (
+                        <div className="py-4 space-y-2">
+                          <h2 className="text-lg font-bold">Release conditions:</h2>
+                        {escrow.modules.map((module) => (
+                          <div key={module.id}>
+                            <p>{module.moduleType.toString()}</p>
+                          </div>
+                        ))}
+                        </div>
+                      )}
+
+                      <div className="flex flex-row gap-2">
+                        <CreatorButtonSet escrow={escrow} />
+                      </div>
+                    </div>
+                    <div className="space-y-2"> 
                         <p>Status: {escrow.status}</p>
                         <p>Is Public Deposit: {escrow.isPublicDeposit ? "Yes" : "No"}</p>
                         <p>Depositors Count: {escrow.depositorsCount}</p>
                         <p>Recipients Count: {escrow.recipientsCount}</p>
-                        <p>Modules: {
-                            escrow.modules.length > 0 ?
-                            escrow.modules.map(module => {
-                                const moduleTypeName = Object.keys(module.moduleType)[0];
-                                return moduleTypeName
-                            }).join(", ") :
-                            "No modules"
-                        }</p>
-                        <p>Initializer: {escrow.initializer.toString()}</p>
-                        <p>Created At: {escrow.createdAtFormatted}</p>
                     </div>
-                    <div className="flex gap-2 pt-4">
-                        <SmallButtonDanger
-                            onClick={() => deleteEscrow(escrow)}
-                            disabled={isDeleting}
-                        >
-                            {isDeleting ? 'Deleting...' : 'Cancel'}
-                        </SmallButtonDanger>
-                        {escrow.status === "draft" && (
-                            <SmallButton
-                                onClick={() => startEscrow(escrow)}
-                                disabled={isStarting}
-                            >
-                                {isStarting ? 'Starting...' : 'Start'}
-                            </SmallButton>
-                        )}
-                    </div>
+                  </div>
                 </>
             )}
         </div>
