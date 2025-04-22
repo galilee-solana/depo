@@ -1,17 +1,15 @@
 'use client'
 
-import { useWallet } from '@solana/wallet-adapter-react'
-import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import ToogleInputFieldNumber from '@/components/ui/inputs/ToogleInputFieldNumber'
 import ToogleInputFieldDateTime from '@/components/ui/inputs/ToogleInputFieldDateTime'
-import ToogleInputLink from '@/components/ui/inputs/ToogleInputLink'
 import ConfirmEscrow from '@/components/confirmescrow/ConfirmEscrow'
 import { useEscrow } from '@/contexts/useEscrowCtx'
-import RecipientsInputs from '@/components/create/RecipientsInputs'
 import DynamicInputList from '@/components/ui/inputs/DynamicInputList'
+import SmallButtonDanger from '@/components/ui/buttons/SmallButtonDanger'
 
 export default function CreateEscrow() {
+  const router = useRouter()
 
   const { 
     name, setName, 
@@ -67,13 +65,23 @@ export default function CreateEscrow() {
             />
           </div>
 
-          <ConfirmEscrow
-            name={name}
-            description={description}
-            timelock={timelock}
-            minimumAmount={minimumAmount}
-            targetAmount={targetAmount}
-          />
+          <div className="flex flex-row gap-2">
+            <SmallButtonDanger
+              onClick={() => {
+                router.push('/escrow')
+              }}
+              disabled={false}
+            >
+              Cancel
+            </SmallButtonDanger>
+            <ConfirmEscrow
+              name={name}
+              description={description}
+              timelock={timelock}
+              minimumAmount={minimumAmount}
+              targetAmount={targetAmount}
+            />
+          </div>
         </div>
         <div className="space-y-4">
           <DynamicInputList 
@@ -86,7 +94,7 @@ export default function CreateEscrow() {
           />
           <DynamicInputList 
             label="Depositors" 
-            description="For private deposits, add the depositors keys of the funds" 
+            description="For private deposits, add the depositors keys of the funds"  
             placeholder="Public Key"
             itemsPerPage={3} 
             initialValues={depositors}

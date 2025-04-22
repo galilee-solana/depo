@@ -7,8 +7,8 @@ import toast from 'react-hot-toast';
 import { useRouter } from "next/navigation";
 import ToastWithLinks from "@/components/toasts/ToastWithLinks";
 import { useCluster } from "@/components/cluster/cluster-data-access";
-import { Module } from "vm";
-
+import SmallButton from "@/components/ui/buttons/SmallButton";
+import SmallButtonDanger from "@/components/ui/buttons/SmallButtonDanger";
 /**
  * A page that displays an escrow item.
  * @param uuid - The UUID of the escrow.
@@ -114,7 +114,6 @@ function EscrowItem({ uuid }: { uuid: string }) {
 
     }
 
-    console.log(escrow?.modules)
     return (
         <div>
             <h1 className="text-2xl font-bold">Escrow #{escrow?.uuid}</h1>
@@ -138,31 +137,27 @@ function EscrowItem({ uuid }: { uuid: string }) {
                             escrow.modules.length > 0 ?
                             escrow.modules.map(module => {
                                 const moduleTypeName = Object.keys(module.moduleType)[0];
-                                return (
-                                    <span key={module.key.toString()}>
-                                        {moduleTypeName}
-                                    </span>
-                                )
-                            }):
+                                return moduleTypeName
+                            }).join(", ") :
                             "No modules"
                         }</p>
                         <p>Initializer: {escrow.initializer.toString()}</p>
                         <p>Created At: {escrow.createdAtFormatted}</p>
                     </div>
                     <div className="flex gap-2 pt-4">
-                        <button 
+                        <SmallButtonDanger
                             onClick={() => deleteEscrow(escrow)}
                             disabled={isDeleting}
-                            className={`${isDeleting ? 'bg-gray-400' : 'bg-red-500 hover:bg-red-600'} text-white px-4 py-2 rounded-md transition`}>
+                        >
                             {isDeleting ? 'Deleting...' : 'Cancel'}
-                        </button>
+                        </SmallButtonDanger>
                         {escrow.status === "draft" && (
-                            <button 
+                            <SmallButton
                                 onClick={() => startEscrow(escrow)}
                                 disabled={isStarting}
-                            className={`${isStarting ? 'bg-gray-400 text-white border-none' : 'hover:bg-gray-100 text-black border border-black'} px-4 py-2 rounded-md transition`}>
-                            {isStarting ? 'Starting...' : 'Start'}
-                        </button>
+                            >
+                                {isStarting ? 'Starting...' : 'Start'}
+                            </SmallButton>
                         )}
                     </div>
                 </>

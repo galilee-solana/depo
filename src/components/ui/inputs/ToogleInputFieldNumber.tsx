@@ -1,6 +1,7 @@
 import { useId, useState, useEffect } from 'react'
 import useToggle from '@/hooks/useToggle'
 import BaseInput from './BaseInput'
+import { isValidDecimalNumber } from '@/utils/number-formatter'
 
 interface ToggleInputFieldNumberProps {
   label: string
@@ -26,18 +27,10 @@ export default function ToggleInputFieldNumber({
 
   // Handle changes to the input field
   const handleInputChange = (inputValue: string) => {
-    // Validate input: allow only digits and at most one decimal point
-    const regex = /^[0-9]*\.?[0-9]*$/
-    
-    if (inputValue === '' || regex.test(inputValue)) {
+    // Validate input using our utility function
+    if (isValidDecimalNumber(inputValue)) {
       setLocalValue(inputValue)
-      
-      // Only update the actual value if it's a valid number
-      if (inputValue === '') {
-        setValue('')
-      } else {
-        setValue(inputValue)
-      }
+      setValue(inputValue)
     }
   }
 

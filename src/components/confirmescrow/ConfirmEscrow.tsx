@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { toast } from 'react-hot-toast'
 import { useEscrow } from '@/contexts/useEscrowCtx'
 import { useRouter } from 'next/navigation'
+import SmallButton from '../ui/buttons/SmallButton'
 
 type ConfirmButtonProps = {
     name : string
@@ -40,12 +41,11 @@ export default function ConfirmEscrow({
   }
   
 return (
-    <button
+    <SmallButton
         onClick={handleCreate}
         disabled={loading}
-        className="px-6 py-3 border-2 border-black text-black bg-white rounded-lg hover:bg-gray-100 transition"
     >
-      {loading ? 'Creating...' : 'Create'}
-    </button>
+        {loading ? 'Creating...' : 'Create'}
+    </SmallButton>
   )
 }

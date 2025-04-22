@@ -7,6 +7,7 @@ import Escrow from "./models/escrow";
 import { bs58 } from "@coral-xyz/anchor/dist/cjs/utils/bytes";
 import { BN } from "@coral-xyz/anchor";
 import { TransactionMessage, VersionedTransaction } from "@solana/web3.js";
+import { solToBN } from '@/utils/number-formatter';
 
 // Import the IDL directly with require to avoid TypeScript issues
 const idl = require("../../../anchor/target/idl/depo.json");
@@ -199,12 +200,12 @@ class DepoClient {
         // Add minimum amount if needed
         if (minimumAmount !== "") {
           const minimumAmountKey = this.getPdaKeyForMinimumAmount(escrowKey);
-
-          const minimumAmountLamports = Number(minimumAmount) * 1_000_000_000;
-
+          // Use our utility for correct conversion
+          const minimumAmountBN = solToBN(minimumAmount) || new BN(0);
+          
           const minimumAmountTx = await this.program.methods.addMinimumAmount(
             Array.from(escrowId),
-            new BN(minimumAmountLamports)
+            minimumAmountBN
           ).accounts({  
             escrow: escrowKey,
             minimumAmount: minimumAmountKey,
@@ -219,10 +220,12 @@ class DepoClient {
         // Add target amount if needed
         if (targetAmount !== "") {
           const targetAmountKey = this.getPdaKeyForTargetAmount(escrowKey);
-          const targetAmountLamports = Number(targetAmount) * 1_000_000_000;
+          // Use our utility for correct conversion
+          const targetAmountBN = solToBN(targetAmount) || new BN(0);
+          
           const targetAmountTx = await this.program.methods.addTargetAmount(
             Array.from(escrowId),
-            new BN(targetAmountLamports)
+            targetAmountBN
           ).accounts({
             escrow: escrowKey,
             targetAmount: targetAmountKey,
