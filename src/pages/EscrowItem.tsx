@@ -2,7 +2,7 @@
 
 import { useDepoClient } from "@/contexts/useDepoClientCtx";
 import Escrow from "@/utils/sdk/models/escrow";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import toast from 'react-hot-toast';
 import { useRouter } from "next/navigation";
 import ToastWithLinks from "@/components/toasts/ToastWithLinks";
@@ -16,15 +16,18 @@ import CreatorButtonSet from "@/components/escrow_item/CreatorButtonSet";
  * @returns A page that displays an escrow item.
  */
 function EscrowItem({ uuid }: { uuid: string }) {
-    const router = useRouter()
-    const { getEscrow, client, wallet } = useDepoClient()
+    const { getEscrow } = useDepoClient()
     const [escrow, setEscrow] = useState<Escrow | null>(null)
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
-    const [isDeleting, setIsDeleting] = useState(false)
-    const [isStarting, setIsStarting] = useState(false)
-    const { getExplorerUrl } = useCluster()
+    // Add these lines after other state variables:
+    const [refreshTrigger, setRefreshTrigger] = useState(0)
+    
+    const refreshEscrow = useCallback(() => {
+      setRefreshTrigger(prev => prev + 1)
+    }, [])
 
+    
     useEffect(() => {
         let isMounted = true
         const fetchEscrow = async () => {
@@ -54,66 +57,7 @@ function EscrowItem({ uuid }: { uuid: string }) {
         return () => {
             isMounted = false
         }
-    }, [getEscrow, uuid])
-
-
-    const deleteEscrow = async (escrow: Escrow) => {
-        if (wallet?.connected && !isDeleting) {
-            try {
-                setIsDeleting(true)
-
-                const tx = await client?.deleteDraftEscrow(escrow.uuid)
-                
-                toast.success(
-                    <ToastWithLinks
-                        message={`Escrow deleted: ${escrow.uuid}`}
-                        linkText="View transaction"
-                        url={getExplorerUrl(`tx/${tx}`)}
-                    />
-                )
-                router.push('/escrow')
-            } catch (error: any) {
-                const errorMessage = error.message || JSON.stringify(error)
-                if (errorMessage.includes("doesn't exist")) {
-                    toast.success("Escrow already deleted")
-                    router.push('/escrow')
-                } else if (errorMessage.includes("EscrowNotDraft")) {
-                    toast.error("Cannot delete: Escrow is not in draft status")
-                } else if (errorMessage.includes("DepositorsExist")) {
-                    toast.error("Cannot delete: Escrow has depositors")
-                } else if (errorMessage.includes("RecipientsExist")) {
-                    toast.error("Cannot delete: Escrow has recipients")
-                } else if (errorMessage.includes("ModulesExist")) {
-                    toast.error("Cannot delete: Escrow has modules")
-                } else {
-                    toast.error(`Error deleting escrow: ${errorMessage}`)
-                }
-            } finally {
-                setIsDeleting(false)
-            }
-        }
-    }
-
-    const startEscrow = async (escrow: Escrow) => {
-        if (wallet?.connected && !isStarting) {
-            try {
-                setIsStarting(true)
-                const tx = await client?.startEscrow(escrow.uuid)
-                toast.success(
-                    <ToastWithLinks
-                        message={`Escrow started: ${escrow.uuid}`}
-                        linkText="View transaction"
-                        url={getExplorerUrl(`tx/${tx}`)}
-                    />
-                )
-            } catch (error: any) {
-                toast.error(`Error starting escrow: ${error.message}`)
-            } finally {
-                setIsStarting(false)
-            }
-        }
-
-    }
+    }, [getEscrow, uuid, refreshTrigger])
 
     return (
         <div>
@@ -149,7 +93,7 @@ function EscrowItem({ uuid }: { uuid: string }) {
                       )}
 
                       <div className="flex flex-row gap-2">
-                        <CreatorButtonSet escrow={escrow} />
+                        <CreatorButtonSet escrow={escrow} refreshEscrow={refreshEscrow} />
                       </div>
                     </div>
                     <div className="space-y-2"> 
