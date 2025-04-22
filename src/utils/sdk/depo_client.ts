@@ -6,8 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import Escrow from "./models/escrow";
 import { bs58 } from "@coral-xyz/anchor/dist/cjs/utils/bytes";
 import { BN } from "@coral-xyz/anchor";
-import { TransactionMessage, VersionedTransaction } from "@solana/web3.js";
-import { solToBN } from '@/utils/number-formatter';
+import { solToBN, lamportsToSol } from '@/utils/number-formatter';
 
 // Import the IDL directly with require to avoid TypeScript issues
 const idl = require("../../../anchor/target/idl/depo.json");
@@ -392,6 +391,38 @@ class DepoClient {
       await this.program.provider.connection.confirmTransaction(tx);
       return tx
     } catch (error) {
+      throw error;
+    }
+  }
+
+  async depositEscrow(uuid: string, amount: BN) {
+    const cleanUuid = uuid.replace(/-/g, '')
+    const { key: escrowKey, bufferId: escrowId } = this.getPdaKeyAndBufferId(cleanUuid)
+
+    const depositorKey = this.getPdaKeyForDepositor(escrowKey, this.wallet.publicKey!)
+
+    try {
+      // Check wallet balance before attempting transaction
+      const balance = await this.program.provider.connection.getBalance(this.wallet.publicKey!);
+      if (balance < amount.toNumber()) {
+        throw new Error("Insufficient balance.");
+      }
+
+      const tx = await this.program.methods.depositEscrow(
+        Array.from(escrowId),
+        amount
+      ).accounts({
+        escrow: escrowKey,
+        depositor: depositorKey,
+        signer: this.wallet.publicKey!,
+        systemProgram: SystemProgram.programId,
+      } as any).rpc()
+
+      await this.program.provider.connection.confirmTransaction(tx);
+
+      return tx
+    } catch (error) {
+      console.error("Error depositing escrow:", error);
       throw error;
     }
   }

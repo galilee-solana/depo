@@ -8,9 +8,13 @@ import SmallButtonDanger from '../ui/buttons/SmallButtonDanger'
 import { useDepoClient } from '@/contexts/useDepoClientCtx'
 import Escrow from '@/utils/sdk/models/escrow'
 import EscrowDetailCard from './escrow_detail_card'
+import { toast } from 'react-hot-toast'
+import ToastWithLinks from '../toasts/ToastWithLinks'
+import { useRouter } from 'next/navigation'
 
 function DepositUI() {
-    const { client, wallet } = useDepoClient()
+    const router = useRouter()
+    const { client, wallet, getExplorerUrl } = useDepoClient()
     const [amount, setAmount] = useState('')
     const [id, setId] = useState('')
     const [escrow, setEscrow] = useState<Escrow | null>(null)
@@ -31,15 +35,30 @@ function DepositUI() {
         setId('')
     }
 
-    const handleDeposit = () => {
-        // Convert to lamports when sending to blockchain
-        const lamportsBN = solToBN(amount)
-
-        console.log("Deposit")
-        console.log(lamportsBN)
+    const handleDeposit = async () => {
+        if (!amount) return;
+        if (!client) return;
         
-        // Your deposit logic here
-        // client.depositEscrow(..., lamportsBN, ...)
+        try {
+            const lamportsBN = solToBN(amount)
+            if (!lamportsBN) {
+                toast.error("Invalid amount")
+                return;
+            }
+
+            const tx = await client.depositEscrow(id, lamportsBN)
+            toast.success(
+                <ToastWithLinks 
+                    message={`Successfully deposited ${amount} SOL`}
+                    linkText="View transaction"
+                    url={getExplorerUrl(`/tx/${tx}`)}
+                />
+            )
+            router.push(`/escrow/${id}`)
+        } catch (error: any) {
+            toast.error("Failed to deposit: " + error.message)
+            console.error(error)
+        }
     }
 
     const handleFetchEscrow = async () => {

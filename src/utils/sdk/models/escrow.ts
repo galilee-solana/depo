@@ -2,7 +2,7 @@ import { stringify as uuidStringify } from 'uuid';
 import { PublicKey } from '@solana/web3.js';
 import { BN } from '@coral-xyz/anchor';
 import { EscrowStatus } from './escrowStatus';
-
+import { lamportsToSol } from '@/utils/number-formatter';
 /**
  * Escrow model
  * 
@@ -27,8 +27,8 @@ class Escrow {
   description: string;
   initializer: PublicKey;
   
-  depositedAmount: BN;
-  withdrawnAmount: BN;
+  depositedAmount: string;
+  withdrawnAmount: string;
   
   createdAt: BN;
   createdAtFormatted: string;
@@ -53,8 +53,9 @@ class Escrow {
     this.initializer = escrow.initializer;
     
     // Set BN values
-    this.depositedAmount = escrow.depositedAmount;
-    this.withdrawnAmount = escrow.withdrawnAmount;
+    this.depositedAmount = lamportsToSol(escrow.depositedAmount);
+
+    this.withdrawnAmount = lamportsToSol(escrow.withdrawnAmount);
     this.createdAt = escrow.createdAt;
     
     // Create formatted date string
