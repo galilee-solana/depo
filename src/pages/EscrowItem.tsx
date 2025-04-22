@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import { useRouter } from "next/navigation";
 import ToastWithLinks from "@/components/toasts/ToastWithLinks";
 import { useCluster } from "@/components/cluster/cluster-data-access";
+import { Module } from "vm";
 
 /**
  * A page that displays an escrow item.
@@ -113,6 +114,7 @@ function EscrowItem({ uuid }: { uuid: string }) {
 
     }
 
+    console.log(escrow?.modules)
     return (
         <div>
             <h1 className="text-2xl font-bold">Escrow #{escrow?.uuid}</h1>
@@ -134,7 +136,14 @@ function EscrowItem({ uuid }: { uuid: string }) {
                         <p>Recipients Count: {escrow.recipientsCount}</p>
                         <p>Modules: {
                             escrow.modules.length > 0 ?
-                            escrow.modules.map(module => module.name).join(", ") :
+                            escrow.modules.map(module => {
+                                const moduleTypeName = Object.keys(module.moduleType)[0];
+                                return (
+                                    <span key={module.key.toString()}>
+                                        {moduleTypeName}
+                                    </span>
+                                )
+                            }):
                             "No modules"
                         }</p>
                         <p>Initializer: {escrow.initializer.toString()}</p>

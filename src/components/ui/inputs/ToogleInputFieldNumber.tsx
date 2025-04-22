@@ -1,4 +1,4 @@
-import { useId } from 'react'
+import { useId, useState, useEffect } from 'react'
 import useToggle from '@/hooks/useToggle'
 import BaseInput from './BaseInput'
 
@@ -17,6 +17,29 @@ export default function ToggleInputFieldNumber({
 }: ToggleInputFieldNumberProps) {
   const id = useId()
   const [enabled, toggle] = useToggle(false)
+  const [localValue, setLocalValue] = useState('')
+  
+  // Update local display value when the actual value changes
+  useEffect(() => {
+    setLocalValue(value)
+  }, [value])
+
+  // Handle changes to the input field
+  const handleInputChange = (inputValue: string) => {
+    // Validate input: allow only digits and at most one decimal point
+    const regex = /^[0-9]*\.?[0-9]*$/
+    
+    if (inputValue === '' || regex.test(inputValue)) {
+      setLocalValue(inputValue)
+      
+      // Only update the actual value if it's a valid number
+      if (inputValue === '') {
+        setValue('')
+      } else {
+        setValue(inputValue)
+      }
+    }
+  }
 
   return (
     <div className="flex items-center space-x-3 relative">
@@ -53,10 +76,9 @@ export default function ToggleInputFieldNumber({
         id={`${id}-input`}
         enabled={enabled}
         placeholder={placeholder}
-        value={value}
-        setValue={setValue}
-        pattern="[0-9]*"
-        inputMode="numeric"
+        value={localValue}
+        setValue={handleInputChange}
+        inputMode="decimal"
       />
     </div>
   )

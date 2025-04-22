@@ -61,6 +61,22 @@ class DepoClient {
     return timelockKey
   }
 
+  getPdaKeyForMinimumAmount(escrowKey: PublicKey) {
+    const minimumAmountKey = PublicKey.findProgramAddressSync(
+      [Buffer.from('minimum_amount'), escrowKey.toBuffer()],
+      this.program.programId
+    )[0]
+    return minimumAmountKey
+  }
+
+  getPdaKeyForTargetAmount(escrowKey: PublicKey) {
+    const targetAmountKey = PublicKey.findProgramAddressSync(
+      [Buffer.from('target_amount'), escrowKey.toBuffer()],
+      this.program.programId
+    )[0]
+    return targetAmountKey
+  }
+
   /**
    * Create a new escrow
    * @param name - The name of the escrow
@@ -135,7 +151,10 @@ class DepoClient {
 
         // Add depositors if needed
         if (depositors.length > 0) {
-          for (const depositor of depositors) {     
+          for (const depositor of depositors) {   
+            if (depositor == "") {
+              continue;
+            }
             try {
               const depositorWallet = new PublicKey(depositor);
               const depositorKey = this.getPdaKeyForDepositor(escrowKey, depositorWallet);
@@ -161,10 +180,11 @@ class DepoClient {
 
         // Add timelock if needed
         if (timelock !== "") {
+          const timestamp = new Date(timelock).getTime().toString()
           const timelockKey = this.getPdaKeyForTimelock(escrowKey);
           const timelockTx = await this.program.methods.addTimelock(
             Array.from(escrowId),
-            new BN(timelock)
+            new BN(timestamp)
           ).accounts({
             escrow: escrowKey,
             timelock: timelockKey,
@@ -174,6 +194,44 @@ class DepoClient {
 
           await this.program.provider.connection.confirmTransaction(timelockTx, 'confirmed');
           console.log(`Added timelock with tx: ${timelockTx}`);
+        }
+
+        // Add minimum amount if needed
+        if (minimumAmount !== "") {
+          const minimumAmountKey = this.getPdaKeyForMinimumAmount(escrowKey);
+
+          const minimumAmountLamports = Number(minimumAmount) * 1_000_000_000;
+
+          const minimumAmountTx = await this.program.methods.addMinimumAmount(
+            Array.from(escrowId),
+            new BN(minimumAmountLamports)
+          ).accounts({  
+            escrow: escrowKey,
+            minimumAmount: minimumAmountKey,
+            initializer: this.wallet.publicKey,
+            systemProgram: SystemProgram.programId,
+          } as any).rpc();
+
+          await this.program.provider.connection.confirmTransaction(minimumAmountTx, 'confirmed');
+          console.log(`Added minimum amount with tx: ${minimumAmountTx}`);
+        }
+
+        // Add target amount if needed
+        if (targetAmount !== "") {
+          const targetAmountKey = this.getPdaKeyForTargetAmount(escrowKey);
+          const targetAmountLamports = Number(targetAmount) * 1_000_000_000;
+          const targetAmountTx = await this.program.methods.addTargetAmount(
+            Array.from(escrowId),
+            new BN(targetAmountLamports)
+          ).accounts({
+            escrow: escrowKey,
+            targetAmount: targetAmountKey,
+            initializer: this.wallet.publicKey,
+            systemProgram: SystemProgram.programId,
+          } as any).rpc();
+
+          await this.program.provider.connection.confirmTransaction(targetAmountTx, 'confirmed');
+          console.log(`Added target amount with tx: ${targetAmountTx}`);
         }
 
         // Refresh escrow data

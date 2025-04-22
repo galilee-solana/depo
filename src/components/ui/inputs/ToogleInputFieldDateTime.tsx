@@ -1,4 +1,4 @@
-import { useId } from 'react'
+import { useId, useState, useEffect } from 'react'
 import useToggle from '@/hooks/useToggle'
 import BaseInput from './BaseInput'
 
@@ -17,6 +17,34 @@ export default function ToggleInputFieldDateTime({
 }: ToggleInputFieldDateTimeProps) {
   const id = useId()
   const [enabled, toggle] = useToggle(false)
+  const [internalValue, setInternalValue] = useState('')
+  
+  // Convert external value to HTML datetime-local format (YYYY-MM-DDThh:mm)
+  useEffect(() => {
+    if (!value) {
+      setInternalValue('')
+      return
+    }
+    
+    try {
+      // Try to parse the value as a date
+      const dateObj = new Date(value)
+      if (!isNaN(dateObj.getTime())) {
+        // Valid date, format for datetime-local input
+        const year = dateObj.getFullYear()
+        const month = String(dateObj.getMonth() + 1).padStart(2, '0')
+        const day = String(dateObj.getDate()).padStart(2, '0')
+        const hours = String(dateObj.getHours()).padStart(2, '0')
+        const minutes = String(dateObj.getMinutes()).padStart(2, '0')
+        
+        setInternalValue(`${year}-${month}-${day}T${hours}:${minutes}`)
+      }
+    } catch (e) {
+      // If parsing fails, keep the input value empty
+      setInternalValue('')
+    }
+  }, [value])
+
 
   return (
     <div className="flex items-center space-x-3 relative w-full">
