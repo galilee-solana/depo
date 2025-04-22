@@ -27,10 +27,15 @@ export default function ConfirmEscrow({
 
   const handleCreate = async () => {
     setLoading(true)
-    const result = await create()
-    setLoading(false)
-    if (result) {
-      router.push(`/escrow/${result.escrow.uuid}`)
+    try { 
+      const result = await create()
+      setLoading(false)
+      if (result) {
+        router.push(`/escrow/${result.escrow.uuid}`)
+      }
+    } catch (error: any) {
+      setLoading(false)
+      toast.error('Error: ' + error.message)
     }
   }
   

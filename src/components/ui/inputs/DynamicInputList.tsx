@@ -7,12 +7,13 @@ type DynamicInputListProps = {
   label: string
   description?: string
   itemsPerPage: number
-  initialCount?: number
   placeholder?: string
+  initialValues?: string[]
+  onChange?: (value: string[]) => void
 }
 
-function DynamicInputList({ label, description, itemsPerPage = 3, placeholder}: DynamicInputListProps) {
-  const { count, inputFields, addInputField, handleInputChange, removeInputField } = useDynamicInputList(itemsPerPage)
+function DynamicInputList({ label, description, itemsPerPage = 3, placeholder, initialValues, onChange}: DynamicInputListProps) {
+  const { count, inputFields, addInputField, handleInputChange, removeInputField } = useDynamicInputList(itemsPerPage, { initialValues, onChange }  )
   
   const [pendingNavigation, setPendingNavigation] = useState(false)
 

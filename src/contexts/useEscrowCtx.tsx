@@ -4,6 +4,8 @@ import React, { createContext, useContext, useState } from "react";
 import { useDepoClient } from "./useDepoClientCtx";
 import { toast } from "react-hot-toast";
 import ToastWithLinks from "@/components/toasts/ToastWithLinks";
+import { isValidSolanaAddress } from "@/utils/sdk/utils/validation/validatePubkey";
+import { validatePubkey } from "@/utils/sdk/utils/validation/validatePubkey";
 
 type EscrowContextType = {
   name: string;
@@ -17,6 +19,10 @@ type EscrowContextType = {
   targetAmount: string;
   setTargetAmount: (targetAmount: string) => void;
   create: () => Promise<{ tx: string; escrow: any } | null>;
+  recipients: string[];
+  setRecipients: (recipients: string[]) => void;
+  depositors: string[];
+  setDepositors: (depositors: string[]) => void;
 };
 
 const EscrowContext = createContext<EscrowContextType>({
@@ -31,6 +37,10 @@ const EscrowContext = createContext<EscrowContextType>({
   targetAmount: '',
   setTargetAmount: () => {},
   create: () => Promise.resolve(null),
+  recipients: [],
+  setRecipients: () => {},
+  depositors: [],
+  setDepositors: () => {},
 });
 
 /**
@@ -46,10 +56,13 @@ const EscrowProvider = ({ children }: { children: React.ReactNode }) => {
   const [timelock, setTimelock] = useState('')
   const [minimumAmount, setMinimumAmount] = useState('')
   const [targetAmount, setTargetAmount] = useState('')
-  const [recipients, setRecipients] = useState<[]>([])
-  const [depositors, setDepositors] = useState<[]>([])
+  const [recipients, setRecipients] = useState<string[]>([])
+  const [depositors, setDepositors] = useState<string[]>([])
 
   const create = async () => {
+    console.log('Creating escrow')
+    console.log(name, description, timelock, minimumAmount, targetAmount, recipients, depositors)
+
     if (!validateEscrow()) {
       return null;
     }
@@ -87,16 +100,34 @@ const EscrowProvider = ({ children }: { children: React.ReactNode }) => {
           return false
       }
     }
+
     if (minimumAmount.trim() !== '' && parseFloat(minimumAmount) <= 0) {
       toast.error('Minimum amount must be greater than 0')
       return false
     }
+
     if (targetAmount.trim() !== '' && parseFloat(targetAmount) <= 0) {
       toast.error('Target amount must be greater than 0')
       return false
     }
+
     if (minimumAmount.trim() !== '' && targetAmount.trim() !== '' && parseFloat(minimumAmount) > parseFloat(targetAmount)) {
       toast.error('Minimum amount cannot exceed target amount')
+      return false
+    }
+
+    if (recipients.length === 0) {
+      toast.error('At least one recipient is required')
+      return false
+    }
+
+    if (recipients.some(recipient => !validatePubkey(recipient))) {
+      toast.error('Invalid recipient public key')
+      return false
+    }
+
+    if (depositors.some(depositor => !validatePubkey(depositor))) {
+      toast.error('Invalid depositor public key')
       return false
     }
     return true 
@@ -114,6 +145,10 @@ const EscrowProvider = ({ children }: { children: React.ReactNode }) => {
     targetAmount,
     setTargetAmount,
     create,
+    recipients,
+    setRecipients,
+    depositors,
+    setDepositors,
   };
   return (
     <EscrowContext.Provider value={exposed}>

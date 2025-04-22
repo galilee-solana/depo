@@ -12,9 +12,16 @@ import RecipientsInputs from '@/components/create/RecipientsInputs'
 import DynamicInputList from '@/components/ui/inputs/DynamicInputList'
 
 export default function CreateEscrow() {
-  const router = useRouter()
 
-  const { name, setName, description, setDescription, timelock, setTimelock, minimumAmount, setMinimumAmount, targetAmount, setTargetAmount } = useEscrow()
+  const { 
+    name, setName, 
+    description, setDescription, 
+    timelock, setTimelock, 
+    minimumAmount, setMinimumAmount, 
+    targetAmount, setTargetAmount, 
+    recipients, setRecipients, 
+    depositors, setDepositors 
+  } = useEscrow()
 
   return (
     <div className="p-6 space-y-4">
@@ -74,12 +81,16 @@ export default function CreateEscrow() {
             description="Add recipients keys to receive the funds. The funds will be split equally among the recipients."
             placeholder="Public Key"
             itemsPerPage={3}
+            initialValues={recipients}
+            onChange={(value) => setRecipients(value)}
           />
           <DynamicInputList 
             label="Depositors" 
             description="For private deposits, add the depositors keys of the funds" 
             placeholder="Public Key"
             itemsPerPage={3} 
+            initialValues={depositors}
+            onChange={(value) => setDepositors(value)}
           />
         </div>
       </div>

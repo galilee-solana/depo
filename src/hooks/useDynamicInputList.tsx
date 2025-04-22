@@ -1,9 +1,14 @@
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 
 type InputField = {
   id: number
   value: string
 }
+
+type UseDynamicInputListOptions = {
+  initialValues?: string[]
+  onChange?: (value: string[]) => void
+} 
 
 type DynamicInputList = {
   count: number
@@ -13,12 +18,33 @@ type DynamicInputList = {
   removeInputField: (id: number) => void
 } 
 
-function useDynamicInputList(itemsPerPage: number): DynamicInputList {
-  const [count, setCount] = useState(1)
-  const [inputFields, setInputFields] = useState([
-    { id: count, value: '' }
-  ])
+function useDynamicInputList(itemsPerPage: number, options?: UseDynamicInputListOptions): DynamicInputList {
+  const { initialValues = [], onChange } = options || {}
 
+  const [count, setCount] = useState(Math.max(initialValues.length || 1, 1))
+  const [inputFields, setInputFields] = useState<InputField[]>(() => {
+    if (initialValues && initialValues.length > 0) {
+      return initialValues.map((value, index) => ({
+        id: index + 1,
+        value
+      }))
+    }
+    return [{ id: 1, value: '' }]
+  })
+
+  const isFirstRender = useRef(true)
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+      return
+    }
+
+    if (onChange) {
+      const values = inputFields.map(field => field.value)
+      onChange(values)
+    }
+  }, [inputFields])
 
   const addInputField = () => {
     const newId = count + 1
