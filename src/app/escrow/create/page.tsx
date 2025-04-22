@@ -68,8 +68,19 @@ export default function CreateEscrow() {
             targetAmount={targetAmount}
           />
         </div>
-        <div className="space-y-2">
-          <DynamicInputList label="Recipients" />
+        <div className="space-y-4">
+          <DynamicInputList 
+            label="Recipients"
+            description="Add recipients keys to receive the funds. The funds will be split equally among the recipients."
+            placeholder="Public Key"
+            itemsPerPage={3}
+          />
+          <DynamicInputList 
+            label="Depositors" 
+            description="For private deposits, add the depositors keys of the funds" 
+            placeholder="Public Key"
+            itemsPerPage={3} 
+          />
         </div>
       </div>
     </div>

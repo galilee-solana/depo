@@ -3,8 +3,15 @@ import PaginationControls from "@/components/ui/pagination/PaginationControls"
 import useDynamicInputList from "@/hooks/useDynamicInputList"
 import { useEffect, useState } from "react"
 
-function DynamicInputList({ label }: { label: string }) {
-  const itemsPerPage = 3
+type DynamicInputListProps = {
+  label: string
+  description?: string
+  itemsPerPage: number
+  initialCount?: number
+  placeholder?: string
+}
+
+function DynamicInputList({ label, description, itemsPerPage = 3, placeholder}: DynamicInputListProps) {
   const { count, inputFields, addInputField, handleInputChange, removeInputField } = useDynamicInputList(itemsPerPage)
   
   const [pendingNavigation, setPendingNavigation] = useState(false)
@@ -52,14 +59,14 @@ function DynamicInputList({ label }: { label: string }) {
   return (
     <div className="px-6 space-y-2">
       <p className="text-xl font-bold">{label} - <span>{count}</span></p>
-      
+      {description && <p className="text-md text-gray-700">{description}</p>}
       {/* Input fields with transition animation */}
       <div className={`relative space-y-3 transition-all duration-300 ease-in-out transform 
         ${isScrolling ? 'opacity-50 translate-y-2' : 'opacity-100 translate-y-0'}`}>
         {visibleInputFields.map((field, index) => (
           <div key={field.id} className="flex items-center space-x-2">
             <input
-              placeholder={`Input #${(currentPage * itemsPerPage) + index + 1}`}
+              placeholder={placeholder}
               className="flex-1 px-3 py-2 border-2 border-black rounded-2xl bg-white text-black"
               value={field.value}
               onChange={(e) => handleInputChange(field.id, e.target.value)}
