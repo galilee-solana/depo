@@ -18,6 +18,8 @@ import { EscrowStatus } from './escrowStatus';
  * @param remainingPercentage - The remaining percentage
  * @param withdrawnAmount - The amount withdrawn
  * @param status - The status of the escrow
+ * @param recipients - The recipients of the escrow
+ * @param depositors - The depositors of the escrow
  */
 class Escrow {
   uuid: string;
@@ -36,6 +38,8 @@ class Escrow {
   remainingPercentage: number;
   status: EscrowStatus;
   modules: any[];
+  recipients: any[];
+  depositors: any[];
 
   constructor(escrow: any) {
     // Convert id (byte array) to uuid string
@@ -61,6 +65,9 @@ class Escrow {
     this.depositorsCount = escrow.depositorsCount;
     this.recipientsCount = escrow.recipientsCount;
     this.remainingPercentage = escrow.remainingPercentage;
+
+    this.recipients = escrow.recipients;
+    this.depositors = escrow.depositors;
     
     // Handle the status enum from Anchor properly
     this.status = this.parseStatusEnum(escrow.status);

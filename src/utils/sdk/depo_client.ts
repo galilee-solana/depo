@@ -272,8 +272,28 @@ class DepoClient {
       const escrowAccount = await this.program.account.escrow.fetch(escrowKey);
       const escrow = new Escrow(escrowAccount);
 
-      // TODO: Fetch Recipients & Depositors
-      // TODO: Fetch Conditions modules
+      const recipients = await this.program.account.recipient.all([
+        {
+          memcmp: {
+            offset: 8, // Skip the 8-byte discriminator
+            bytes: bs58.encode(escrowKey.toBuffer())
+          }
+        }
+      ]);
+
+      console.log(recipients)
+
+      const depositors = await this.program.account.depositor.all([
+        {
+          memcmp: {
+            offset: 8, // Skip the 8-byte discriminator
+            bytes: bs58.encode(escrowKey.toBuffer())
+          }
+        }
+      ]);
+
+      escrow.recipients = recipients;
+      escrow.depositors = depositors;
 
       return escrow;
     } catch (error: any) {
