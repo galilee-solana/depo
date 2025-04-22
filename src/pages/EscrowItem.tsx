@@ -4,9 +4,6 @@ import { useDepoClient } from "@/contexts/useDepoClientCtx";
 import Escrow from "@/utils/sdk/models/escrow";
 import { useState, useEffect, useCallback } from "react";
 import toast from 'react-hot-toast';
-import { useRouter } from "next/navigation";
-import ToastWithLinks from "@/components/toasts/ToastWithLinks";
-import { useCluster } from "@/components/cluster/cluster-data-access";
 import ReadOnlyInput from "@/components/ui/inputs/ReadOnlyInput";
 import CreatorButtonSet from "@/components/escrow_item/CreatorButtonSet";
 import DepositorButtonSet from "@/components/escrow_item/DepositorButtonSet";
@@ -24,6 +21,8 @@ function EscrowItem({ uuid }: { uuid: string }) {
     const [isDepositor, setIsDepositor] = useState(false)
     const [isCreator, setIsCreator] = useState(false)
     const [isRecipient, setIsRecipient] = useState(false)
+    const [depositor, setDepositor] = useState<{}>({})
+    const [recipient, setRecipient] = useState<{}>({})
 
     const [refreshTrigger, setRefreshTrigger] = useState(0)
     
@@ -41,18 +40,36 @@ function EscrowItem({ uuid }: { uuid: string }) {
                 const result = await getEscrow(uuid)
                 
                 if (!isMounted) return
+                
                 if (result) {
                     setEscrow(result)
 
                     if (wallet?.publicKey && result.initializer.equals(wallet.publicKey)) {
                         setIsCreator(true)
                     }
-                    if (result.isPublicDeposit || (wallet?.publicKey && result.depositors.includes(wallet.publicKey))) {
+                    if (result.isPublicDeposit || (
+                        wallet?.publicKey && 
+                        Array.isArray(result.depositors) && 
+                        result.depositors.some(d => wallet.publicKey?.equals(d.account?.wallet))
+                    )) {
                         setIsDepositor(true)
+                        
+                        if (wallet?.publicKey && Array.isArray(result.depositors)) {
+                            const dep = result.depositors.find(d => 
+                                d.account?.wallet && wallet.publicKey?.equals(d.account.wallet)
+                            )
+                            if (dep) {
+                                setDepositor(dep)
+                            }
+                        }
                     }
                     if (wallet?.publicKey && result.recipients.includes(wallet.publicKey)) {
                         setIsRecipient(true)
-                    }
+                        const recipient = result.recipients.find(rec => wallet?.publicKey?.equals(rec))
+                        if (recipient) {
+                            setRecipient(recipient)
+                        }
+                    }   
                 } else {
                     setError(`Escrow with ID ${uuid} not found`)
                     toast.error(`ID: ${uuid} not found`)
@@ -98,9 +115,9 @@ function EscrowItem({ uuid }: { uuid: string }) {
                       {escrow.modules.length > 0 && (
                         <div className="py-4 space-y-2">
                           <h2 className="text-lg font-bold">Release conditions:</h2>
-                        {escrow.modules.map((module) => (
-                          <div key={module.id}>
-                            <p>{module.moduleType.toString()}</p>
+                        {escrow.modules.map((module, index) => (
+                          <div key={index}>
+                            <p>{Object.keys(module.moduleType)[0]}</p>
                           </div>
                         ))}
                         </div>
@@ -111,7 +128,7 @@ function EscrowItem({ uuid }: { uuid: string }) {
                           <CreatorButtonSet escrow={escrow} refreshEscrow={refreshEscrow} />
                         )}
                         {isDepositor && (
-                          <DepositorButtonSet escrow={escrow} refreshEscrow={refreshEscrow} />
+                          <DepositorButtonSet escrow={escrow} depositor={depositor} refreshEscrow={refreshEscrow} />
                         )}
                       </div>
                     </div>

@@ -1,9 +1,11 @@
 import SmallButton from "../ui/buttons/SmallButton"
 import { useRouter } from "next/navigation"
 import Escrow from "@/utils/sdk/models/escrow"
+import useDepositorButtonSet from "@/hooks/useDepositorButtonSet"
 
-function DepositorButtonSet({ escrow, refreshEscrow }: { escrow: Escrow, refreshEscrow: () => void }) {
+function DepositorButtonSet({ escrow, depositor, refreshEscrow }: { escrow: Escrow, depositor: any, refreshEscrow: () => void }) {
   const router = useRouter()
+  const { claimRefund, isClaimingRefund } = useDepositorButtonSet(escrow, refreshEscrow)
   
   return (
     <>  
@@ -17,10 +19,10 @@ function DepositorButtonSet({ escrow, refreshEscrow }: { escrow: Escrow, refresh
           </SmallButton>
         </>
       )}
-      {escrow.status === "cancelled" && (
+      {escrow.status === "cancelled" && !depositor.account.wasRefunded && (
         <SmallButton
-          onClick={() => {console.log("claim refund")}}
-          disabled={false}
+          onClick={() => claimRefund()}
+          disabled={isClaimingRefund}
         >
           Claim Refund
         </SmallButton>

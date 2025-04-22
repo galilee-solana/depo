@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, KeyboardEvent } from 'react'
 import BaseInput from "../ui/inputs/BaseInput"
 import { isValidDecimalNumber, solToBN, formatSol } from '@/utils/number-formatter'
 import SmallButton from '../ui/buttons/SmallButton'
@@ -12,12 +12,19 @@ import { toast } from 'react-hot-toast'
 import ToastWithLinks from '../toasts/ToastWithLinks'
 import { useRouter } from 'next/navigation'
 
-function DepositUI() {
+function DepositUI({ uuid = "" }: { uuid: string }) {
     const router = useRouter()
     const { client, wallet, getExplorerUrl } = useDepoClient()
     const [amount, setAmount] = useState('')
-    const [id, setId] = useState('')
+    const [id, setId] = useState<string>(uuid)
     const [escrow, setEscrow] = useState<Escrow | null>(null)
+    const [isLoading, setIsLoading] = useState(false)
+
+    useEffect(() => {
+        if (uuid && !escrow && client) {
+            handleFetchEscrow();
+        }
+    }, [uuid, client]);
 
     const handleAmountChange = (value: string) => {
         if (isValidDecimalNumber(value)) {
@@ -62,10 +69,26 @@ function DepositUI() {
     }
 
     const handleFetchEscrow = async () => {
-        if (!client) return;
-        const escrow = await client.getEscrow(id)
-        setEscrow(escrow)
+        if (!client || !id) return;
+        try {
+            setIsLoading(true);
+            const escrow = await client.getEscrow(id);
+            setEscrow(escrow);
+            if (!escrow) {
+                toast.error(`Escrow with ID ${id} not found`);
+            }
+        } catch (error: any) {
+            toast.error("Failed to load escrow: " + error.message);
+        } finally {
+            setIsLoading(false);
+        }
     }
+
+    const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter' && id && !escrow && !isLoading) {
+            handleFetchEscrow();
+        }
+    };
 
     const isAuthorizedToDeposit = () => {
         if (!escrow) return false;
@@ -91,18 +114,19 @@ function DepositUI() {
                 <BaseInput 
                   type="text"
                   id="id"
-                  enabled={true}
+                  enabled={!isLoading}
                   placeholder=""
                   value={id}
                   setValue={handleIdChange}
                   inputMode="decimal"
+                  onKeyDown={handleKeyDown}
                 />
                 {!escrow && (
                     <SmallButton
                         onClick={handleFetchEscrow}
-                        disabled={!id}
+                        disabled={!id || isLoading}
                     >
-                        Search
+                        {isLoading ? 'Loading...' : 'Search'}
                     </SmallButton>
                 )}
                 {escrow && (
