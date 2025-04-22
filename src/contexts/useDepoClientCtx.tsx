@@ -3,15 +3,17 @@
 import React, { createContext, useContext, useMemo } from "react";
 import { useAnchorProvider } from "@/components/solana/solana-provider";
 import { useWallet, WalletContextState } from "@solana/wallet-adapter-react";
-import { toast } from "react-hot-toast";
-import DepoClient from "@/utils/depo_client";
-import Escrow from "@/utils/models/escrow";
+import { useCluster } from "@/components/cluster/cluster-data-access";
+
+import DepoClient from "@/utils/sdk/depo_client";
+import Escrow from "@/utils/sdk/models/escrow";
 
 type DepoClientContextType = {
   client: DepoClient | null;
   wallet: WalletContextState | null;
   getAllEscrows: () => Promise<Escrow[]>;
   getEscrow: (uuid: string) => Promise<Escrow | null>;
+  getExplorerUrl: (path: string) => string | null;
 };
 
 const DepoClientContext = createContext<DepoClientContextType>({
@@ -19,6 +21,7 @@ const DepoClientContext = createContext<DepoClientContextType>({
   client: null,
   getAllEscrows: async () => Promise.resolve([]),
   getEscrow: async () => Promise.resolve(null),
+  getExplorerUrl: (path: string) => null,
 });
 
 /**
@@ -29,6 +32,7 @@ const DepoClientContext = createContext<DepoClientContextType>({
 const DepoClientProvider = ({ children }: { children: React.ReactNode }) => {
   const provider = useAnchorProvider();
   const wallet = useWallet();
+  const { getExplorerUrl } = useCluster()
   
   const depoClient = useMemo(() => {
     if (provider && wallet) {
@@ -66,6 +70,7 @@ const DepoClientProvider = ({ children }: { children: React.ReactNode }) => {
     client: depoClient,
     getEscrow,
     getAllEscrows,
+    getExplorerUrl,
   };
 
   return (

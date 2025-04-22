@@ -36,8 +36,8 @@ export default function CreateEscrow() {
           />
 
           <ToogleInputFieldDateTime
-            label="Time Lock"
-            placeholder="Time Lock"
+            label="Timelock"
+            placeholder="Timelock"
             value={timelock}
             setValue={setTimelock}
           />

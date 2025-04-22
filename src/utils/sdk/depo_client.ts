@@ -1,13 +1,13 @@
 import { PublicKey, Connection, SystemProgram } from "@solana/web3.js";
 import { AnchorProvider, Program, Wallet } from "@coral-xyz/anchor";
 import { WalletContextState } from "@solana/wallet-adapter-react";
-import { Depo } from "../../anchor/target/types/depo";
+import { Depo } from "../../../anchor/target/types/depo";
 import { v4 as uuidv4 } from "uuid";
 import Escrow from "./models/escrow";
 import { bs58 } from "@coral-xyz/anchor/dist/cjs/utils/bytes";
 
 // Import the IDL directly with require to avoid TypeScript issues
-const idl = require("../../anchor/target/idl/depo.json");
+const idl = require("../../../anchor/target/idl/depo.json");
 
 class DepoClient {
   private program: Program<Depo>;

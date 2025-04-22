@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import CreateButton from '../create/CreateButton'
 import FindButton from '../find/FindButton'
-import Escrow from '@/utils/models/escrow'
+import Escrow from '@/utils/sdk/models/escrow'
 
 export default function EscrowList({ list }: { list: Escrow[] }) {
   const router = useRouter()
