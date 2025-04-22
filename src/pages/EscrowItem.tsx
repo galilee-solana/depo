@@ -88,7 +88,8 @@ function EscrowItem({ uuid }: { uuid: string }) {
         return () => {
             isMounted = false
         }
-    }, [getEscrow, uuid, refreshTrigger, wallet?.publicKey])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [getEscrow, uuid, refreshTrigger])
 
     return (
         <div>

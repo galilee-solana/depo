@@ -82,7 +82,8 @@ function DepositUI({ uuid = "" }: { uuid: string }) {
         if (uuid && !escrow && client) {
             handleFetchEscrow();
         }
-    }, [uuid, client, escrow, handleFetchEscrow]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [uuid, client]);
 
     const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter' && id && !escrow && !isLoading) {
