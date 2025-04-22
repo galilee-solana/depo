@@ -7,15 +7,14 @@ export const metadata: Metadata = {
 }
 
 interface DepositPageProps {
-  params: Promise<{}>
-  searchParams: { [key: string]: string | string[] | undefined }
+  searchParams: Promise<{[key: string]: string | string[] | undefined}>
 }
 
-export default async function DepositPage({ searchParams }: DepositPageProps) {
+export default async function DepositPage({searchParams}: DepositPageProps) {
   const searchParamsData = await Promise.resolve(searchParams);
   const id = typeof searchParamsData.id === 'string' ? searchParamsData.id : "";
   
   return (
     <DepositUI uuid={id} />
   )
-}
+} 
