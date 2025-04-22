@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, KeyboardEvent } from 'react'
+import { useState, useEffect, KeyboardEvent, useCallback } from 'react'
 import BaseInput from "../ui/inputs/BaseInput"
 import { isValidDecimalNumber, solToBN, formatSol } from '@/utils/number-formatter'
 import SmallButton from '../ui/buttons/SmallButton'
@@ -19,12 +19,6 @@ function DepositUI({ uuid = "" }: { uuid: string }) {
     const [id, setId] = useState<string>(uuid)
     const [escrow, setEscrow] = useState<Escrow | null>(null)
     const [isLoading, setIsLoading] = useState(false)
-
-    useEffect(() => {
-        if (uuid && !escrow && client) {
-            handleFetchEscrow();
-        }
-    }, [uuid, client]);
 
     const handleAmountChange = (value: string) => {
         if (isValidDecimalNumber(value)) {
@@ -68,7 +62,7 @@ function DepositUI({ uuid = "" }: { uuid: string }) {
         }
     }
 
-    const handleFetchEscrow = async () => {
+    const handleFetchEscrow = useCallback(async () => {
         if (!client || !id) return;
         try {
             setIsLoading(true);
@@ -82,7 +76,13 @@ function DepositUI({ uuid = "" }: { uuid: string }) {
         } finally {
             setIsLoading(false);
         }
-    }
+    }, [client, id]);
+
+    useEffect(() => {
+        if (uuid && !escrow && client) {
+            handleFetchEscrow();
+        }
+    }, [uuid, client, escrow, handleFetchEscrow]);
 
     const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter' && id && !escrow && !isLoading) {

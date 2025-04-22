@@ -88,7 +88,7 @@ function EscrowItem({ uuid }: { uuid: string }) {
         return () => {
             isMounted = false
         }
-    }, [getEscrow, uuid, refreshTrigger])
+    }, [getEscrow, uuid, refreshTrigger, wallet?.publicKey])
 
     return (
         <div>
