@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/depo.json`.
  */
 export type Depo = {
-  "address": "Dsq9mG9PRPUNve4eMNToJ37KobXfUqeYLKAA6w4LsbA3",
+  "address": "8KnV7ENXbvy4Dx1YkmSkxCSvYDYubsU49FxKaDAfQNgm",
   "metadata": {
     "name": "depo",
     "version": "0.1.0",
@@ -1609,13 +1609,128 @@ export type Depo = {
   "errors": [
     {
       "code": 6000,
-      "name": "timelockNotExpired",
-      "msg": "Timelock not expired yet"
+      "name": "nameTooLong",
+      "msg": "Escrow name is too long. Max length: 100 bytes."
     },
     {
       "code": 6001,
-      "name": "invalidReleaseAfter",
-      "msg": "release_after should be after now"
+      "name": "descriptionTooLong",
+      "msg": "Escrow description is too long. Max length: 200 bytes."
+    },
+    {
+      "code": 6002,
+      "name": "unauthorizedRecipientModifier",
+      "msg": "Unauthorized to add or remove recipient"
+    },
+    {
+      "code": 6003,
+      "name": "unauthorizedDepositorModifier",
+      "msg": "Unauthorized to add or remove depositor"
+    },
+    {
+      "code": 6004,
+      "name": "escrowNotDraft",
+      "msg": "Escrow must be in Draft status to modify it"
+    },
+    {
+      "code": 6005,
+      "name": "escrowNotStarted",
+      "msg": "Escrow must be in Started status to modify it"
+    },
+    {
+      "code": 6006,
+      "name": "noRecipients",
+      "msg": "No recipients in escrow"
+    },
+    {
+      "code": 6007,
+      "name": "noDepositors",
+      "msg": "No depositors in escrow"
+    },
+    {
+      "code": 6008,
+      "name": "moduleAlreadyExists",
+      "msg": "This module type already exists."
+    },
+    {
+      "code": 6009,
+      "name": "moduleDoesntExist",
+      "msg": "This module type doesn't exist."
+    },
+    {
+      "code": 6010,
+      "name": "invalidDepositAmount",
+      "msg": "Invalid deposit amount."
+    },
+    {
+      "code": 6011,
+      "name": "unauthorizedDepositor",
+      "msg": "Unauthorized depositor."
+    },
+    {
+      "code": 6012,
+      "name": "maxPercentage",
+      "msg": "Max percentage is 10 000 (represents 100%)"
+    },
+    {
+      "code": 6013,
+      "name": "escrowPercentageFull",
+      "msg": "Insufficient remaining percentage in the escrow"
+    },
+    {
+      "code": 6014,
+      "name": "percentageDistribution",
+      "msg": "Percentage distribution should be equal to 10 000 (100%)"
+    },
+    {
+      "code": 6015,
+      "name": "alreadyWithdrawn",
+      "msg": "Recipient has already withdrawn"
+    },
+    {
+      "code": 6016,
+      "name": "withdrawInvalidEscrowStatus",
+      "msg": "Withdraw is only available when the escrow is released"
+    },
+    {
+      "code": 6017,
+      "name": "unauthorizedToWithdraw",
+      "msg": "Unauthorized to withdraw escrow"
+    },
+    {
+      "code": 6018,
+      "name": "insufficientFunds",
+      "msg": "Escrow has insufficient funds"
+    },
+    {
+      "code": 6019,
+      "name": "refundInvalidEscrowStatus",
+      "msg": "Refund is only available when the status is cancelled or expired"
+    },
+    {
+      "code": 6020,
+      "name": "refundUnauthorizedDepositor",
+      "msg": "Unauthorized depositor to ask for refund"
+    },
+    {
+      "code": 6021,
+      "name": "alreadyRefunded",
+      "msg": "Depositor was already refunded"
+    },
+    {
+      "code": 6022,
+      "name": "modulesExist",
+      "msg": "Modules exist in the escrow"
+    },
+    {
+      "code": 6023,
+      "name": "depositorsExist",
+      "msg": "Depositors exist in the escrow"
+    },
+    {
+      "code": 6024,
+      "name": "recipientsExist",
+      "msg": "Recipients exist in the escrow"
     }
   ],
   "types": [
