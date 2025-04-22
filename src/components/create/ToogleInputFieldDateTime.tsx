@@ -1,5 +1,5 @@
 import { useId } from 'react'
-import { useState, useEffect } from 'react'
+import useToggle from '@/hooks/useToggle'
 
 interface ToggleInputFieldDateTimeProps {
   label: string
@@ -13,12 +13,11 @@ interface ToggleInputFieldDateTimeProps {
 export default function ToggleInputFieldDateTime({
   label,
   placeholder,
-  enabled,
-  setEnabled,
   value,
   setValue,
 }: ToggleInputFieldDateTimeProps) {
   const id = useId()
+  const [enabled, toggle] = useToggle(false)
 
   const showFlyover = value.trim().length > 0 || enabled
   const showFakePlaceholder = !enabled && value.trim() === ''
@@ -31,7 +30,7 @@ export default function ToggleInputFieldDateTime({
           id={id}
           type="checkbox"
           checked={enabled}
-          onChange={() => setEnabled(!enabled)}
+          onChange={toggle}
           className="peer hidden"
         />
         <div

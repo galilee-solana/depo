@@ -1,10 +1,9 @@
 import { useId } from 'react'
+import useToggle from '@/hooks/useToggle'
 
 interface ToggleInputFieldNumberProps {
   label: string
   placeholder: string
-  enabled: boolean
-  setEnabled: (v: boolean) => void
   value: string
   setValue: (v: string) => void
 }
@@ -12,22 +11,21 @@ interface ToggleInputFieldNumberProps {
 export default function ToggleInputFieldNumber({
   label,
   placeholder,
-  enabled,
-  setEnabled,
   value,
   setValue,
 }: ToggleInputFieldNumberProps) {
+  const [enabled, toggle] = useToggle(false)
   const id = useId()
   const isValid = value === '' || /^\d+$/.test(value)
 
   return (
     <div className="flex items-center space-x-3 relative">
       <label htmlFor={id} className="relative">
-        <input
+        <input 
           id={id}
           type="checkbox"
           checked={enabled}
-          onChange={() => setEnabled(!enabled)}
+          onChange={toggle}
           className="peer hidden"
         />
         <div

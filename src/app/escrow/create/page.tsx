@@ -7,37 +7,12 @@ import ToogleInputFieldNumber from '@/components/create/ToogleInputFieldNumber'
 import ToogleInputFieldDateTime from '@/components/create/ToogleInputFieldDateTime'
 import ToogleInputLink from '@/components/create/ToogleInputLink'
 import ConfirmEscrow from '@/components/confirmescrow/ConfirmEscrow'
+import { useEscrow } from '@/contexts/useEscrowCtx'
 
 export default function CreateEscrow() {
-  const { publicKey } = useWallet()
   const router = useRouter()
 
-  const [name, setName] = useState('')
-  const [description, setDescription] = useState('')
-  //const [startTimeEnabled, setStartTimeEnabled] = useState(false)
-  //const [startTime, setStartTime] = useState('')
-  const [timelockEnabled, setTimelockEnabled] = useState(false)
-  const [timelock, setTimelock] = useState('')
-  const [minimumAmountEnabled, setMinimumAmountEnabled] = useState(false)
-  const [minimumAmount, setMinimumAmount] = useState('')
-  const [targetAmountEnabled, setTargetAmountEnabled] = useState(false)
-  const [targetAmount, setTargetAmount] = useState('')
-  const [DepositorEnabled, setDepositorEnabled] = useState(false)
-  const [RecipientEnabled, setRecipientEnabled] = useState(false)
-
-  useEffect(() => {
-    if (publicKey) {
-      console.log("Connected pubKey is :", publicKey.toBase58())
-    }
-  }, [publicKey])
-
-  if (!publicKey) {
-    return (
-      <div className="p-6">
-        <p>Please connect your wallet to create a new DEPO.</p>
-      </div>
-    )
-  }
+  const { name, setName, description, setDescription, timelock, setTimelock, minimumAmount, setMinimumAmount, targetAmount, setTargetAmount } = useEscrow()
 
   return (
     <div className="p-6 space-y-4">
@@ -69,8 +44,6 @@ export default function CreateEscrow() {
       <ToogleInputFieldDateTime
         label="Time Lock"
         placeholder="Time Lock"
-        enabled={timelockEnabled}
-        setEnabled={setTimelockEnabled}
         value={timelock}
         setValue={setTimelock}
       />
@@ -78,8 +51,6 @@ export default function CreateEscrow() {
       <ToogleInputFieldNumber
         label="Minimum Amount"
         placeholder="Minimum Amount"
-        enabled={minimumAmountEnabled}
-        setEnabled={setMinimumAmountEnabled}
         value={minimumAmount}
         setValue={setMinimumAmount}
       />
@@ -87,8 +58,6 @@ export default function CreateEscrow() {
       <ToogleInputFieldNumber
         label="Target Amount"
         placeholder="Target Amount"
-        enabled={targetAmountEnabled}
-        setEnabled={setTargetAmountEnabled}
         value={targetAmount}
         setValue={setTargetAmount}
       />
@@ -105,28 +74,20 @@ export default function CreateEscrow() {
         question="Is this a private or public DEPO ?"
         linkLabel="List of depositor address"
         href="create/set_depositor_address"
-        enabled={DepositorEnabled}
-        setEnabled={setDepositorEnabled}
       />
 
       <ToogleInputLink
         question="Is there multiple recipients ?"
         linkLabel="List of recipient address"
         href="create/set_recipient_address"
-        enabled={RecipientEnabled}
-        setEnabled={setRecipientEnabled}
       />
 
       <ConfirmEscrow
         name={name}
         description={description}
-        timelockEnabled={timelockEnabled}
         timelock={timelock}
-        minimumAmountEnabled={minimumAmountEnabled}
         minimumAmount={minimumAmount}
-        targetAmountEnabled={targetAmountEnabled}
         targetAmount={targetAmount}
-        walletPublicKey={publicKey.toBase58()}
       />
     </div>
   )

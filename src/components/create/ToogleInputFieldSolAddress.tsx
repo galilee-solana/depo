@@ -1,6 +1,6 @@
 import { useId } from 'react'
 import { PublicKey } from '@solana/web3.js'
-
+import useToggle from '@/hooks/useToggle'
 interface ToogleInputFieldSolAddressProps {
   label: string
   placeholder: string
@@ -13,12 +13,11 @@ interface ToogleInputFieldSolAddressProps {
 export default function ToggleInputFieldSolAddress({
   label,
   placeholder,
-  enabled,
-  setEnabled,
   value,
   setValue,
 }: ToogleInputFieldSolAddressProps) {
   const id = useId()
+  const [enabled, toggle] = useToggle(false)
 
   const isValid = value === '' || isValidSolanaAddress(value)
   // const isValid = isValidSolanaAddress(value)
@@ -54,7 +53,7 @@ export default function ToggleInputFieldSolAddress({
           id={id}
           type="checkbox"
           checked={enabled}
-          onChange={() => setEnabled(!enabled)}
+          onChange={toggle}
           className="peer hidden"
         />
         <div
