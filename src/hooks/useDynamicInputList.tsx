@@ -44,6 +44,7 @@ function useDynamicInputList(itemsPerPage: number, options?: UseDynamicInputList
       const values = inputFields.map(field => field.value)
       onChange(values)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputFields])
 
   const addInputField = () => {

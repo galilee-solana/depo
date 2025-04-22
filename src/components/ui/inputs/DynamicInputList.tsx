@@ -69,6 +69,7 @@ function DynamicInputList({ label, description, itemsPerPage = 3, placeholder, i
         const values = inputFields.map(field => field.value)
         onChange(values)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputFields])
 
   return (
