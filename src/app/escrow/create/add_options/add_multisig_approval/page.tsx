@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import ToogleInputFieldSolAddress from '@/components/create/ToogleInputFieldSolAddress';
+import ToogleInputFieldSolAddress from '@/components/ui/inputs/ToogleInputFieldSolAddress';
 
 export default function Add_multisig_approval() {
     const router = useRouter();

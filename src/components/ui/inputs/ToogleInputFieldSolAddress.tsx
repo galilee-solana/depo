@@ -1,27 +1,40 @@
 import { useId } from 'react'
+import { PublicKey } from '@solana/web3.js'
 import useToggle from '@/hooks/useToggle'
+import BaseInput from './BaseInput'
 
-interface ToggleInputFieldNumberProps {
+interface ToggleInputFieldSolAddressProps {
   label: string
   placeholder: string
   value: string
   setValue: (v: string) => void
 }
 
-export default function ToggleInputFieldNumber({
+export default function ToggleInputFieldSolAddress({
   label,
   placeholder,
   value,
   setValue,
-}: ToggleInputFieldNumberProps) {
-  const [enabled, toggle] = useToggle(false)
+}: ToggleInputFieldSolAddressProps) {
   const id = useId()
-  const isValid = value === '' || /^\d+$/.test(value)
+  const [enabled, toggle] = useToggle(false)
+
+  const isValid = value === '' || isValidSolanaAddress(value)
+
+  function isValidSolanaAddress(address: string): boolean {
+    if (!address) return true; // Consider empty as valid
+    try {
+      new PublicKey(address)
+      return true
+    } catch {
+      return false
+    }
+  }
 
   return (
     <div className="flex items-center space-x-3 relative">
       <label htmlFor={id} className="relative">
-        <input 
+        <input
           id={id}
           type="checkbox"
           checked={enabled}
@@ -51,34 +64,15 @@ export default function ToggleInputFieldNumber({
         </div>
       </label>
 
-      <div className="relative flex-1">
-        {value && (
-          <span className="absolute -top-3 left-2 text-xs text-gray-500 bg-white px-1 rounded pointer-events-none">
-            {placeholder}
-          </span>
-        )}
-        <input
-          type="text"
-          inputMode="numeric"
-          pattern="[0-9]*"
-          placeholder={placeholder}
-          className={`
-            w-full px-3 py-2 border-2 rounded-2xl transition 
-            ${enabled
-              ? 'bg-white text-black border-black'
-              : 'bg-gray-100 text-gray-400 border-gray-300 cursor-not-allowed'}
-            ${!isValid && 'border-red-500'}
-          `}
-          value={value}
-          onChange={(e) => {
-            const newValue = e.target.value
-            if (newValue === '' || /^\d+$/.test(newValue)) {
-              setValue(newValue)
-            }
-          }}
-          disabled={!enabled}
-        />
-      </div>
+      <BaseInput
+        type="text"
+        id={`${id}-input`}
+        enabled={enabled}
+        placeholder={placeholder}
+        value={value}
+        setValue={setValue}
+        label={label}
+      />
     </div>
   )
 }

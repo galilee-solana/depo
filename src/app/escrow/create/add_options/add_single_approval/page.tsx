@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { PublicKey } from '@solana/web3.js'
-import ToogleInputFieldSolAddress from '@/components/create/ToogleInputFieldSolAddress'
+import ToogleInputFieldSolAddress from '@/components/ui/inputs/ToogleInputFieldSolAddress'
 
 export default function Add_description() {
   const router = useRouter()

@@ -2,8 +2,8 @@
 
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import ToogleInputFieldSolAddress from '@/components/create/ToogleInputFieldSolAddress';
-import ToogleInputLink from '@/components/create/ToogleInputLink'
+import ToogleInputFieldSolAddress from '@/components/ui/inputs/ToogleInputFieldSolAddress';
+import ToogleInputLink from '@/components/ui/inputs/ToogleInputLink'
 
 
 

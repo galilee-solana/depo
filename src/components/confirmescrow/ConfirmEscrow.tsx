@@ -7,28 +7,26 @@ import { toast } from 'react-hot-toast'
 type ConfirmButtonProps = {
     name : string
     description : string
-    timelockEnabled : boolean
     timelock : string
-    minimumAmountEnabled : boolean
     minimumAmount : string
-    targetAmountEnabled : boolean
     targetAmount : string
-    walletPublicKey : string
 }
 
 export default function ConfirmEscrow({
     name,
     description,
-    timelockEnabled,
     timelock,
-    minimumAmountEnabled,
     minimumAmount,
-    targetAmountEnabled,
-    targetAmount,
-    walletPublicKey,
+    targetAmount
 }: ConfirmButtonProps) {
   const { client } = useDepoClient()
   const [loading, setLoading] = useState(false)
+
+  const [minimumAmountEnabled, setMinimumAmountEnabled] = useState(false)
+  const [targetAmountEnabled, setTargetAmountEnabled] = useState(false)
+  const [timelockEnabled, setTimelockEnabled] = useState(false)
+  const [depositorEnabled, setDepositorEnabled] = useState(false)
+  const [recipientEnabled, setRecipientEnabled] = useState(false)
 
   const handleConfirmEscrow = async () => {
     // Check if name and description are not empty
