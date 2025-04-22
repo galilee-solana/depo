@@ -56,7 +56,8 @@ function DynamicInputList({ label, description, itemsPerPage = 3, placeholder, i
       setPendingNavigation(false)
       goToNextPage()
     }
-  }, [pendingNavigation, isScrolling, goToNextPage, onChange])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pendingNavigation, isScrolling, goToNextPage])
 
   useEffect(() => {
     if (isFirstRender.current) {
@@ -68,7 +69,6 @@ function DynamicInputList({ label, description, itemsPerPage = 3, placeholder, i
         const values = inputFields.map(field => field.value)
         onChange(values)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputFields])
 
   return (

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 }
 
 interface DepositPageProps {
-  params: {}
+  params: Promise<{}>
   searchParams: { [key: string]: string | string[] | undefined }
 }
 
