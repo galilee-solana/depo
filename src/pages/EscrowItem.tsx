@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import ReadOnlyInput from "@/components/ui/inputs/ReadOnlyInput";
 import CreatorButtonSet from "@/components/escrow_item/CreatorButtonSet";
 import DepositorButtonSet from "@/components/escrow_item/DepositorButtonSet";
+import RecipientButtonSet from "@/components/escrow_item/RecipientButtonSet";
 
 /**
  * A page that displays an escrow item.
@@ -47,6 +48,7 @@ function EscrowItem({ uuid }: { uuid: string }) {
                     if (wallet?.publicKey && result.initializer.equals(wallet.publicKey)) {
                         setIsCreator(true)
                     }
+
                     if (result.isPublicDeposit || (
                         wallet?.publicKey && 
                         Array.isArray(result.depositors) && 
@@ -63,9 +65,15 @@ function EscrowItem({ uuid }: { uuid: string }) {
                             }
                         }
                     }
-                    if (wallet?.publicKey && result.recipients.includes(wallet.publicKey)) {
+                    
+                    if (wallet?.publicKey && 
+                        Array.isArray(result.recipients) && 
+                        result.recipients.some(rec => wallet.publicKey?.equals(rec.account?.wallet))
+                    ) {
                         setIsRecipient(true)
-                        const recipient = result.recipients.find(rec => wallet?.publicKey?.equals(rec))
+                        const recipient = result.recipients.find(rec =>
+                            rec.account?.wallet && wallet.publicKey?.equals(rec.account.wallet)
+                        )
                         if (recipient) {
                             setRecipient(recipient)
                         }
@@ -130,6 +138,9 @@ function EscrowItem({ uuid }: { uuid: string }) {
                         )}
                         {isDepositor && (
                           <DepositorButtonSet escrow={escrow} depositor={depositor} refreshEscrow={refreshEscrow} />
+                        )}
+                        {isRecipient && (
+                          <RecipientButtonSet escrow={escrow} recipient={recipient} refreshEscrow={refreshEscrow} />
                         )}
                       </div>
                     </div>

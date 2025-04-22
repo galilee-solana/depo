@@ -483,6 +483,29 @@ class DepoClient {
       throw error;
     }
   }
+
+  async withdrawEscrow(uuid: string) {
+    const cleanUuid = uuid.replace(/-/g, '')
+    const { key: escrowKey, bufferId: escrowId } = this.getPdaKeyAndBufferId(cleanUuid)
+
+    const recipientKey = this.getPdaKeyForRecipient(escrowKey, this.wallet.publicKey!)
+
+    try {
+      const tx = await this.program.methods.withdrawEscrow(
+        Array.from(escrowId),
+      ).accounts({
+        escrow: escrowKey,
+        recipient: recipientKey,
+        signer: this.wallet.publicKey!,
+        systemProgram: SystemProgram.programId, 
+      } as any).rpc()
+
+      await this.program.provider.connection.confirmTransaction(tx);
+      return tx
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default DepoClient
