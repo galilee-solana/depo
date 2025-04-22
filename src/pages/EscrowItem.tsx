@@ -9,6 +9,7 @@ import ToastWithLinks from "@/components/toasts/ToastWithLinks";
 import { useCluster } from "@/components/cluster/cluster-data-access";
 import ReadOnlyInput from "@/components/ui/inputs/ReadOnlyInput";
 import CreatorButtonSet from "@/components/escrow_item/CreatorButtonSet";
+import DepositorButtonSet from "@/components/escrow_item/DepositorButtonSet";
 
 /**
  * A page that displays an escrow item.
@@ -16,11 +17,14 @@ import CreatorButtonSet from "@/components/escrow_item/CreatorButtonSet";
  * @returns A page that displays an escrow item.
  */
 function EscrowItem({ uuid }: { uuid: string }) {
-    const { getEscrow } = useDepoClient()
+    const { getEscrow, wallet } = useDepoClient()
     const [escrow, setEscrow] = useState<Escrow | null>(null)
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
-    // Add these lines after other state variables:
+    const [isDepositor, setIsDepositor] = useState(false)
+    const [isCreator, setIsCreator] = useState(false)
+    const [isRecipient, setIsRecipient] = useState(false)
+
     const [refreshTrigger, setRefreshTrigger] = useState(0)
     
     const refreshEscrow = useCallback(() => {
@@ -39,6 +43,16 @@ function EscrowItem({ uuid }: { uuid: string }) {
                 if (!isMounted) return
                 if (result) {
                     setEscrow(result)
+
+                    if (wallet?.publicKey && result.initializer.equals(wallet.publicKey)) {
+                        setIsCreator(true)
+                    }
+                    if (result.isPublicDeposit || (wallet?.publicKey && result.depositors.includes(wallet.publicKey))) {
+                        setIsDepositor(true)
+                    }
+                    if (wallet?.publicKey && result.recipients.includes(wallet.publicKey)) {
+                        setIsRecipient(true)
+                    }
                 } else {
                     setError(`Escrow with ID ${uuid} not found`)
                     toast.error(`ID: ${uuid} not found`)
@@ -93,7 +107,12 @@ function EscrowItem({ uuid }: { uuid: string }) {
                       )}
 
                       <div className="flex flex-row gap-2">
-                        <CreatorButtonSet escrow={escrow} refreshEscrow={refreshEscrow} />
+                        {isCreator && (
+                          <CreatorButtonSet escrow={escrow} refreshEscrow={refreshEscrow} />
+                        )}
+                        {isDepositor && (
+                          <DepositorButtonSet escrow={escrow} refreshEscrow={refreshEscrow} />
+                        )}
                       </div>
                     </div>
                     <div className="space-y-2"> 
