@@ -1,10 +1,12 @@
-import { PublicKey, Connection, SystemProgram } from "@solana/web3.js";
+import { PublicKey, Connection, SystemProgram, Transaction } from "@solana/web3.js";
 import { AnchorProvider, Program, Wallet } from "@coral-xyz/anchor";
 import { WalletContextState } from "@solana/wallet-adapter-react";
 import { Depo } from "../../../anchor/target/types/depo";
 import { v4 as uuidv4 } from "uuid";
 import Escrow from "./models/escrow";
 import { bs58 } from "@coral-xyz/anchor/dist/cjs/utils/bytes";
+import { BN } from "@coral-xyz/anchor";
+import { TransactionMessage, VersionedTransaction } from "@solana/web3.js";
 
 // Import the IDL directly with require to avoid TypeScript issues
 const idl = require("../../../anchor/target/idl/depo.json");
@@ -43,17 +45,36 @@ class DepoClient {
     return recipientKey
   }
 
+  getPdaKeyForDepositor(escrowKey: PublicKey, key: PublicKey) {
+    const depositorKey = PublicKey.findProgramAddressSync(
+      [Buffer.from('depositor'), escrowKey.toBuffer(), key.toBuffer()],
+      this.program.programId
+    )[0]
+    return depositorKey
+  }
+
+  getPdaKeyForTimelock(escrowKey: PublicKey) {
+    const timelockKey = PublicKey.findProgramAddressSync(
+      [Buffer.from('timelock'), escrowKey.toBuffer()],
+      this.program.programId
+    )[0]
+    return timelockKey
+  }
+
   /**
    * Create a new escrow
    * @param name - The name of the escrow
    * @param description - The description of the escrow
+   * @param timelock - The timelock of the escrow
+   * @param minimumAmount - The minimum amount of the escrow
+   * @param targetAmount - The target amount of the escrow
+   * @param recipients - The recipients of the escrow
+   * @param depositors - The depositors of the escrow
    * @returns The Escrow object
    */
-  async createEscrow(name: string, description: string, ) {
+  async createEscrow(name: string, description: string, timelock: string, minimumAmount: string, targetAmount: string, recipients: string[], depositors: string[]) {
     const uuid = uuidv4().replace(/-/g, '')
     const { key: escrowKey, bufferId: escrowId } = this.getPdaKeyAndBufferId(uuid)
-    console.log("Creating escrow with UUID:", uuid);
-    console.log("Escrow PDA Key:", escrowKey.toString());
 
     // Escrow Name (100 bytes) - will be truncated if too long
     const nameBuffer = Buffer.alloc(100)
@@ -64,40 +85,107 @@ class DepoClient {
     descriptionBuffer.write(description)
 
     try {
-      if (this.wallet.publicKey) {
-        const tx = await this.program.methods.createEscrow(
-          Array.from(escrowId),
-          nameBuffer,
-          descriptionBuffer
-        ).accounts({
-          escrow: escrowKey,
-          signer: this.wallet.publicKey!,
-          systemProgram: SystemProgram.programId,
-        } as any)
-        .rpc()
-  
-        // Wait for confirmation
-        await this.program.provider.connection.confirmTransaction(tx);
-        console.log("Transaction confirmed:", tx);
-        
-        // Verify account was created
-        const accountInfo = await this.program.provider.connection.getAccountInfo(escrowKey);
-        console.log("Account created:", !!accountInfo);
-        
-        if (!accountInfo) {
-          throw new Error("Failed to create escrow account");
-        }
-        
-        const escrowAccount = await this.program.account.escrow.fetch(escrowKey);
-        const escrow = new Escrow(escrowAccount);
-        console.log("Escrow created successfully:", escrow);
-        return {
-          tx: tx,
-          escrow: escrow
-        };
-      } else {
+      if (!this.wallet.publicKey) {
         throw new Error("Wallet is not available");
+      }   
+
+    
+      const createTx = await this.program.methods.createEscrow(
+        Array.from(escrowId),
+        nameBuffer,
+        descriptionBuffer
+      ).accounts({
+        escrow: escrowKey,
+        signer: this.wallet.publicKey,
+        systemProgram: SystemProgram.programId,
+      } as any).rpc();
+      
+      console.log('Escrow created with tx:', createTx);
+      await this.program.provider.connection.confirmTransaction(createTx, 'confirmed');
+
+      let escrowAccount = await this.program.account.escrow.fetch(escrowKey);
+      
+      // Add recipients if needed
+      if (recipients.length > 0) {
+        const equalShareBasisPoints = Math.floor(10000 / recipients.length);
+      
+        for (const recipient of recipients) {
+          try {
+            const recipientWallet = new PublicKey(recipient);
+            const recipientKey = this.getPdaKeyForRecipient(escrowKey, recipientWallet);
+            
+            const recipientTx = await this.program.methods.addRecipient(
+              Array.from(escrowId),
+              recipientWallet,
+              equalShareBasisPoints
+            ).accounts({
+              escrow: escrowKey,
+              recipient: recipientKey,
+              initializer: this.wallet.publicKey,
+              systemProgram: SystemProgram.programId,
+            } as any).rpc();
+            
+            console.log(`Added recipient with tx: ${recipientTx}`);
+            await this.program.provider.connection.confirmTransaction(recipientTx, 'confirmed');
+          } catch (e) {
+            console.error(`Error adding recipient ${recipient}:`, e);
+            // Continue with other recipients
+          }
+        }
+
+        // Add depositors if needed
+        if (depositors.length > 0) {
+          for (const depositor of depositors) {     
+            try {
+              const depositorWallet = new PublicKey(depositor);
+              const depositorKey = this.getPdaKeyForDepositor(escrowKey, depositorWallet);
+              
+              const depositorTx = await this.program.methods.addDepositor(
+                Array.from(escrowId),
+                depositorWallet
+              ).accounts({
+                escrow: escrowKey,
+                depositor: depositorKey,
+                initializer: this.wallet.publicKey,
+                systemProgram: SystemProgram.programId,
+              } as any).rpc();
+            
+              console.log(`Added depositor with tx: ${depositorTx}`);
+              await this.program.provider.connection.confirmTransaction(depositorTx, 'confirmed');
+            } catch (e) {
+              console.error(`Error adding depositor ${depositor}:`, e);
+              // Continue with other depositors
+            }
+          }
+        }
+
+        // Add timelock if needed
+        if (timelock !== "") {
+          const timelockKey = this.getPdaKeyForTimelock(escrowKey);
+          const timelockTx = await this.program.methods.addTimelock(
+            Array.from(escrowId),
+            new BN(timelock)
+          ).accounts({
+            escrow: escrowKey,
+            timelock: timelockKey,
+            initializer: this.wallet.publicKey,
+            systemProgram: SystemProgram.programId,
+          } as any).rpc();  
+
+          await this.program.provider.connection.confirmTransaction(timelockTx, 'confirmed');
+          console.log(`Added timelock with tx: ${timelockTx}`);
+        }
+
+        // Refresh escrow data
+        escrowAccount = await this.program.account.escrow.fetch(escrowKey);
       }
+      
+      const escrow = new Escrow(escrowAccount);
+      
+      return {
+        tx: createTx,
+        escrow: escrow
+      };
     } catch (error) {
       console.error("Error creating escrow:", error);
       throw error;

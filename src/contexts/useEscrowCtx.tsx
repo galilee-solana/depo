@@ -4,7 +4,6 @@ import React, { createContext, useContext, useState } from "react";
 import { useDepoClient } from "./useDepoClientCtx";
 import { toast } from "react-hot-toast";
 import ToastWithLinks from "@/components/toasts/ToastWithLinks";
-import { isValidSolanaAddress } from "@/utils/sdk/utils/validation/validatePubkey";
 import { validatePubkey } from "@/utils/sdk/utils/validation/validatePubkey";
 
 type EscrowContextType = {
@@ -68,7 +67,15 @@ const EscrowProvider = ({ children }: { children: React.ReactNode }) => {
     }
     
     if (client) {
-      const result = await client.createEscrow(name, description);
+      const result = await client.createEscrow(
+        name, 
+        description, 
+        timelock, 
+        minimumAmount, 
+        targetAmount, 
+        recipients, 
+        depositors
+      );
       const explorerUrl = getExplorerUrl(`tx/${result.tx}`)
       toast.success(
         <ToastWithLinks
@@ -126,7 +133,7 @@ const EscrowProvider = ({ children }: { children: React.ReactNode }) => {
       return false
     }
 
-    if (depositors.some(depositor => !validatePubkey(depositor))) {
+    if (depositors.length > 0 && depositors[0].trim() !== '' && depositors.some(depositor => !validatePubkey(depositor))) {
       toast.error('Invalid depositor public key')
       return false
     }

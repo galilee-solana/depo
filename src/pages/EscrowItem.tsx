@@ -1,7 +1,7 @@
 'use client'
 
 import { useDepoClient } from "@/contexts/useDepoClientCtx";
-import Escrow from "@/utils/models/escrow";
+import Escrow from "@/utils/sdk/models/escrow";
 import { useState, useEffect } from "react";
 import toast from 'react-hot-toast';
 import { useRouter } from "next/navigation";
