@@ -17,7 +17,7 @@ export default function EscrowList({ list }: { list: Escrow[] }) {
   const [startIndex, setStartIndex] = useState(0)
   const [isScrolling, setIsScrolling] = useState(false)
   const maxVisible = 5
-  const hasOverflow = EscrowList.length > maxVisible
+  const hasOverflow = sortedEscrowList.length > maxVisible
   const visibleEscrow = sortedEscrowList.slice(startIndex, startIndex + maxVisible)
 
   const scrollUp = () => {
@@ -71,14 +71,19 @@ export default function EscrowList({ list }: { list: Escrow[] }) {
             <button
               onClick={scrollUp}
               disabled={startIndex === 0}
-              className="text-black rounded-full px-3 py-1 hover:bg-gray-100 disabled:opacity-30 transition"
+              className="text-black rounded-full px-3 py-1 border border-black hover:bg-gray-100 disabled:opacity-30 transition"
             >
               ↑
             </button>
+            <div className="flex items-center justify-center w-10 h-8">
+              <span className="text-black text-sm">
+                {startIndex + 1} - {startIndex + maxVisible}
+              </span>
+            </div>
             <button
               onClick={scrollDown}
               disabled={startIndex + maxVisible >= sortedEscrowList.length}
-              className="text-black rounded-full px-3 py-1 hover:bg-gray-100 disabled:opacity-30 transition"
+              className="text-black rounded-full px-3 py-1 border border-black hover:bg-gray-100 disabled:opacity-30 transition"
             >
               ↓
             </button>
