@@ -29,12 +29,8 @@ export default function ToggleInputFieldNumber({
           className="peer hidden"
         />
         <div
-          className={`
-            w-5 h-5 flex items-center justify-center rounded-md border-2 
-            transition-all duration-150
-            ${enabled ? 'bg-white border-black' : 'bg-gray-200 border-gray-400'}
-          `}
-        >
+          className={`w-5 h-5 flex items-center justify-center 
+            rounded-md border-2 transition-all duration-150 border-black bg-white`}>
           {enabled && (
             <svg
               className="w-3 h-3 text-black"

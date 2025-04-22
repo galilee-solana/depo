@@ -9,6 +9,7 @@ import ToogleInputLink from '@/components/ui/inputs/ToogleInputLink'
 import ConfirmEscrow from '@/components/confirmescrow/ConfirmEscrow'
 import { useEscrow } from '@/contexts/useEscrowCtx'
 import RecipientsInputs from '@/components/create/RecipientsInputs'
+import DynamicInputList from '@/components/ui/inputs/DynamicInputList'
 
 export default function CreateEscrow() {
   const router = useRouter()
@@ -17,7 +18,7 @@ export default function CreateEscrow() {
 
   return (
     <div className="p-6 space-y-4">
-      <h1 className="text-2xl font-bold">Create your new DEPO.</h1>
+      <h1 className="text-2xl font-bold">Create your new DEPO</h1>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2"> 
@@ -35,39 +36,42 @@ export default function CreateEscrow() {
             onChange={(e) => setDescription(e.target.value)}
           />
 
-          <ToogleInputFieldDateTime
-            label="Timelock"
-            placeholder="Timelock"
-            value={timelock}
-            setValue={setTimelock}
-          />
+          <div className="py-4 space-y-2">
+            <h2 className="text-lg font-bold">Release conditions:</h2>
+            <ToogleInputFieldDateTime
+              label="Timelock"
+              placeholder="Timelock"
+              value={timelock}
+              setValue={setTimelock}
+            />
 
-          <ToogleInputFieldNumber
-            label="Minimum Amount"
-            placeholder="Minimum Amount"
-            value={minimumAmount}
-            setValue={setMinimumAmount}
-          />
+            <ToogleInputFieldNumber
+              label="Minimum Amount"
+              placeholder="Minimum Amount"
+              value={minimumAmount}
+              setValue={setMinimumAmount}
+            />
 
-          <ToogleInputFieldNumber
-            label="Target Amount"
-            placeholder="Target Amount"
-            value={targetAmount}
-            setValue={setTargetAmount}
+            <ToogleInputFieldNumber
+              label="Target Amount"
+              placeholder="Target Amount"
+              value={targetAmount}
+              setValue={setTargetAmount}
+            />
+          </div>
+
+          <ConfirmEscrow
+            name={name}
+            description={description}
+            timelock={timelock}
+            minimumAmount={minimumAmount}
+            targetAmount={targetAmount}
           />
         </div>
         <div className="space-y-2">
-          <RecipientsInputs />
+          <DynamicInputList label="Recipients" />
         </div>
       </div>
-
-      <ConfirmEscrow
-        name={name}
-        description={description}
-        timelock={timelock}
-        minimumAmount={minimumAmount}
-        targetAmount={targetAmount}
-      />
     </div>
   )
 }

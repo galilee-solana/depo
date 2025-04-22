@@ -7,7 +7,11 @@ const config: Config = {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'cream': "#f0f0f4",
+      },
+    },
   },
   plugins: [require('daisyui')],
   darkMode: 'class', // Dark mode non activated by default -> needs css class
