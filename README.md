@@ -1,4 +1,13 @@
-![DEPO - Dynamic Escrow Platform Operations](/docs/readme-gif.gif)
+![DEPO - Dynamic Escrow Platform Operations](/docs/readme.gif)
+
+<div align="center">
+  <img src="https://img.shields.io/github/v/release/galilee-solana/depo?include_prereleases&labelColor=%23000000" alt="Version">
+  <img src="https://img.shields.io/github/check-runs/galilee-solana/depo/main?labelColor=%23000000" alt="Checks">
+  <img src="https://img.shields.io/github/contributors/galilee-solana/depo?labelColor=%23000000&color=%23ffffff" alt="GitHub contributors" >
+  <img src="https://img.shields.io/github/issues/galilee-solana/depo.svg?labelColor=%23000000&color=%23ffffff" alt="Issues">
+  <img src="https://img.shields.io/github/issues-pr-closed/galilee-solana/depo?labelColor=%23000000&color=%23ffffff" alt="Close PR">
+  <img src="https://img.shields.io/badge/license-MIT-blue.svg?labelColor=%23000000&color=%23ffffff" alt="License">
+</div>
 
 A modular escrow solution on Solana, composed of a smart contract, a demo interface, and a JavaScript library, designed for quick integration into both Web2 and Web3 applications.
 
