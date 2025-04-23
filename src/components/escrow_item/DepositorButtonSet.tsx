@@ -19,7 +19,7 @@ function DepositorButtonSet({ escrow, depositor, refreshEscrow }: { escrow: Escr
           </SmallButton>
         </>
       )}
-      {escrow.status === "cancelled" && !depositor.account.wasRefunded && (
+      {escrow.status === "cancelled" && !depositor && !depositor.account.wasRefunded && (
         <SmallButton
           onClick={() => claimRefund()}
           disabled={isClaimingRefund}
