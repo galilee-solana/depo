@@ -137,10 +137,6 @@ function EscrowItem({ uuid }: { uuid: string }) {
 
     const renderModules = () => {
         if (!escrow?.modules) return [];
-        console.log('Modules:', escrow.modules);
-        console.log('Timelock:', escrow.timelock);
-        console.log('Minimum Amount:', escrow.minimumAmount);
-        console.log('Target Amount:', escrow.targetAmount);
         
         return escrow.modules.map((module, index) => {
             const moduleType = Object.keys(module.moduleType)[0];

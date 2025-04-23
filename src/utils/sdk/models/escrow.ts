@@ -116,21 +116,18 @@ class Escrow {
   }
 
   setTimelock(timelock: any) {
-    console.log('Setting timelock:', timelock);
     this.timelock = {
       account: timelock
     };
   }
 
   setMinimumAmount(minimumAmount: any) {
-    console.log('Setting minimumAmount:', minimumAmount);
     this.minimumAmount = {
       account: minimumAmount
     };
   }
 
   setTargetAmount(targetAmount: any) {
-    console.log('Setting targetAmount:', targetAmount);
     this.targetAmount = {
       account: targetAmount
     };
