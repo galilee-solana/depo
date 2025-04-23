@@ -9,6 +9,7 @@
   <img src="https://img.shields.io/badge/license-MIT-blue.svg?labelColor=%23000000&color=%23ffffff" alt="License">
 </div>
 
+##
 A modular escrow solution on Solana, composed of a smart contract, a demo interface, and a JavaScript library, designed for quick integration into both Web2 and Web3 applications.
 
 This project is developed as part of an academic proof of concept and focuses on creating a functional prototype showcasing the fundamental use cases of a decentralized escrow using an Anchor Program (Smart Contract) and a demo interface
