@@ -12,9 +12,10 @@ interface BaseInputProps {
     pattern?: string
     inputMode?: 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search'
     onKeyDown?: (e: KeyboardEvent<HTMLInputElement>) => void
+    max?: string
 }
 
-function BaseInput({label, type, id, enabled, placeholder, value, setValue, pattern, inputMode, onKeyDown}: BaseInputProps ) {
+function BaseInput({label, type, id, enabled, placeholder, value, setValue, pattern, inputMode, onKeyDown, max}: BaseInputProps ) {
   const [showFakePlaceholder, setShowFakePlaceholder] = useState(true)
 
   useEffect(() => {
@@ -52,6 +53,7 @@ function BaseInput({label, type, id, enabled, placeholder, value, setValue, patt
           {...(pattern && { pattern })}
           {...(inputMode && { inputMode })}
           {...(onKeyDown && { onKeyDown })}
+          {...(max && { max })}
         />
       </div>
       </>

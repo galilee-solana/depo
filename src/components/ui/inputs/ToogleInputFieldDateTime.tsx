@@ -84,6 +84,7 @@ export default function ToggleInputFieldDateTime({
         value={value}
         setValue={setValue}
         label={label}
+        max="9999-12-31T23:59"
       />
     </div>
   )
