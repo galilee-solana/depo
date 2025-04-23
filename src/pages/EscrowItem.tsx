@@ -8,7 +8,9 @@ import ReadOnlyInput from "@/components/ui/inputs/ReadOnlyInput";
 import CreatorButtonSet from "@/components/escrow_item/CreatorButtonSet";
 import DepositorButtonSet from "@/components/escrow_item/DepositorButtonSet";
 import RecipientButtonSet from "@/components/escrow_item/RecipientButtonSet";
+import DynamicComponentList from "@/components/ui/lists/DynamicComponentList";
 
+import { lamportsToSol } from "@/utils/number-formatter";
 /**
  * A page that displays an escrow item.
  * @param uuid - The UUID of the escrow.
@@ -22,8 +24,10 @@ function EscrowItem({ uuid }: { uuid: string }) {
     const [isDepositor, setIsDepositor] = useState(false)
     const [isCreator, setIsCreator] = useState(false)
     const [isRecipient, setIsRecipient] = useState(false)
-    const [depositor, setDepositor] = useState<{}>({})
-    const [recipient, setRecipient] = useState<{}>({})
+    const [depositorAccount, setDepositorAccount] = useState<{}>({})
+    const [recipientAccount, setRecipientAccount] = useState<{}>({})
+    const [depositors, setDepositors] = useState<{}>({})
+    const [recipients, setRecipients] = useState<{}>({})
 
     const [refreshTrigger, setRefreshTrigger] = useState(0)
     
@@ -57,25 +61,25 @@ function EscrowItem({ uuid }: { uuid: string }) {
                         setIsDepositor(true)
                         
                         if (wallet?.publicKey && Array.isArray(result.depositors)) {
-                            const dep = result.depositors.find(d => 
+                            const depositorAccount = result.depositors.find(d => 
                                 d.account?.wallet && wallet.publicKey?.equals(d.account.wallet)
                             )
-                            if (dep) {
-                                setDepositor(dep)
+                            if (depositorAccount) {
+                                setDepositorAccount(depositorAccount)
                             }
                         }
                     }
-                    
+
                     if (wallet?.publicKey && 
                         Array.isArray(result.recipients) && 
                         result.recipients.some(rec => wallet.publicKey?.equals(rec.account?.wallet))
                     ) {
                         setIsRecipient(true)
-                        const recipient = result.recipients.find(rec =>
+                        const recipientAccount   = result.recipients.find(rec =>
                             rec.account?.wallet && wallet.publicKey?.equals(rec.account.wallet)
                         )
-                        if (recipient) {
-                            setRecipient(recipient)
+                        if (recipientAccount) {
+                            setRecipientAccount(recipientAccount)
                         }
                     }   
                 } else {
@@ -99,9 +103,47 @@ function EscrowItem({ uuid }: { uuid: string }) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [getEscrow, uuid, refreshTrigger])
 
+    const addressTagStyle = "text-md bg-white p-2 rounded-lg border border-gray-200 flex flex-row gap-2 w-full justify-between"
+
+    const renderRecipients = () => {
+        if (!escrow?.recipients) return [];
+        return escrow.recipients.map((recipient, index) => {
+            console.log(recipient)
+            const percentage = recipient.account?.percentage ? `${recipient.account?.percentage/100}` : ""
+            return (
+                <div key={index + "recipient"} className={addressTagStyle}>
+                    <span className="flex flex-row gap-2">
+                        <p>{recipient.account?.wallet?.toString()}</p>
+                        {recipient.account?.hasWithdrawn && <p className="text-xs bg-green-500 text-white font-bold px-2 py-1 rounded-md">Withdrawn</p>}
+                    </span>
+                    {percentage && <p>Receive: {percentage}%</p>}
+                </div>
+            )
+        })
+    }
+
+    const renderDepositors = () => {
+        if (!escrow?.depositors) return [];
+        return escrow.depositors.map((depositor, index) => {
+            console.log(depositor)
+            return (
+                <div key={index + "depositor"} className={addressTagStyle}>
+                    <span className="flex flex-row gap-2">
+                        <p>{depositor.account?.wallet?.toString()}</p>
+                        {depositor.account?.hasWithdrawn && <p className="text-xs bg-red-500 text-white font-bold px-2 py-1 rounded-md">Refunded</p>}
+                    </span>
+                    <p className="text-green-500 font-bold">+ {lamportsToSol(depositor.account?.depositedAmount)} SOL</p>
+                </div>
+            )
+        })
+    }
+
     return (
         <div>
-            <h1 className="text-2xl font-bold">Escrow #{escrow?.uuid}</h1>
+            <div className="flex flex-row gap-2">
+                <h1 className="text-2xl font-bold">Escrow #{escrow?.uuid}</h1>
+            </div>
+        
             {isLoading && <p>Loading escrow data...</p>}
             
             {error && <p className="text-red-500">{error}</p>}
@@ -109,13 +151,18 @@ function EscrowItem({ uuid }: { uuid: string }) {
             {!isLoading && escrow && (
                 <>
                   <div className="grid grid-cols-2 gap-4 space-y-2">
-                    <div className="space-y-2 pt-4"> 
+                    <div className="space-y-3 pt-4"> 
+                        <div className="flex flex-row gap-2">
+                            <p className="text-md font-bold mb-6 p-2 px-4 w-fit rounded-md border-b-2 border-gray-200 bg-black text-white">
+                                {escrow.isPublicDeposit ? "Public Escrow" : "Private Escrow"} - {escrow.status[0].toUpperCase() + escrow.status.slice(1)} 
+                            </p>
+                            
+                        </div>
                       <ReadOnlyInput
                         label="Name"
                         id="name"
                         value={escrow.name}
                       />
-
                       <ReadOnlyInput
                         label="Description"
                         id="description"
@@ -137,18 +184,26 @@ function EscrowItem({ uuid }: { uuid: string }) {
                           <CreatorButtonSet escrow={escrow} refreshEscrow={refreshEscrow} />
                         )}
                         {isDepositor && (
-                          <DepositorButtonSet escrow={escrow} depositor={depositor} refreshEscrow={refreshEscrow} />
+                          <DepositorButtonSet escrow={escrow} depositor={depositorAccount} refreshEscrow={refreshEscrow} />
                         )}
                         {isRecipient && (
-                          <RecipientButtonSet escrow={escrow} recipient={recipient} refreshEscrow={refreshEscrow} />
+                          <RecipientButtonSet escrow={escrow} recipient={recipientAccount} refreshEscrow={refreshEscrow} />
                         )}
                       </div>
                     </div>
-                    <div className="space-y-2"> 
-                        <p>Status: {escrow.status}</p>
-                        <p>Is Public Deposit: {escrow.isPublicDeposit ? "Yes" : "No"}</p>
-                        <p>Depositors Count: {escrow.depositorsCount}</p>
-                        <p>Recipients Count: {escrow.recipientsCount}</p>
+                    <div className="space-y-2">
+                        <DynamicComponentList
+                            label="Recipients"
+                            description="Add recipients keys to receive the funds. The funds will be split equally among the recipients."
+                            itemsPerPage={3}
+                            toRender={renderRecipients()}
+                        />
+                        <DynamicComponentList 
+                            label="Depositors" 
+                            description="For private deposits, add the depositors keys of the funds"  
+                            itemsPerPage={3} 
+                            toRender={renderDepositors()}
+                        />
                     </div>
                   </div>
                 </>
