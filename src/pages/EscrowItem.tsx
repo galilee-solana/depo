@@ -122,13 +122,13 @@ function EscrowItem({ uuid }: { uuid: string }) {
     }
 
     const renderDepositors = () => {
-        if (!escrow?.depositors) return [];
+        if (!escrow?.depositors) return [<p>No depositors</p>];
         return escrow.depositors.map((depositor, index) => {
             return (
                 <div key={index + "depositor"} className={addressTagStyle}>
                     <span className="flex flex-row gap-2">
                         <p>{depositor.account?.wallet?.toString()}</p>
-                        {depositor.account?.hasWithdrawn && <p className="text-xs bg-red-500 text-white font-bold px-2 py-1 rounded-md">Refunded</p>}
+                        {depositor.account?.wasRefunded && <p className="text-xs bg-red-500 text-white font-bold px-2 py-1 rounded-md">Refunded</p>}
                     </span>
                     <p className="text-green-500 font-bold">+ {lamportsToSol(depositor.account?.depositedAmount)} SOL</p>
                 </div>
@@ -173,11 +173,11 @@ function EscrowItem({ uuid }: { uuid: string }) {
                       {escrow.modules.length > 0 && (
                         <div className="py-4 space-y-2">
                           <h2 className="text-lg font-bold">Release conditions:</h2>
-                        {escrow.modules.map((module, index) => (
-                          <div key={index}>
-                            <p>{Object.keys(module.moduleType)[0]}</p>
-                          </div>
-                        ))}
+                          {escrow.modules.map((module, index) => (
+                            <div key={index}>
+                              <p>{Object.keys(module.moduleType)[0]}</p>
+                            </div>
+                          ))}
                         </div>
                       )}
 
@@ -200,12 +200,16 @@ function EscrowItem({ uuid }: { uuid: string }) {
                             itemsPerPage={3}
                             toRender={renderRecipients()}
                         />
-                        <DynamicComponentList 
-                            label="Depositors" 
-                            description="List of depositors who deposited funds into this escrow"  
-                            itemsPerPage={3} 
-                            toRender={renderDepositors()}
-                        />
+                        {escrow.depositors.length > 0 ? (
+                            <DynamicComponentList 
+                              label="Depositors" 
+                              description="List of depositors who deposited funds into this escrow"  
+                              itemsPerPage={3} 
+                              toRender={renderDepositors()}
+                            />
+                        ) : (
+                            <p className="px-6">No depositors yet</p>
+                        )}
                     </div>
                   </div>
                 </>
