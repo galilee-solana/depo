@@ -157,7 +157,7 @@ function EscrowItem({ uuid }: { uuid: string }) {
                                 {escrow.isPublicDeposit ? "Public Escrow" : "Private Escrow"} - {escrow.status[0].toUpperCase() + escrow.status.slice(1)} 
                             </p>
                             <p className="text-md font-bold p-2 px-4 rounded-md border-2 border-black bg-gray-200">
-                                Total Amount: {lamportsToSol(escrow.depositedAmount)} SOL
+                                Total Amount: {escrow.depositedAmount} SOL
                             </p>
                         </div>
                       <ReadOnlyInput
