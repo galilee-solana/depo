@@ -485,6 +485,48 @@ class DepoClient {
     const cleanUuid = uuid.replace(/-/g, '')
     const { key: escrowKey, bufferId: escrowId } = this.getPdaKeyAndBufferId(cleanUuid)
 
+    const escrow = await this.getEscrow(uuid)
+    if (!escrow) {
+      throw new Error("Escrow not found");
+    }
+
+    const remaining = []
+
+    for (const module of escrow.modules || []) {
+      // Handle both string type and object with key
+      const moduleType = typeof module.moduleType === 'string' 
+        ? module.moduleType 
+        : Object.keys(module.moduleType)[0];
+      
+      if (moduleType === "timelock" || moduleType === "Timelock") {
+        const timelockKey = this.getPdaKeyForTimelock(escrowKey)
+        remaining.push({
+          pubkey: timelockKey,
+          isWritable: true,
+          isSigner: false
+        })
+      } else if (moduleType === "minimumAmount" || moduleType === "MinimumAmount") {
+        const minimumAmountKey = this.getPdaKeyForMinimumAmount(escrowKey)
+        remaining.push({
+          pubkey: minimumAmountKey,
+          isWritable: true,
+          isSigner: false
+        })
+      } else if (moduleType === "targetAmount" || moduleType === "TargetAmount") {
+        const targetAmountKey = this.getPdaKeyForTargetAmount(escrowKey)
+        remaining.push({
+          pubkey: targetAmountKey,
+          isWritable: true,
+          isSigner: false
+        })
+      }
+    }
+    
+    // Verify that we have the right number of remaining accounts
+    if (remaining.length !== escrow.modules.length) {
+      console.warn(`Warning: Found ${escrow.modules.length} modules but only ${remaining.length} account keys were added`);
+    }
+
     try {
       const tx = await this.program.methods.releaseEscrow(
         Array.from(escrowId),
@@ -493,12 +535,18 @@ class DepoClient {
         initializer: this.wallet.publicKey!,
         systemProgram: SystemProgram.programId,
       })
-      .remainingAccounts([])
+      .remainingAccounts(remaining)
       .rpc()
 
       await this.program.provider.connection.confirmTransaction(tx);
       return tx
     } catch (error) {
+      // Handle ValidationFailed error
+      if (error instanceof Error && error.message.includes("ValidationFailed")) {
+        throw new Error("Cannot release - 1 or more conditions have not been met");
+      }
+      
+      console.error("Error releasing escrow:", error);
       throw error;
     }
   }

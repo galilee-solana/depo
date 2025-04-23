@@ -11,7 +11,7 @@ import RecipientButtonSet from "@/components/escrow_item/RecipientButtonSet";
 import DynamicComponentList from "@/components/ui/lists/DynamicComponentList";
 import { formatTimestamp } from "@/utils/timestamp-formatter";
 import { lamportsToSol } from "@/utils/number-formatter";
-
+import { ellipsify } from "@/utils/utils";
 /**
  * A page that displays an escrow item.
  * @param uuid - The UUID of the escrow.
@@ -111,10 +111,10 @@ function EscrowItem({ uuid }: { uuid: string }) {
             return (
                 <div key={index + "recipient"} className={addressTagStyle}>
                     <span className="flex flex-row gap-2">
-                        <p>{recipient.account?.wallet?.toString()}</p>
+                        <p>{ellipsify(recipient.account?.wallet?.toString(), 8)}</p>
                         {recipient.account?.hasWithdrawn && <p className="text-xs bg-green-500 text-white font-bold px-2 py-1 rounded-md">Withdrawn</p>}
                     </span>
-                    {percentage && <p>Receive: {percentage}%</p>}
+                    {percentage && <p>Share: {percentage}%</p>}
                 </div>
             )
         })
