@@ -1,3 +1,5 @@
+![Main DEPO Banner for the readme](/docs/readme-gif.gif)
+
 # DEPO
 ### Dynamic Escrow Platform Operations
 
