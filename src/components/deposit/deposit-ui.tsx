@@ -96,9 +96,12 @@ function DepositUI({ uuid = "" }: { uuid: string }) {
 
         const isStarted = escrow?.isStarted()
         const isPublicDeposit = escrow?.isPublicDeposit
+        console.log(escrow.depositors)
         const isDepositor = 
             wallet?.publicKey?.toBase58() 
-            && escrow.depositors.includes(wallet?.publicKey?.toBase58() || '')
+            && escrow.depositors.some(depositor => 
+                depositor.account?.wallet?.toBase58() === wallet?.publicKey?.toBase58()
+            )
         
         if (isStarted && isPublicDeposit) return true;
         if (isStarted && isDepositor) return true;

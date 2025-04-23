@@ -492,11 +492,11 @@ class DepoClient {
 
     const remaining = []
 
-    for (const module of escrow.modules || []) {
+    for (const moduleItem of escrow.modules || []) {
       // Handle both string type and object with key
-      const moduleType = typeof module.moduleType === 'string' 
-        ? module.moduleType 
-        : Object.keys(module.moduleType)[0];
+      const moduleType = typeof moduleItem.moduleType === 'string' 
+        ? moduleItem.moduleType 
+        : Object.keys(moduleItem.moduleType)[0];
       
       if (moduleType === "timelock" || moduleType === "Timelock") {
         const timelockKey = this.getPdaKeyForTimelock(escrowKey)
