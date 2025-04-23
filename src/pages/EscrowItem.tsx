@@ -12,6 +12,7 @@ import DynamicComponentList from "@/components/ui/lists/DynamicComponentList";
 import { formatTimestamp } from "@/utils/timestamp-formatter";
 import { lamportsToSol } from "@/utils/number-formatter";
 import { ellipsify } from "@/utils/utils";
+
 /**
  * A page that displays an escrow item.
  * @param uuid - The UUID of the escrow.
