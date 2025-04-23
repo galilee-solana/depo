@@ -3,6 +3,8 @@ import { PublicKey } from '@solana/web3.js';
 import { BN } from '@coral-xyz/anchor';
 import { EscrowStatus } from './escrowStatus';
 import { lamportsToSol } from '@/utils/number-formatter';
+import { formatTimestamp } from '@/utils/timestamp-formatter';
+
 /**
  * Escrow model
  * 
@@ -40,6 +42,9 @@ class Escrow {
   modules: any[];
   recipients: any[];
   depositors: any[];
+  timelock: any | null;
+  minimumAmount: any | null;
+  targetAmount: any | null;
 
   constructor(escrow: any) {
     // Convert id (byte array) to uuid string
@@ -59,7 +64,7 @@ class Escrow {
     this.createdAt = escrow.createdAt;
     
     // Create formatted date string
-    this.createdAtFormatted = this.formatTimestamp(escrow.createdAt);
+    this.createdAtFormatted = formatTimestamp(escrow.createdAt);
     
     // Set other properties
     this.isPublicDeposit = escrow.isPublicDeposit;
@@ -69,11 +74,15 @@ class Escrow {
 
     this.recipients = escrow.recipients;
     this.depositors = escrow.depositors;
-    
+
     // Handle the status enum from Anchor properly
     this.status = this.parseStatusEnum(escrow.status);
     
     this.modules = escrow.modules || [];
+
+    this.timelock = escrow.timelock || null;
+    this.minimumAmount = escrow.minimumAmount || null;
+    this.targetAmount = escrow.targetAmount || null;
   }
 
   /**
@@ -105,23 +114,32 @@ class Escrow {
     // Default fallback
     return EscrowStatus.DRAFT;
   }
-  
-  /**
-   * Format a timestamp BN into a readable date and time string
-   */
-  private formatTimestamp(timestamp: BN): string {
-    const date = new Date(timestamp.toNumber() * 1000);
-    const options: Intl.DateTimeFormatOptions = {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      timeZoneName: 'short'
+
+  setTimelock(timelock: any) {
+    this.timelock = {
+      account: timelock
     };
-    return date.toLocaleString(undefined, options);
   }
+
+  setMinimumAmount(minimumAmount: any) {
+    this.minimumAmount = {
+      account: minimumAmount
+    };
+  }
+
+  setTargetAmount(targetAmount: any) {
+    this.targetAmount = {
+      account: targetAmount
+    };
+  }
+
+  setDepositors(depositors: any[]) {
+    this.depositors = depositors;
+  }
+
+  setRecipients(recipients: any[]) {
+    this.recipients = recipients;
+  } 
   
   /**
    * Check if escrow is in draft status

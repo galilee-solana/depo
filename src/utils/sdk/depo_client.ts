@@ -283,8 +283,50 @@ class DepoClient {
         }
       ]);
 
-      escrow.recipients = recipients;
-      escrow.depositors = depositors;
+      escrow.setRecipients(recipients);
+      escrow.setDepositors(depositors);
+
+      // Check for timelock module
+      const hasTimelock = escrow.modules.some(module => 
+        module.moduleType === "timelock" || Object.keys(module.moduleType)[0] === "timelock"
+      );
+      if (hasTimelock) {
+        try {
+          const timelockKey = this.getPdaKeyForTimelock(escrowKey);
+          const timelock = await this.program.account.timelock.fetch(timelockKey);
+          escrow.setTimelock(timelock);
+        } catch (error) {
+          console.error("Error fetching timelock:", error);
+        }
+      }
+
+      // Check for minimum amount module
+      const hasMinimumAmount = escrow.modules.some(module => 
+        module.moduleType === "minimumAmount" || Object.keys(module.moduleType)[0] === "minimumAmount"
+      );
+      if (hasMinimumAmount) {
+        try {
+          const minimumAmountKey = this.getPdaKeyForMinimumAmount(escrowKey);
+          const minimumAmount = await this.program.account.minimumAmount.fetch(minimumAmountKey);
+          escrow.setMinimumAmount(minimumAmount);
+        } catch (error) {
+          console.error("Error fetching minimum amount:", error);
+        }
+      }
+
+      // Check for target amount module
+      const hasTargetAmount = escrow.modules.some(module => 
+        module.moduleType === "targetAmount" || Object.keys(module.moduleType)[0] === "targetAmount"
+      );
+      if (hasTargetAmount) {
+        try {
+          const targetAmountKey = this.getPdaKeyForTargetAmount(escrowKey);
+          const targetAmount = await this.program.account.targetAmount.fetch(targetAmountKey);
+          escrow.setTargetAmount(targetAmount);
+        } catch (error) {
+          console.error("Error fetching target amount:", error);
+        }
+      }
 
       return escrow;
     } catch (error: any) {
@@ -475,6 +517,29 @@ class DepoClient {
         depositor: depositorKey,
         signer: this.wallet.publicKey!,
         systemProgram: SystemProgram.programId,
+      } as any).rpc()
+
+      await this.program.provider.connection.confirmTransaction(tx);
+      return tx
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async withdrawEscrow(uuid: string) {
+    const cleanUuid = uuid.replace(/-/g, '')
+    const { key: escrowKey, bufferId: escrowId } = this.getPdaKeyAndBufferId(cleanUuid)
+
+    const recipientKey = this.getPdaKeyForRecipient(escrowKey, this.wallet.publicKey!)
+
+    try {
+      const tx = await this.program.methods.withdrawEscrow(
+        Array.from(escrowId),
+      ).accounts({
+        escrow: escrowKey,
+        recipient: recipientKey,
+        signer: this.wallet.publicKey!,
+        systemProgram: SystemProgram.programId, 
       } as any).rpc()
 
       await this.program.provider.connection.confirmTransaction(tx);
