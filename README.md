@@ -1,7 +1,4 @@
-![Main DEPO Banner for the readme](/docs/readme-gif.gif)
-
-# DEPO
-### Dynamic Escrow Platform Operations
+![DEPO - Dynamic Escrow Platform Operations](/docs/readme-gif.gif)
 
 A modular escrow solution on Solana, composed of a smart contract, a demo interface, and a JavaScript library, designed for quick integration into both Web2 and Web3 applications.
 
