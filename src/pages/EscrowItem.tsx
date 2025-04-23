@@ -127,7 +127,7 @@ function EscrowItem({ uuid }: { uuid: string }) {
             return (
                 <div key={index + "depositor"} className={addressTagStyle}>
                     <span className="flex flex-row gap-2">
-                        <p>{depositor.account?.wallet?.toString()}</p>
+                        <p>{ellipsify(depositor.account?.wallet?.toString(), 8)}</p>
                         {depositor.account?.wasRefunded && <p className="text-xs bg-red-500 text-white font-bold px-2 py-1 rounded-md">Refunded</p>}
                     </span>
                     <p className="text-green-500 font-bold">+ {lamportsToSol(depositor.account?.depositedAmount)} SOL</p>

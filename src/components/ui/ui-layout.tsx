@@ -46,7 +46,9 @@ export function UiLayout({ children }: { children: ReactNode }) {
           {children}
         </div>
         <div>
-          <Toaster position="bottom-right" />
+          <Toaster position="bottom-right" toastOptions={{
+            duration: 5000
+          }} />
         </div>
       </div>
     </div>
