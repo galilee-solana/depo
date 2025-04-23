@@ -108,7 +108,6 @@ function EscrowItem({ uuid }: { uuid: string }) {
     const renderRecipients = () => {
         if (!escrow?.recipients) return [];
         return escrow.recipients.map((recipient, index) => {
-            console.log(recipient)
             const percentage = recipient.account?.percentage ? `${recipient.account?.percentage/100}` : ""
             return (
                 <div key={index + "recipient"} className={addressTagStyle}>
@@ -125,7 +124,6 @@ function EscrowItem({ uuid }: { uuid: string }) {
     const renderDepositors = () => {
         if (!escrow?.depositors) return [];
         return escrow.depositors.map((depositor, index) => {
-            console.log(depositor)
             return (
                 <div key={index + "depositor"} className={addressTagStyle}>
                     <span className="flex flex-row gap-2">
@@ -137,6 +135,8 @@ function EscrowItem({ uuid }: { uuid: string }) {
             )
         })
     }
+
+    console.log(escrow)
 
     return (
         <div>
@@ -152,11 +152,13 @@ function EscrowItem({ uuid }: { uuid: string }) {
                 <>
                   <div className="grid grid-cols-2 gap-4 space-y-2">
                     <div className="space-y-3 pt-4"> 
-                        <div className="flex flex-row gap-2">
-                            <p className="text-md font-bold mb-6 p-2 px-4 w-fit rounded-md border-b-2 border-gray-200 bg-black text-white">
+                        <div className="flex flex-row gap-2 mb-6">
+                            <p className="text-md font-bold p-2 px-4 w-fit rounded-md border-b-2 border-gray-200 bg-black text-white">
                                 {escrow.isPublicDeposit ? "Public Escrow" : "Private Escrow"} - {escrow.status[0].toUpperCase() + escrow.status.slice(1)} 
                             </p>
-                            
+                            <p className="text-md font-bold p-2 px-4 rounded-md border-2 border-black bg-gray-200">
+                                Total Amount: {lamportsToSol(escrow.depositedAmount)} SOL
+                            </p>
                         </div>
                       <ReadOnlyInput
                         label="Name"
@@ -194,13 +196,13 @@ function EscrowItem({ uuid }: { uuid: string }) {
                     <div className="space-y-2">
                         <DynamicComponentList
                             label="Recipients"
-                            description="Add recipients keys to receive the funds. The funds will be split equally among the recipients."
+                            description="List of recipients who can withdraw funds from this escrow"
                             itemsPerPage={3}
                             toRender={renderRecipients()}
                         />
                         <DynamicComponentList 
                             label="Depositors" 
-                            description="For private deposits, add the depositors keys of the funds"  
+                            description="List of depositors who deposited funds into this escrow"  
                             itemsPerPage={3} 
                             toRender={renderDepositors()}
                         />
