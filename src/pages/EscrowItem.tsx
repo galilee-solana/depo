@@ -121,7 +121,7 @@ function EscrowItem({ uuid }: { uuid: string }) {
     }
 
     const renderDepositors = () => {
-        if (!escrow?.depositors) return [<p>No depositors</p>];
+        if (!escrow?.depositors) return [<p key="no-depositors">No depositors</p>];
         return escrow.depositors.map((depositor, index) => {
             return (
                 <div key={index + "depositor"} className={addressTagStyle}>
