@@ -59,9 +59,6 @@ const EscrowProvider = ({ children }: { children: React.ReactNode }) => {
   const [depositors, setDepositors] = useState<string[]>([])
 
   const create = async () => {
-    console.log('Creating escrow')
-    console.log(name, description, timelock, minimumAmount, targetAmount, recipients, depositors)
-
     if (!validateEscrow()) {
       return null;
     }

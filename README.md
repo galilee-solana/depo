@@ -1,7 +1,16 @@
-# DEPO
-### Dynamic Escrow Platform Operations
+![DEPO - Dynamic Escrow Platform Operations](/docs/readme.gif)
 
-A modular escrow solution on Solana, composed of a smart contract, a demo interface, and a JavaScript library, designed for quick integration into both Web2 and Web3 applications.
+<div align="center">
+  <img src="https://img.shields.io/github/v/release/galilee-solana/depo?include_prereleases&labelColor=%23000000" alt="Version">
+  <img src="https://img.shields.io/github/check-runs/galilee-solana/depo/main?labelColor=%23000000" alt="Checks">
+  <img src="https://img.shields.io/github/contributors/galilee-solana/depo?labelColor=%23000000&color=%23ffffff" alt="GitHub contributors" >
+  <img src="https://img.shields.io/github/issues/galilee-solana/depo.svg?labelColor=%23000000&color=%23ffffff" alt="Issues">
+  <img src="https://img.shields.io/github/issues-pr-closed/galilee-solana/depo?labelColor=%23000000&color=%23ffffff" alt="Close PR">
+  <img src="https://img.shields.io/badge/license-MIT-blue.svg?labelColor=%23000000&color=%23ffffff" alt="License">
+</div>
+
+##
+This is a modular escrow solution on Solana, composed of a smart contract, a demo interface, and a JavaScript library, designed for quick integration into both Web2 and Web3 applications.
 
 This project is developed as part of an academic proof of concept and focuses on creating a functional prototype showcasing the fundamental use cases of a decentralized escrow using an Anchor Program (Smart Contract) and a demo interface
 
