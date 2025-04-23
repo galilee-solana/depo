@@ -9,8 +9,9 @@ import CreatorButtonSet from "@/components/escrow_item/CreatorButtonSet";
 import DepositorButtonSet from "@/components/escrow_item/DepositorButtonSet";
 import RecipientButtonSet from "@/components/escrow_item/RecipientButtonSet";
 import DynamicComponentList from "@/components/ui/lists/DynamicComponentList";
-
+import { formatTimestamp } from "@/utils/timestamp-formatter";
 import { lamportsToSol } from "@/utils/number-formatter";
+
 /**
  * A page that displays an escrow item.
  * @param uuid - The UUID of the escrow.
@@ -26,8 +27,6 @@ function EscrowItem({ uuid }: { uuid: string }) {
     const [isRecipient, setIsRecipient] = useState(false)
     const [depositorAccount, setDepositorAccount] = useState<{}>({})
     const [recipientAccount, setRecipientAccount] = useState<{}>({})
-    const [depositors, setDepositors] = useState<{}>({})
-    const [recipients, setRecipients] = useState<{}>({})
 
     const [refreshTrigger, setRefreshTrigger] = useState(0)
     
@@ -136,7 +135,27 @@ function EscrowItem({ uuid }: { uuid: string }) {
         })
     }
 
-    console.log(escrow)
+    const renderModules = () => {
+        if (!escrow?.modules) return [];
+        console.log('Modules:', escrow.modules);
+        console.log('Timelock:', escrow.timelock);
+        console.log('Minimum Amount:', escrow.minimumAmount);
+        console.log('Target Amount:', escrow.targetAmount);
+        
+        return escrow.modules.map((module, index) => {
+            const moduleType = Object.keys(module.moduleType)[0];
+            if (moduleType === "timelock" && escrow.timelock?.account) {
+                return <p key={index}>Release after: {formatTimestamp(escrow.timelock.account.releaseAfter)}</p>
+            }
+            if (moduleType === "minimumAmount" && escrow.minimumAmount?.account) {
+                return <p key={index}>Minimum amount: {lamportsToSol(escrow.minimumAmount.account.minAmount)} SOL</p>
+            }
+            if (moduleType === "targetAmount" && escrow.targetAmount?.account) {
+                return <p key={index}>Target amount: {lamportsToSol(escrow.targetAmount.account.targetAmount)} SOL</p>
+            }
+            return <p key={index}>Module: {moduleType}</p>;
+        })
+    }
 
     return (
         <div>
@@ -173,11 +192,7 @@ function EscrowItem({ uuid }: { uuid: string }) {
                       {escrow.modules.length > 0 && (
                         <div className="py-4 space-y-2">
                           <h2 className="text-lg font-bold">Release conditions:</h2>
-                          {escrow.modules.map((module, index) => (
-                            <div key={index}>
-                              <p>{Object.keys(module.moduleType)[0]}</p>
-                            </div>
-                          ))}
+                          {renderModules()} 
                         </div>
                       )}
 
