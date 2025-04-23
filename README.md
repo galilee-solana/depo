@@ -10,7 +10,7 @@
 </div>
 
 ##
-A modular escrow solution on Solana, composed of a smart contract, a demo interface, and a JavaScript library, designed for quick integration into both Web2 and Web3 applications.
+This is a modular escrow solution on Solana, composed of a smart contract, a demo interface, and a JavaScript library, designed for quick integration into both Web2 and Web3 applications.
 
 This project is developed as part of an academic proof of concept and focuses on creating a functional prototype showcasing the fundamental use cases of a decentralized escrow using an Anchor Program (Smart Contract) and a demo interface
 
