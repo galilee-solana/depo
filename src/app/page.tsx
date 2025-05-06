@@ -2,6 +2,7 @@
 
 import Nav from '@/components/ui/nav/Nav'
 import Image from 'next/image'
+import Link from 'next/link'
 
 export default function Page() {
     return (
@@ -22,16 +23,16 @@ export default function Page() {
               Hold Funds. Automate <span className="blue-gradient-text blue-gradient-text" data-text="Trust.">Trust.</span>
             </h1>
             <p className="text-white text-2xl mt-4 font-bold text-shadow">
-              Secure funds with on-chain logic,<br />
+              Secure funds with on-chain logic<br />
               and automate releases with confidence
             </p>
             <div className="mt-8">
-              <a 
-                href="#" 
+              <Link
+                href="/demo/escrow"
                 className="px-8 py-3 rounded-md text-white font-medium text-lg transition-colors blue-gradient-bg"
               >
                 Try Now
-              </a>
+              </Link>
             </div>
           </div>
         </div>
