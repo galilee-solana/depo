@@ -31,7 +31,7 @@ body {
 }
 
 .blue-gradient-text {
-  background: linear-gradient(to right, #79DEFC, #4895EF);
+  background: linear-gradient(to right, #4895EF, #1313BD);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -40,5 +40,5 @@ body {
 
 
 .blue-gradient-bg {
-  background: linear-gradient(to right, #79DEFC, #4895EF);
+  background: linear-gradient(to right, #4895EF, #1313BD);
 }
