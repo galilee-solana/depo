@@ -1,5 +1,8 @@
 name: Test and Build Anchor
 
+defaults:
+  run:
+    working-directory: dapp
 on:
   pull_request:
   push:

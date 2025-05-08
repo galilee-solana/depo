@@ -1,5 +1,9 @@
 name: Test and Build Web
 
+defaults:
+  run:
+    working-directory: dapp
+    
 on:
   pull_request:
   push:

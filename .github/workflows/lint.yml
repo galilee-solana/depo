@@ -1,5 +1,9 @@
 name: Clippy (Rust linter)
 
+defaults:
+  run:
+    working-directory: dapp
+
 on:
   pull_request:
     paths:
