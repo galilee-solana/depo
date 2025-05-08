@@ -1,9 +1,5 @@
 name: Clippy (Rust linter)
 
-defaults:
-  run:
-    working-directory: dapp
-
 on:
   pull_request:
     paths:
@@ -16,7 +12,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: anchor
+        working-directory: dapp/anchor
 
     steps:
       - name: Checkout repository

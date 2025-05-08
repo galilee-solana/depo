@@ -1,9 +1,5 @@
 name: Test and Build Web
 
-defaults:
-  run:
-    working-directory: dapp
-    
 on:
   pull_request:
   push:
@@ -30,7 +26,9 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
+        working-directory: dapp
         run: pnpm install --frozen-lockfile
 
       - name: Build project
+        working-directory: dapp
         run: pnpm build

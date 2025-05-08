@@ -1,8 +1,5 @@
 name: Test and Build Anchor
 
-defaults:
-  run:
-    working-directory: dapp
 on:
   pull_request:
   push:
@@ -29,34 +26,42 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
+        working-directory: dapp
         run: pnpm install --frozen-lockfile
 
       - uses: metadaoproject/setup-anchor@v2
+        working-directory: dapp
         with:
           anchor-version: '0.30.1'
           node-version: '20'
           solana-cli-version: '1.18.9'
 
       - name: Generate new keypair
+        working-directory: dapp
         run: solana-keygen new --no-bip39-passphrase
 
       - name: Set solana target cluster to local
+        working-directory: dapp
         run: solana config set --url http://localhost:8899
 
       - name: Check solana config
+        working-directory: dapp
         run: solana config get
 
       - name: anchor build
+        working-directory: dapp
         env:
           RUSTUP_TOOLCHAIN: nightly-2025-04-14
         run: pnpm run anchor build
         shell: bash
 
       - name: anchor test
+        working-directory: dapp
         env:
           RUSTUP_TOOLCHAIN: nightly-2025-04-14
         run: pnpm run anchor test
         shell: bash
 
       - name: Run Rust unit tests
+        working-directory: dapp
         run: cd anchor && cargo test --lib
