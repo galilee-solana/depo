@@ -29,15 +29,17 @@ jobs:
         working-directory: dapp
         run: pnpm install --frozen-lockfile
 
-      - uses: metadaoproject/setup-anchor@v2
-        working-directory: dapp
-        with:
-          anchor-version: '0.30.1'
-          node-version: '20'
-          solana-cli-version: '1.18.9'
+      - name: Install Anchor
+        run: npm install -g @coral-xyz/anchor-cli@0.30.1
+
+      - name: Install Solana CLI manually
+        run: |
+          mkdir -p ~/.local/bin
+          curl -L https://github.com/solana-labs/solana/releases/download/v1.18.9/solana-release-x86_64-unknown-linux-gnu.tar.bz2 -o solana.tar.bz2
+          tar -xvjf solana.tar.bz2
+          echo "$PWD/solana-release/bin" >> $GITHUB_PATH
 
       - name: Generate new keypair
-        working-directory: dapp
         run: solana-keygen new --no-bip39-passphrase
 
       - name: Set solana target cluster to local
