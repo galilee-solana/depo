@@ -12,7 +12,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: anchor
+        working-directory: dapp/anchor
 
     steps:
       - name: Checkout repository
