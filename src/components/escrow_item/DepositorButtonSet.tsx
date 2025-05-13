@@ -12,7 +12,7 @@ function DepositorButtonSet({ escrow, depositor, refreshEscrow }: { escrow: Escr
       {escrow.status === "started" && (
         <>
           <SmallButton
-            onClick={() => router.push(`/escrow/deposit?id=${escrow.uuid}`)}
+            onClick={() => router.push(`/demo/escrow/deposit?id=${escrow.uuid}`)}
             disabled={false}
           >
             Deposit
