@@ -32,7 +32,6 @@ function Nav() {
         <div className="hidden sm:flex flex-1 justify-center gap-8 text-md">
           <Link href="/#how-it-works" className="hover:underline">How It Works</Link>
           <Link href="/#use-cases" className="hover:underline">Use Cases</Link>
-          <Link href="/#roadmap" className="hover:underline">Roadmap</Link>
           <Link href="/#feedback" className="hover:underline">Feedback</Link>
         </div>
         <div>
