@@ -2,7 +2,7 @@ import InfoCard from "./InfoCard";
 
 function HowItWorkSection() {
   return (
-    <div id="how-it-works" className='h-fit mx-8 pt-3 pb-12 sm:mx-16 md:mx-56 text-black font-space'>
+    <div id="how-it-works" className='h-fit mx-8 sm:pt-3 pb-3 sm:pb-12 sm:mx-16 md:mx-56 text-black font-space'>
       <h2 className="text-[30px] sm:text-[40px] md:text-[46px] my-6">How It Works</h2>
       <div className="flex flex-col sm:flex-row gap-3">
         <InfoCard 
