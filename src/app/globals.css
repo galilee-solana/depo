@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -31,7 +33,7 @@ body {
 }
 
 .blue-gradient-text {
-  background: linear-gradient(to right, #4895EF, #1313BD);
+  background: linear-gradient(to right, #79DEFC, #4895EF);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -40,5 +42,5 @@ body {
 
 
 .blue-gradient-bg {
-  background: linear-gradient(to right, #4895EF, #1313BD);
+  background: linear-gradient(to right, #4895EF, #4895EF);
 }

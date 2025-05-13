@@ -16,7 +16,7 @@ const links: { label: string; path: string }[] = [
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>
+      <body className='bg-cream'>
         {children}
       </body>
     </html>

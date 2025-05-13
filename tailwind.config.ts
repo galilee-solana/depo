@@ -11,6 +11,9 @@ const config: Config = {
       colors: {
         'cream': "#f0f0f4",
       },
+      fontFamily: {
+        'space': ['Space Grotesk', 'sans-serif'],
+      },
     },
   },
   plugins: [require('daisyui')],
