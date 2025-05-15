@@ -16,7 +16,7 @@ export default function Footer() {
           <nav className="flex flex-wrap justify-center gap-6 mb-4 md:mb-0">
             <a href="/demo/escrow" className="hover:underline">Try our demo</a>
             <a href={process.env.NEXT_PUBLIC_NEWLETTER_SIGNUP_URL || '#'} className="hover:underline">Join the waitlist</a>
-            <a href={`mailto:${process.env.NEXT_PUBLIC_EMAIL}`} className="hover:underline">Contact</a>
+            <a href={`mailto:depo.dynamicescrow@gmail.com`} className="hover:underline">Contact</a>
           </nav>  
 
           <div className="flex gap-4">
