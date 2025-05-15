@@ -2,14 +2,12 @@
 
 import { useRouter } from 'next/navigation'
 import React from 'react'
-import { useDepoClient } from '@/contexts/useDepoClientCtx'
 
 export default function DepositButton() {
-  const { client } = useDepoClient()
   const router = useRouter()
 
   const handleClick = async () => {
-    router.push('/escrow/deposit')
+    router.push('/demo/escrow/deposit')
   }
 
   return (

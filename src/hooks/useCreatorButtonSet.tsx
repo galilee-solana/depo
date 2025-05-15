@@ -29,7 +29,7 @@ function useCreatorButtonSet(escrow: Escrow, refreshEscrow: () => void) {
                 url={getExplorerUrl(`tx/${tx}`)}
             />
         )
-        router.push('/escrow')
+        router.push('/demo/escrow')
       } catch (error: any) {
         const errorMessage = error.message || JSON.stringify(error)
         if (errorMessage.includes("doesn't exist")) {
