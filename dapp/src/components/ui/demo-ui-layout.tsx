@@ -12,7 +12,7 @@ import { WalletButton } from '../solana/solana-provider'
 import CreateButton from '../create/CreateButton'
 import DepositButton from '../deposit/depositButton'
 
-export function UiLayout({ children }: { children: ReactNode }) {
+export function DemoUILayout({ children }: { children: ReactNode }) {
 
   return (
     <>
@@ -23,7 +23,7 @@ export function UiLayout({ children }: { children: ReactNode }) {
       {/* Navbar */}
       <div className="navbar bg-cream text-black flex-col md:flex-row items-center justify-between px-4 py-4 min-h-[64px] flex-shrink-0">
         <div className="h-full">
-          <a href="/escrow">
+          <a href="/">
             <Image src="/D-logo-white.svg" alt="Logo" width={0} height={0} className="h-10 w-auto object-contain" priority />
           </a>
         </div>

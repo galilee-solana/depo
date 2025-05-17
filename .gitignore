@@ -42,3 +42,6 @@
 
 # test ledger
 **/test-ledger
+
+# environment
+.env
