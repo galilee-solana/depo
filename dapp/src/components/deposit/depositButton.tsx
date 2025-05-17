@@ -9,7 +9,7 @@ export default function DepositButton() {
   const router = useRouter()
 
   const handleClick = async () => {
-    router.push('/escrow/deposit')
+    router.push('/demo/escrow/deposit')
   }
 
   return (

@@ -55,7 +55,7 @@ function DepositUI({ uuid = "" }: { uuid: string }) {
                     url={getExplorerUrl(`/tx/${tx}`)}
                 />
             )
-            router.push(`/escrow/${id}`)
+            router.push(`/demo/escrow/${id}`)
         } catch (error: any) {
             toast.error("Failed to deposit: " + error.message)
             console.error(error)

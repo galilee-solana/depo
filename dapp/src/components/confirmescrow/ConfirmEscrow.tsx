@@ -32,7 +32,7 @@ export default function ConfirmEscrow({
       const result = await create()
       setLoading(false)
       if (result) {
-        router.push(`/escrow/${result.escrow.uuid}`)
+        router.push(`/demo/escrow/${result.escrow.uuid}`)
       }
     } catch (error: any) {
       setLoading(false)
