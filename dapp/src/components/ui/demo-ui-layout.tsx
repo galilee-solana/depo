@@ -4,7 +4,7 @@ import Image from 'next/image'
 import Head from 'next/head'
 import * as React from 'react'
 import { ReactNode, useEffect, useRef } from 'react'
-import toast, { Toaster } from 'react-hot-toast'
+import { Toaster } from 'react-hot-toast'
 
 import { AccountChecker } from '../account/account-ui'
 import { ClusterChecker, ClusterUiSelect, ExplorerLink } from '../cluster/cluster-ui'

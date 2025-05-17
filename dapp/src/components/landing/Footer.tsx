@@ -4,7 +4,7 @@ export default function Footer() {
   
   return (
     <div className="pb-6">
-      <footer className="py-4 px-6 blue-gradient-bg rounded-3xl mx-8 sm:mx-16 md:mx-56 text-white">
+      <footer className="py-4 px-6 blue-gradient-bg rounded-3xl mx-8 sm:mx-16 xl:mx-56 text-white">
         <div className="flex flex-col md:flex-row justify-between items-center">
           {/* Logo and copyright */}
           <div className="mb-4 md:mb-0">
