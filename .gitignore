@@ -42,3 +42,7 @@
 
 # test ledger
 **/test-ledger
+
+# environment
+.env
+/dapp/.env

@@ -5,7 +5,7 @@ import Link from "next/link";
 function EscrowCard({ escrow }: { escrow: Escrow }) {
   return (
     <Link
-      href={`/escrow/${escrow.uuid}`}
+      href={`/demo/escrow/${escrow.uuid}`}
       className="flex items-center justify-between bg-black text-white rounded-2xl px-4 py-3 cursor-pointer shadow-md hover:bg-gray-900 transition"
     >
       <div className="flex justify-between items-center space-x-4 w-full">

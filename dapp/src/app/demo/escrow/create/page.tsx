@@ -68,7 +68,7 @@ export default function CreateEscrow() {
           <div className="flex flex-row gap-2">
             <SmallButtonDanger
               onClick={() => {
-                router.push('/escrow')
+                router.push('/demo/escrow')
               }}
               disabled={false}
             >

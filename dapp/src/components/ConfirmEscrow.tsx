@@ -94,7 +94,7 @@ export default function ConfirmEscrow({
     // I don't like this push but was just for testing front
     // Need to be changed this with secured component handling Sol transaction with POST
     // Need to set a component to write transaction using validateFields and pop-up window
-    router.push(`/escrow/confirm?data=${encodeURIComponent(JSON.stringify(depositData))}`)
+    router.push(`/demo/escrow/confirm?data=${encodeURIComponent(JSON.stringify(depositData))}`)
 }
 
 return (
