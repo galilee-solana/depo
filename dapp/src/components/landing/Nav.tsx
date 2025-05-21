@@ -26,7 +26,7 @@ function Nav() {
       <div className="max-w-5xl w-[95%] mt-4 bg-white rounded-full shadow-lg flex justify-between items-center px-6 py-2 text-black" style={{pointerEvents: 'auto'}}>
         <div className="flex items-center gap-2">
           <Link href="/">
-            <Image src="/LOGO.svg" alt="Logo" width={32} height={32} className="h-10 sm:h-12 w-fit object-contain" priority />
+            <Image src="/LOGO.svg" alt="Logo" width={32} height={32} className="h-10 sm:h-12 w-24 object-contain" priority />
           </Link>
         </div>
         <div className="hidden sm:flex flex-1 justify-center gap-8 text-md">
